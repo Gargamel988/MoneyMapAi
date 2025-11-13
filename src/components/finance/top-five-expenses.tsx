@@ -1,0 +1,196 @@
+import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { Text, View } from "react-native";
+import { useTheme } from "../../contexts/theme";
+import { useResponsive } from "../../hooks/useRespons";
+import { formatTotal } from "../../utils/total";
+import { ErrorFallback, NoDataErrorComponent } from "../common/error";
+import { GreenLoadingComponent } from "../common/loading";
+import InfoCard from "../ui/ınfo-card";
+
+type TopFiveExpensesProps = {
+  data: TransactionList;
+  isLoading: boolean;
+  error: Error;
+  currency: string;
+};
+
+export default function TopFiveExpenses({
+  data,
+  isLoading,
+  error,
+  currency,
+}: TopFiveExpensesProps) {
+  const { theme } = useTheme();
+  const { dimensions } = useResponsive();
+
+  // --- Data Hazırlığı ---
+  const dataArray = Array.isArray(data) ? data : [];
+  const dataArrayFilter = dataArray.filter(
+    (item: Transaction) => item?.type === "gider"
+  );
+
+  const total = dataArrayFilter.reduce(
+    (sum: number, item: Transaction) => sum + (item?.total_amount || 0), 
+    0
+  )||0;
+
+  const mergedByCategory = dataArrayFilter.reduce(
+    (acc: { [key: string]: Transaction }, item: Transaction) => {
+      const categoryName = item.categories?.name || "Bilinmeyen Kategori";
+
+      if (!acc[categoryName]) {
+        acc[categoryName] = { ...item, total_amount: item.total_amount || 0 };
+      } else {
+        acc[categoryName].total_amount += item.total_amount || 0;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  const mergedArray = Object.values(mergedByCategory) || [];
+  const sortedArray = [...mergedArray].sort(
+    (a: Transaction, b: Transaction) =>
+      (b.total_amount || 0) - (a.total_amount || 0)
+  );
+  const max5 = sortedArray.slice(0, 5);
+
+  const percentages =
+    max5?.length > 0
+      ? max5.map((item: Transaction) =>
+          total > 0 ? ((item.total_amount || 0) / total) * 100 : 0
+        )
+      : [];
+
+  // --- Basit Öngörü (Insight) Hesabı ---
+  let insightMessage = "";
+  if (max5.length > 0) {
+    const top = max5[0];
+    const topCategory = top.categories.name;
+    const topPercentage = percentages[0] || 0;
+
+    if (topPercentage > 50) {
+      insightMessage = `${topCategory} harcamalarınız toplam giderinizin yarısından fazlasını oluşturuyor. Bu kategoriye dikkat etmek isteyebilirsiniz.`;
+    } else if (topPercentage > 30) {
+      insightMessage = `${topCategory} kategorisinde harcamalarınız dikkat çekici düzeyde yüksek. Küçük optimizasyonlar fark yaratabilir.`;
+    } else if (topPercentage < 15) {
+      insightMessage = `Harcamalarınız dengeli görünüyor, hiçbir kategori toplamın %15’inden fazla değil.`;
+    } else {
+      insightMessage = `${topCategory} kategorisi bu ay öne çıkıyor, ancak genel denge korunmuş.`;
+    }
+  }
+
+  // --- Render ---
+  return (
+    <>
+      {isLoading ? (
+        <GreenLoadingComponent text="Grafik yükleniyor..." />
+      ) : error ? (
+        <ErrorFallback error={error as Error} />
+      ) : !max5?.length ? (
+        <NoDataErrorComponent
+          title="Bilgiler bulunamadı"
+          message="Bilgiler bulunamadı"
+          icon="inbox"
+        />
+      ) : (
+        <View style={{ flex: 1, padding: dimensions.md }}>
+          {/* Başlık */}
+          <Text
+            style={{
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+              color: theme.text,
+               textAlign: "center",
+            }}
+          >
+            En Yüksek 5 Gider
+          </Text>
+
+          {/* Liste */}
+          <View style={{ gap: 8 }}>
+            {max5.map((item: Transaction, index: number) => {
+              const categoryName = item.categories.name || "Kategori";
+              const categoryColor = item.categories.color || theme.textTertiary;
+              const percentage = percentages[index] || 0;
+
+              return (
+                <View
+                  key={item.id || index}
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    borderRadius: 12,
+                    paddingHorizontal: 12,
+                    paddingVertical: 10,
+                    shadowOpacity: 0.08,
+                    shadowRadius: 4,
+                    shadowOffset: { width: 0, height: 2 },
+                    backgroundColor: theme.white,
+                    shadowColor: theme.border,
+                  }}
+                >
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 8,
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 8,
+                        width: 8,
+                        borderRadius: 4,
+                        backgroundColor: categoryColor,
+                      }}
+                    />
+                    <Text
+                      style={{
+                        fontSize: 14,
+                        fontWeight: "500",
+                        color: theme.textQuaternary,
+                      }}
+                    >
+                      {categoryName}
+                    </Text>
+                  </View>
+
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 12,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontWeight: "bold",
+                        fontSize: 14,
+                        color: theme.inputtitle,
+                      }}
+                    >
+                      {formatTotal(item.total_amount, currency)}
+                    </Text>
+                    <Text style={{ fontSize: 13, color: theme.textQuaternary }}>
+                      {percentage.toFixed(2)}%
+                    </Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+
+          {/* Öngörü Bölümü */}
+      
+            <InfoCard>
+              {`💡 Öngörü:
+${insightMessage}`}
+            </InfoCard>
+        </View>
+      )}
+    </>
+  );
+}

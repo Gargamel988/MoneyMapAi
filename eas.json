@@ -1,0 +1,73 @@
+{
+  "cli": {
+    "version": ">= 16.19.1",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://xwgcoiuxcvjvmkhahwrf.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3Z2NvaXV4Y3Zqdm1raGFod3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2ODkyOTIsImV4cCI6MjA3MzI2NTI5Mn0.r6OPzE9_9FDWD8hlTTyg75SE09LU3G4rC5gXHaxJR-4",
+        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCyHi9bXoZxI6RJ5O8dwFo37x3pIHiPmPY",
+        "EXPO_PUBLIC_API_BASE_URL": "https://gargamel123-my-ai-app.expo.app"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2742bcc (ilk yükleme)
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "android": {
+        "buildType": "apk"
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://xwgcoiuxcvjvmkhahwrf.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3Z2NvaXV4Y3Zqdm1raGFod3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2ODkyOTIsImV4cCI6MjA3MzI2NTI5Mn0.r6OPzE9_9FDWD8hlTTyg75SE09LU3G4rC5gXHaxJR-4",
+        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCyHi9bXoZxI6RJ5O8dwFo37x3pIHiPmPY",
+<<<<<<< HEAD
+        "EXPO_PUBLIC_API_BASE_URL": "https://gargamel123-my-ai-app.expo.app"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "app-bundle"
+=======
+        "EXPO_PUBLIC_API_BASE_URL": "https://gargamel123-my-ai-app.expo.app" 
+      }
+    },
+    "production": {
+      "autoIncrement": true,
+      "android": {
+        "buildType": "apk"
+>>>>>>> 2742bcc (ilk yükleme)
+      },
+      "env": {
+        "EXPO_PUBLIC_SUPABASE_URL": "https://xwgcoiuxcvjvmkhahwrf.supabase.co",
+        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3Z2NvaXV4Y3Zqdm1raGFod3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2ODkyOTIsImV4cCI6MjA3MzI2NTI5Mn0.r6OPzE9_9FDWD8hlTTyg75SE09LU3G4rC5gXHaxJR-4",
+        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCyHi9bXoZxI6RJ5O8dwFo37x3pIHiPmPY",
+        "EXPO_PUBLIC_API_BASE_URL": "https://gargamel123-my-ai-app.expo.app"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 2742bcc (ilk yükleme)
+      }
+    }
+  },
+  "submit": {
+<<<<<<< HEAD
+    "production": {
+      "android": {
+          "serviceAccountKeyPath": "./ServiceAccountSplitEase.json",
+          "track": "internal"
+      }
+    }
+  }
+}
+=======
+    "production": {}
+  }
+}
+>>>>>>> 2742bcc (ilk yükleme)
