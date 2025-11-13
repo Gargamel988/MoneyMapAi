@@ -19,14 +19,14 @@ import { exportToExcel } from "../../../src/lib/export/exportExcel";
 import { exportToPDF } from "../../../src/lib/export/exportPDF";
 import { transactionsApi } from "../../../src/lib/transactions";
 // components
-import { useTheme } from "@/src/contexts/theme";
-import { Transaction, TransactionList } from "@/src/types/transactıonstype";
 import Pascalcase from "../../../src/components/charts/pascal-case";
 import PieChart from "../../../src/components/charts/pie-chart";
 import FinanceSummary from "../../../src/components/finance/fınance-summary";
 import TopFiveExpenses from "../../../src/components/finance/top-five-expenses";
+import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useRespons";
 import { getCurrency } from "../../../src/lib/profil";
+import { Transaction, TransactionList } from "../../../src/types/transactıonstype";
 
 type TabType = "Günlük" | "Haftalık" | "Aylık" | "Yıllık";
 
@@ -363,7 +363,7 @@ export default function Analytics() {
             isLoading={isLoading}
             error={error as Error}
             currency={currency}
-            tabs={tab}
+            tabs={tab as "daily" | "weekly" | "monthly" | "yearly"}
           />
 
           {/* Top 5 Harcamalar */}

@@ -155,10 +155,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
         borderRadius: dimensions.borderRadiusXL,
         paddingVertical: wp(4),
         backgroundColor: theme.button,
-<<<<<<< HEAD
-=======
         marginTop: wp(2),
->>>>>>> 2742bcc (ilk yükleme)
       }}
       onPress={handleGoogleSignIn}
       disabled={loading}

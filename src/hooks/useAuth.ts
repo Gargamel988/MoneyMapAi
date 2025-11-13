@@ -72,11 +72,7 @@ export const useAuth = () => {
       },
       {
         text: "Çıkış Yap",
-<<<<<<< HEAD
         onPress: async () => await supabase.auth.signOut().then(() => router.replace('/(screens)/(auth)/login' )),
-=======
-        onPress: async () => await supabase.auth.signOut().then(() => router.push('/(screens)/(auth)/login' )),
->>>>>>> 2742bcc (ilk yükleme)
         style: 'destructive',
       },
     ]);

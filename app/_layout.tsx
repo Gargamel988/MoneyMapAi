@@ -4,10 +4,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import Toast from "react-native-toast-message";
 import "../polyfills";
-<<<<<<< HEAD
 import "../services/i18next"; // Initialize i18next
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import { toastConfig } from "../src/constanst/toast";
 import { ThemeProvider, useTheme } from "../src/contexts/theme";
 
@@ -31,7 +28,7 @@ function AppContent() {
           animationDuration: 300,
         }}
       />
-<Toast config={toastConfig} />
+      <Toast config={toastConfig} />
     </LinearGradient>
   );
 }

@@ -1,12 +1,8 @@
-import { TransactionList } from "@/src/types/transactıonstype";
 import Feather from "@expo/vector-icons/Feather";
 import { useQueries } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { useState } from "react";
-<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import {
   FlatList,
   RefreshControl,
@@ -19,22 +15,20 @@ import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useRespons";
 import { getCurrency } from "../../../src/lib/profil";
 import { transactionsApi } from "../../../src/lib/transactions";
+import { TransactionList } from "../../../src/types/transactıonstype";
 
 //components
-import WeeklySummary from "@/src/components/finance/weekly-summary";
 import IncomeAnalytics from "../../../src/components/charts/Income-analytics";
 import Piechart from "../../../src/components/charts/pie-chart";
 import Headers from "../../../src/components/common/header";
 import Lastprocess from "../../../src/components/finance/last-process";
+import WeeklySummary from "../../../src/components/finance/weekly-summary";
 
 export default function Home() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { theme } = useTheme();
   const { dimensions, hp, wp } = useResponsive();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   const [
     transactionsByLastprocess,
@@ -134,11 +128,7 @@ export default function Home() {
                     marginBottom: 2,
                   }}
                 >
-<<<<<<< HEAD
                   {t("home.aiPromo.title")}
-=======
-                  AI ile kolay işlem ekleme
->>>>>>> 2742bcc (ilk yükleme)
                 </Text>
                 <Text
                   style={{
@@ -146,11 +136,7 @@ export default function Home() {
                     color: theme.textSecondary,
                   }}
                 >
-<<<<<<< HEAD
                   {t("home.aiPromo.description")}
-=======
-                   sadece bir tıkla harcamalarınızı ekleyebilirsiniz.
->>>>>>> 2742bcc (ilk yükleme)
                 </Text>
               </View>
               <TouchableOpacity
@@ -169,11 +155,7 @@ export default function Home() {
                     fontWeight: '600',
                   }}
                 >
-<<<<<<< HEAD
                   {t("home.aiPromo.button")}
-=======
-                  Dene
->>>>>>> 2742bcc (ilk yükleme)
                 </Text>
               </TouchableOpacity>
             </View>
@@ -196,11 +178,7 @@ export default function Home() {
             isLoading={piechartData.isLoading as boolean}
             error={piechartData.error as Error}
             currency={currency}
-<<<<<<< HEAD
             tabs="daily"
-=======
-            tabs="Günlük"
->>>>>>> 2742bcc (ilk yükleme)
           />
         );
       case 'income':

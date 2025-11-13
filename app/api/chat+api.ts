@@ -77,11 +77,7 @@ Fiş , makbuz veya fatura değilse, kısa bir gerekçe yazın ve doğru görsel 
 
     return result.toDataStreamResponse();
   } catch (error: any) {
-<<<<<<< HEAD
     return Response.json({ error: error.message }, { status: 500 });
-=======
-    return Response.json({ error: error.message || "Internal server error" }, { status: 500 });
->>>>>>> 2742bcc (ilk yükleme)
   }
 }
 

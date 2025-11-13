@@ -12,17 +12,14 @@ import {
   View
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import ModalCategory from "../../../src/components/categories/modal-category";
-import { getUserexpenseCategories } from "../../../src/lib/category";
-import { getCurrency } from "../../../src/lib/profil";
-import { supabase } from "../../../src/lib/supabase";
-import { transactionsApi } from "../../../src/lib/transactions";
-import {
-  ExpenseData,
-  expenseSchema,
-} from "../../../src/schemas/transactionSchemas";
-import { formatDate, formatTime } from "../../../src/utils/date";
-import { formatTotal } from "../../../src/utils/total";
+import ModalCategory from "../categories/modal-category";
+import { getUserexpenseCategories } from "../../lib/category";
+import { getCurrency } from "../../lib/profil";
+import { supabase } from "../../lib/supabase";
+import { transactionsApi } from "../../lib/transactions";
+import { ExpenseData, expenseSchema } from "../../schemas/transactionSchemas";
+import { formatDate, formatTime } from "../../utils/date";
+import { formatTotal } from "../../utils/total";
 import { showErrorToast, showSuccessToast } from "../../constanst/toast";
 import { useTheme } from "../../contexts/theme";
 import { hp, useResponsive, wp } from "../../hooks/useRespons";
@@ -417,11 +414,7 @@ export const ExpenseEntry: React.FC = () => {
                     backgroundColor: theme.input,
                     paddingHorizontal: 12,
                     paddingVertical: 8,
-<<<<<<< HEAD
                     color: theme.textSenary,
-=======
-                    color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                     fontSize: dimensions.fontMD,
                     borderRadius: 12,
                   }}
@@ -464,11 +457,7 @@ export const ExpenseEntry: React.FC = () => {
                       paddingVertical: 8,
                       paddingLeft: 12,
                       paddingRight: 12,
-<<<<<<< HEAD
                       color: theme.textSenary,
-=======
-                      color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                       fontSize: dimensions.fontMD,
                       borderRadius: 12,
                     }}
@@ -516,11 +505,7 @@ export const ExpenseEntry: React.FC = () => {
                       <Feather
                         name="minus"
                         size={dimensions.iconSM}
-<<<<<<< HEAD
                         color={theme.textSenary}
-=======
-                        color={theme.inputtitle}
->>>>>>> 2742bcc (ilk yükleme)
                       />
                     </TouchableOpacity>
                     <TextInput
@@ -540,11 +525,7 @@ export const ExpenseEntry: React.FC = () => {
                         borderColor: theme.border,
                         backgroundColor: theme.input,
                         paddingVertical: 8,
-<<<<<<< HEAD
                         color: theme.textSenary,
-=======
-                        color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                         fontSize: dimensions.fontMD,
                         borderRadius: dimensions.borderRadius,
                       }}
@@ -572,11 +553,7 @@ export const ExpenseEntry: React.FC = () => {
                       <Feather
                         name="plus"
                         size={dimensions.iconSM}
-<<<<<<< HEAD
                         color={theme.textSenary}
-=======
-                        color={theme.inputtitle}
->>>>>>> 2742bcc (ilk yükleme)
                       />
                     </TouchableOpacity>
                   </View>
@@ -677,11 +654,7 @@ export const ExpenseEntry: React.FC = () => {
                       <Text
                         style={{
                           fontWeight: "semibold",
-<<<<<<< HEAD
                           color: theme.textSenary,
-=======
-                          color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                         }}
                       >
                         {item.itemName}
@@ -689,11 +662,7 @@ export const ExpenseEntry: React.FC = () => {
                       <Text
                         style={{
                           fontWeight: "thin",
-<<<<<<< HEAD
                           color: theme.textSenary,
-=======
-                          color: theme.primary,
->>>>>>> 2742bcc (ilk yükleme)
                           fontSize: dimensions.fontSM,
                         }}
                       >
@@ -710,11 +679,7 @@ export const ExpenseEntry: React.FC = () => {
                       <Feather
                         name="x"
                         size={dimensions.iconSM}
-<<<<<<< HEAD
                         color={theme.textSenary}
-=======
-                        color={theme.primary}
->>>>>>> 2742bcc (ilk yükleme)
                       />
                     </TouchableOpacity>
                   </View>
@@ -753,11 +718,7 @@ export const ExpenseEntry: React.FC = () => {
               >
                 <Text
                   style={{
-<<<<<<< HEAD
                     color: theme.textSenary,
-=======
-                    color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                     fontWeight: "bold",
                     fontSize: dimensions.fontXL,
                   }}
@@ -810,11 +771,7 @@ export const ExpenseEntry: React.FC = () => {
                       backgroundColor: theme.input,
                       paddingHorizontal: 12,
                       paddingVertical: 8,
-<<<<<<< HEAD
                       color: theme.textSenary,
-=======
-                      color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                       fontSize: dimensions.fontMD,
                     }}
                     value={value || ""}
@@ -876,19 +833,11 @@ export const ExpenseEntry: React.FC = () => {
                       <Feather
                         name="calendar"
                         size={dimensions.iconSM}
-<<<<<<< HEAD
                         color={theme.textSenary}
                       />
                       <Text
                         style={{
                           color: theme.textSenary,
-=======
-                        color={theme.inputtitle}
-                      />
-                      <Text
-                        style={{
-                          color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                           marginLeft: 8,
                           fontSize: dimensions.fontSM,
                         }}
@@ -932,19 +881,11 @@ export const ExpenseEntry: React.FC = () => {
                       <Feather
                         name="clock"
                         size={dimensions.iconSM}
-<<<<<<< HEAD
                         color={theme.textSenary}
                       />
                       <Text
                         style={{
                           color: theme.textSenary,
-=======
-                        color={theme.inputtitle}
-                      />
-                      <Text
-                        style={{
-                          color: theme.inputtitle,
->>>>>>> 2742bcc (ilk yükleme)
                           marginLeft: 8,
                           fontSize: dimensions.fontSM,
                         }}

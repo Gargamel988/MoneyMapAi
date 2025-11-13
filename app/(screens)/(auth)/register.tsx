@@ -1,16 +1,10 @@
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
-<<<<<<< HEAD
 import { Link, router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
-=======
-import { router } from "expo-router";
-import { useState } from "react";
-import { Controller, useForm } from "react-hook-form";
->>>>>>> 2742bcc (ilk yükleme)
 import {
   ActivityIndicator,
   Text,
@@ -25,10 +19,7 @@ import { useResponsive } from "../../../src/hooks/useRespons";
 import { useAuthsignupMutation } from "../../../src/lib/authmutation";
 import {
   RegisterFormData,
-<<<<<<< HEAD
   calculatePasswordStrength,
-=======
->>>>>>> 2742bcc (ilk yükleme)
   registerSchemas,
 } from "../../../src/schemas/RegisterSchema";
 
@@ -36,21 +27,14 @@ export default function Register() {
   const { theme } = useTheme();
   const { hp, wp, dimensions } = useResponsive();
   const [showPassword, setShowPassword] = useState(false);
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
->>>>>>> 2742bcc (ilk yükleme)
 
   const { register, isRegistering, resetRegister } = useAuthsignupMutation();
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
     control,
-<<<<<<< HEAD
     watch,
-=======
->>>>>>> 2742bcc (ilk yükleme)
   } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchemas),
     defaultValues: {
@@ -58,7 +42,6 @@ export default function Register() {
       lastName: "",
       email: "",
       password: "",
-<<<<<<< HEAD
     },
   });
 
@@ -66,12 +49,6 @@ export default function Register() {
 
   const passwordStrength = calculatePasswordStrength(password);
 
-=======
-      confirmPassword: "",
-    },
-  });
-
->>>>>>> 2742bcc (ilk yükleme)
   return (
     <SafeAreaView
       style={{
@@ -96,11 +73,7 @@ export default function Register() {
             color: theme.text,
           }}
         >
-<<<<<<< HEAD
           {t("register.title")}
-=======
-          Hesap Oluştur
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
         <Text
           style={{
@@ -109,11 +82,7 @@ export default function Register() {
             textAlign: "center",
           }}
         >
-<<<<<<< HEAD
           {t("register.description")}
-=======
-          Finansal yolculuğunuza başlamak için bilgilerinizi girin.
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
       </View>
 
@@ -124,10 +93,6 @@ export default function Register() {
         end={{ x: 1, y: 1 }}
         style={{ borderRadius: dimensions.borderRadiusXL, padding: wp(6) }}
       >
-<<<<<<< HEAD
-=======
-        <View>
->>>>>>> 2742bcc (ilk yükleme)
           {/* Name Row */}
           <View
             style={{ marginBottom: hp(2), flexDirection: "row", gap: wp(3) }}
@@ -141,11 +106,7 @@ export default function Register() {
                   color: theme.inputtitle,
                 }}
               >
-<<<<<<< HEAD
                 {t("register.firstName")}
-=======
-                Ad
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
               <Controller
                 control={control}
@@ -163,23 +124,14 @@ export default function Register() {
                           ? theme.error
                           : theme.border,
                       }}
-<<<<<<< HEAD
                       placeholder={t("register.firstNamePlaceholder")}
-=======
-                      placeholder="Adınız"
->>>>>>> 2742bcc (ilk yükleme)
                       placeholderTextColor={theme.inputplaceholder}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
                       editable={!isSubmitting || !isRegistering}
-<<<<<<< HEAD
                       accessibilityLabel={t("register.firstName")}
                       accessibilityHint={t("register.firstNameHint")}
-=======
-                      accessibilityLabel="Ad"
-                      accessibilityHint="Adınızı girin"
->>>>>>> 2742bcc (ilk yükleme)
                       autoCapitalize="words"
                       autoCorrect={false}
                       textContentType="givenName"
@@ -210,11 +162,7 @@ export default function Register() {
                   color: theme.inputtitle,
                 }}
               >
-<<<<<<< HEAD
                 {t("register.lastName")}
-=======
-                Soyad
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
               <Controller
                 control={control}
@@ -232,23 +180,14 @@ export default function Register() {
                           ? theme.error
                           : theme.border,
                       }}
-<<<<<<< HEAD
                       placeholder={t("register.lastNamePlaceholder")}
-=======
-                      placeholder="Soyadınız"
->>>>>>> 2742bcc (ilk yükleme)
                       placeholderTextColor={theme.inputplaceholder}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
                       editable={!isSubmitting || !isRegistering}
-<<<<<<< HEAD
                       accessibilityLabel={t("register.lastName")}
                       accessibilityHint={t("register.lastNameHint")}
-=======
-                      accessibilityLabel="Soyad"
-                      accessibilityHint="Soyadınızı girin"
->>>>>>> 2742bcc (ilk yükleme)
                       autoCapitalize="words"
                       autoCorrect={false}
                       textContentType="familyName"
@@ -281,11 +220,7 @@ export default function Register() {
                 color: theme.inputtitle,
               }}
             >
-<<<<<<< HEAD
               {t("register.email")}
-=======
-              E-posta Adresi
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
             <Controller
               control={control}
@@ -300,11 +235,7 @@ export default function Register() {
                       backgroundColor: theme.input,
                       borderColor: errors.email ? theme.error : theme.border,
                     }}
-<<<<<<< HEAD
                     placeholder={t("register.emailPlaceholder")}
-=======
-                    placeholder="ornek@email.com"
->>>>>>> 2742bcc (ilk yükleme)
                     placeholderTextColor={theme.inputplaceholder}
                     keyboardType="email-address"
                     autoCapitalize="none"
@@ -315,13 +246,8 @@ export default function Register() {
                     onChangeText={field.onChange}
                     onBlur={field.onBlur}
                     editable={!isSubmitting || !isRegistering}
-<<<<<<< HEAD
                     accessibilityLabel={t("register.email")}
                     accessibilityHint={t("register.emailHint")}
-=======
-                    accessibilityLabel="E-posta"
-                    accessibilityHint="E-posta adresinizi girin"
->>>>>>> 2742bcc (ilk yükleme)
                   />
                   {errors.email && (
                     <Text
@@ -349,11 +275,7 @@ export default function Register() {
                 color: theme.inputtitle,
               }}
             >
-<<<<<<< HEAD
               {t("register.password")}
-=======
-              Şifre
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
             <Controller
               control={control}
@@ -371,24 +293,15 @@ export default function Register() {
                           ? theme.error
                           : theme.border,
                       }}
-<<<<<<< HEAD
                       placeholder={t("register.passwordPlaceholder")}
-=======
-                      placeholder="En az 6 karakter"
->>>>>>> 2742bcc (ilk yükleme)
                       placeholderTextColor={theme.inputplaceholder}
                       secureTextEntry={!showPassword}
                       value={field.value}
                       onChangeText={field.onChange}
                       onBlur={field.onBlur}
                       editable={!isSubmitting || !isRegistering}
-<<<<<<< HEAD
                       accessibilityLabel={t("register.password")}
                       accessibilityHint={t("register.passwordHint")}
-=======
-                      accessibilityLabel="Şifre"
-                      accessibilityHint="Şifrenizi girin"
->>>>>>> 2742bcc (ilk yükleme)
                       autoComplete="new-password"
                       textContentType="newPassword"
                       autoCapitalize="none"
@@ -414,7 +327,6 @@ export default function Register() {
                       />
                     </TouchableOpacity>
                   </View>
-<<<<<<< HEAD
                   <View style={{ marginBottom: hp(1) }}>
                     {passwordStrength.score > 0 && (
                       <View style={{ flexDirection: "row", gap: wp(1) }}>
@@ -459,9 +371,6 @@ export default function Register() {
                       </View>
                     )}
                   </View>
-=======
-
->>>>>>> 2742bcc (ilk yükleme)
                   {errors.password && (
                     <Text
                       style={{
@@ -478,91 +387,7 @@ export default function Register() {
             />
           </View>
 
-<<<<<<< HEAD
-=======
-          {/* Confirm Password */}
-          <View style={{ marginBottom: hp(2) }}>
-            <Text
-              style={{
-                marginBottom: hp(1),
-                fontSize: dimensions.fontMD,
-                fontWeight: "medium",
-                color: theme.inputtitle,
-              }}
-            >
-              Şifre Onayı
-            </Text>
-            <Controller
-              control={control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <View>
-                  <View style={{ position: "relative" }}>
-                    <TextInput
-                      style={{
-                        borderRadius: dimensions.borderRadiusLG,
-                        borderWidth: 1,
-                        padding: wp(4.5),
-                        backgroundColor: theme.input,
-                        borderColor: errors.confirmPassword
-                          ? theme.error
-                          : theme.border,
-                      }}
-                      placeholder="Şifrenizi tekrar girin"
-                      placeholderTextColor={theme.inputplaceholder}
-                      secureTextEntry={!showConfirmPassword}
-                      value={field.value}
-                      onChangeText={field.onChange}
-                      onBlur={field.onBlur}
-                      editable={!isSubmitting || !isRegistering}
-                      accessibilityLabel="Şifre Onayı"
-                      accessibilityHint="Şifrenizi tekrar girin"
-                      autoComplete="new-password"
-                      textContentType="newPassword"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                    />
-                    <TouchableOpacity
-                      style={{
-                        position: "absolute",
-                        right: wp(4.5),
-                        top: wp(4.5),
-                      }}
-                      onPress={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      disabled={isSubmitting || isRegistering}
-                      accessibilityLabel={
-                        showConfirmPassword
-                          ? "Şifre onayını gizle"
-                          : "Şifre onayını göster"
-                      }
-                      accessibilityRole="button"
-                    >
-                      <Feather
-                        name={showConfirmPassword ? "eye-off" : "eye"}
-                        size={dimensions.iconMD}
-                        color={theme.passwordicon}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                  {errors.confirmPassword && (
-                    <Text
-                      style={{
-                        marginLeft: 5,
-                        fontSize: dimensions.fontXS,
-                        color: theme.error,
-                      }}
-                    >
-                      {errors.confirmPassword.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
-          </View>
 
->>>>>>> 2742bcc (ilk yükleme)
           {/* Terms and Privacy Notice */}
           <View style={{ marginBottom: hp(2), paddingHorizontal: wp(2) }}>
             <Text
@@ -573,7 +398,6 @@ export default function Register() {
                 textAlign: "center",
               }}
             >
-<<<<<<< HEAD
               {t("register.termsAndPrivacyNotice.1")} {" "}
               <Link
                 href="/(screens)/(stack)/terms-of-service"
@@ -591,21 +415,6 @@ export default function Register() {
                 <Text>{t("register.termsAndPrivacyNotice.4")}</Text>
               </Link>{" "}
               {t("register.termsAndPrivacyNotice.5")}
-=======
-              Kayıt olarak{" "}
-              <Text
-                style={{ textDecorationLine: "underline", color: theme.link }}
-              >
-                Kullanım Şartları
-              </Text>{" "}
-              ve{" "}
-              <Text
-                style={{ textDecorationLine: "underline", color: theme.link }}
-              >
-                Gizlilik Politikası
-              </Text>
-              &apos;nı kabul etmiş olursunuz.
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
           </View>
 
@@ -624,20 +433,12 @@ export default function Register() {
               resetRegister
             )}
             style={{
-<<<<<<< HEAD
-=======
-            
->>>>>>> 2742bcc (ilk yükleme)
               borderRadius: dimensions.borderRadiusXL,
               paddingVertical: wp(4.5),
               backgroundColor: theme.buttonsecondary,
             }}
             activeOpacity={0.8}
-<<<<<<< HEAD
             accessibilityLabel={t("register.registerButton")}
-=======
-            accessibilityLabel="Kayıt ol"
->>>>>>> 2742bcc (ilk yükleme)
             accessibilityRole="button"
             accessibilityState={{ disabled: isSubmitting || isRegistering }}
           >
@@ -657,7 +458,6 @@ export default function Register() {
               }}
             >
               {isSubmitting || isRegistering
-<<<<<<< HEAD
                 ? t("register.registerButtonLoading")
                 : t("register.registerButton")}
             </Text>
@@ -703,14 +503,6 @@ export default function Register() {
             />
           </View>
           <GoogleSignIn text={t("register.googleRegister")} />
-=======
-                ? "Kayıt Oluşturuluyor..."
-                : "Kayıt Ol"}
-            </Text>
-          </TouchableOpacity>
-          <GoogleSignIn text="Google ile Kayıt Ol" />
-        </View>
->>>>>>> 2742bcc (ilk yükleme)
 
         {/* Login Link */}
         <View
@@ -728,19 +520,11 @@ export default function Register() {
               color: theme.textQuaternary,
             }}
           >
-<<<<<<< HEAD
             {t("login.link")} {" "}
-=======
-            Zaten hesabınız var mı?{" "}
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
           <TouchableOpacity
             onPress={() => router.replace("/(screens)/(auth)/login" as never)}
             activeOpacity={1}
-<<<<<<< HEAD
-=======
-        
->>>>>>> 2742bcc (ilk yükleme)
           >
             <Text
               style={{
@@ -750,11 +534,7 @@ export default function Register() {
                 color: theme.link,
               }}
             >
-<<<<<<< HEAD
               {t("login.button")}
-=======
-              Giriş Yap
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
           </TouchableOpacity>
         </View>

@@ -1,15 +1,9 @@
-<<<<<<< HEAD
 import React from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
 import { formatTotal } from "../../utils/total";
-=======
-import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
-import { formatTotal } from "@/src/utils/total";
-import { Text, View } from "react-native";
->>>>>>> 2742bcc (ilk yükleme)
+
 interface SummaryCardProps {
   title: string;
   value: number;

@@ -1,17 +1,15 @@
-import { showErrorToast, showSuccessToast } from "@/src/constanst/toast";
-import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
-import { supabase } from "@/src/lib/supabase";
 import { useChat } from "@ai-sdk/react";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
 import { fetch as expoFetch } from "expo/fetch";
 import { useEffect, useRef, useState } from "react";
-<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
+import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
+import { useTheme } from "../../../src/contexts/theme";
+import { useResponsive } from "../../../src/hooks/useRespons";
+import { supabase } from "../../../src/lib/supabase";
+
 import {
   ActivityIndicator,
   Alert,
@@ -32,10 +30,7 @@ export default function Aichat() {
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   const { messages, error, status, stop, append } = useChat({
     fetch: expoFetch as unknown as typeof globalThis.fetch,
@@ -46,11 +41,7 @@ export default function Aichat() {
     try {
       const { status } = await ImagePicker.requestCameraPermissionsAsync();
       if (status !== "granted") {
-<<<<<<< HEAD
         Alert.alert(t("aiChat.camera.permissionRequired"));
-=======
-        alert("Kamera izni gerekli!");
->>>>>>> 2742bcc (ilk yükleme)
         return;
       }
       const result = await ImagePicker.launchCameraAsync({
@@ -64,21 +55,13 @@ export default function Aichat() {
         await append({
           role: "user",
           content: [
-<<<<<<< HEAD
             { type: "text", text: t("aiChat.message.photoSent") },
-=======
-            { type: "text", text: "Fiş fotoğrafı gönderildi." },
->>>>>>> 2742bcc (ilk yükleme)
             { type: "file", url: dataUrl, mediaType: "image/jpeg" },
           ],
         } as any);
       }
     } catch {
-<<<<<<< HEAD
       Alert.alert(t("aiChat.camera.errorOpening"));
-=======
-      alert("Kamera açılırken bir hata oluştu.");
->>>>>>> 2742bcc (ilk yükleme)
     }
   };
 
@@ -87,11 +70,7 @@ export default function Aichat() {
       const { status } =
         await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-<<<<<<< HEAD
         Alert.alert(t("aiChat.gallery.permissionRequired"));
-=======
-        Alert.alert("Galeri izni gerekli!");
->>>>>>> 2742bcc (ilk yükleme)
         return;
       }
       const result = await ImagePicker.launchImageLibraryAsync({
@@ -105,21 +84,13 @@ export default function Aichat() {
         await append({
           role: "user",
           content: [
-<<<<<<< HEAD
             { type: "text", text: t("aiChat.message.photoSent") },
-=======
-            { type: "text", text: "Fiş fotoğrafı gönderildi." },
->>>>>>> 2742bcc (ilk yükleme)
             { type: "file", url: dataUrl, mediaType: "image/jpeg" },
           ],
         } as any);
       }
     } catch {
-<<<<<<< HEAD
       Alert.alert(t("aiChat.gallery.errorOpening"));
-=======
-      alert("Galeri açılırken bir hata oluştu.");
->>>>>>> 2742bcc (ilk yükleme)
     }
   };
 
@@ -160,11 +131,7 @@ export default function Aichat() {
         .trim()
         .replace(/[^\w\sçğıöşüÇĞIİÖŞÜ]/g, "")
         .trim();
-<<<<<<< HEAD
       if (!name) name = t("aiChat.defaultItemName");
-=======
-      if (!name) name = "Ürün";
->>>>>>> 2742bcc (ilk yükleme)
       items.push({
         name,
         price: isFinite(price) ? price : 0,
@@ -336,11 +303,7 @@ export default function Aichat() {
   const handleConfirmSave = async (assistantMessageText: string) => {
     try {
       if (!assistantMessageText || typeof assistantMessageText !== "string") {
-<<<<<<< HEAD
         Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.alert.invalidMessage"));
-=======
-        Alert.alert("Hata", "Geçersiz mesaj metni");
->>>>>>> 2742bcc (ilk yükleme)
         return;
       }
 
@@ -357,11 +320,7 @@ export default function Aichat() {
       const { data: categories } = await getUserexpenseCategories();
 
       if (!categories || !Array.isArray(categories)) {
-<<<<<<< HEAD
         Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.alert.categoriesLoadError"));
-=======
-        Alert.alert("Hata", "Kategoriler yüklenemedi");
->>>>>>> 2742bcc (ilk yükleme)
         return;
       }
 
@@ -415,11 +374,7 @@ export default function Aichat() {
       }
 
       if (!selectedCategory) {
-<<<<<<< HEAD
         showErrorToast(t("aiChat.alert.errorTitle"), t("aiChat.alert.categoryNotFound"));
-=======
-        showErrorToast("Kategori bulunamadı");
->>>>>>> 2742bcc (ilk yükleme)
         return;
       }
 
@@ -432,11 +387,7 @@ export default function Aichat() {
         type: "gider",
         date: date || now.toISOString().split("T")[0],
         time,
-<<<<<<< HEAD
         description: title || t("aiChat.defaultDescription"),
-=======
-        description: title || "AI fiş analizi",
->>>>>>> 2742bcc (ilk yükleme)
       };
 
       const transactionData = await transactionsApi.addTransaction(payload);
@@ -445,22 +396,14 @@ export default function Aichat() {
       if (transactionId && items && Array.isArray(items) && items.length > 0) {
         const rows = items.map((it) => ({
           transaction_id: transactionId,
-<<<<<<< HEAD
           item_name: it?.name || t("aiChat.defaultItemName"),
-=======
-          item_name: it?.name || "Ürün",
->>>>>>> 2742bcc (ilk yükleme)
           unit_price: isFinite(it?.price) ? it.price : 0,
           quantity: isFinite(it?.quantity) ? it.quantity : 1,
         }));
         await supabase.from("expense_items").insert(rows);
       }
 
-<<<<<<< HEAD
       showSuccessToast(t("aiChat.toast.saveSuccessTitle"), t("aiChat.toast.saveSuccessMessage"));
-=======
-      showSuccessToast("Kaydedildi", "Analiz edilen bilgiler başarıyla kaydedildi.");
->>>>>>> 2742bcc (ilk yükleme)
       
       // Tüm transaction ile ilgili query'leri invalidate et
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
@@ -476,14 +419,10 @@ export default function Aichat() {
       
       
     } catch (e: any) {
-<<<<<<< HEAD
       showErrorToast(
         t("aiChat.toast.saveErrorTitle"),
         e?.message || t("aiChat.toast.saveErrorMessage")
       );
-=======
-      showErrorToast("Hata", e?.message || "Kayıt sırasında hata oluştu");
->>>>>>> 2742bcc (ilk yükleme)
     } finally {
       setIsSaving(false);
     }
@@ -500,11 +439,7 @@ export default function Aichat() {
         }}
       >
         <Text style={{ color: "#EF4444", fontSize: 16, fontWeight: "600" }}>
-<<<<<<< HEAD
           {t("aiChat.alert.errorTitle")}: {error?.message || t("aiChat.error.unknown")}
-=======
-          Hata: {error?.message || "Bilinmeyen hata"}
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
       </SafeAreaView>
     );
@@ -533,11 +468,7 @@ export default function Aichat() {
               color: theme.textPrimary,
             }}
           >
-<<<<<<< HEAD
             {t("aiChat.header.title")}
-=======
-            Fiş Analizi
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
           <Text
             style={{
@@ -546,11 +477,7 @@ export default function Aichat() {
               marginTop: dimensions.xs,
             }}
           >
-<<<<<<< HEAD
             {t("aiChat.header.subtitle")}
-=======
-            Fotoğraf çekin veya galeriden seçin
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
         </View>
 
@@ -596,11 +523,7 @@ export default function Aichat() {
                     fontWeight: "600",
                   }}
                 >
-<<<<<<< HEAD
                   {t("aiChat.emptyState.title")}
-=======
-                  Fiş Fotoğrafı Gönderin
->>>>>>> 2742bcc (ilk yükleme)
                 </Text>
                 <Text
                   style={{
@@ -611,12 +534,8 @@ export default function Aichat() {
                     lineHeight: dimensions.lg,
                   }}
                 >
-<<<<<<< HEAD
                   {t("aiChat.emptyState.description")}
-=======
-                  AI asistanınız fişinizi analiz edecek ve harcamalarınızı
-                  otomatik olarak kaydedecek
->>>>>>> 2742bcc (ilk yükleme)
+
                 </Text>
               </View>
             </View>
@@ -657,13 +576,9 @@ export default function Aichat() {
                       letterSpacing: 0.5,
                     }}
                   >
-<<<<<<< HEAD
                     {m?.role === "user"
                       ? t("aiChat.message.userLabel")
                       : t("aiChat.message.assistantLabel")}
-=======
-                    {m?.role === "user" ? "📸 Gönderilen Fiş" : "🤖 AI Analizi"}
->>>>>>> 2742bcc (ilk yükleme)
                   </Text>
 
                   {typeof m.content === "string" ? (
@@ -770,11 +685,7 @@ export default function Aichat() {
                               fontSize: dimensions.fontMD,
                             }}
                           >
-<<<<<<< HEAD
                             {isSaving ? t("aiChat.save.loading") : t("aiChat.save.button")}
-=======
-                            {isSaving ? "Kaydediliyor..." : "Kaydet"}
->>>>>>> 2742bcc (ilk yükleme)
                           </Text>
                         </TouchableOpacity>
                       </View>
@@ -803,11 +714,7 @@ export default function Aichat() {
                   fontWeight: "500",
                 }}
               >
-<<<<<<< HEAD
                 {t("aiChat.processing")}
-=======
-                Fiş analiz ediliyor...
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </View>
           )}
@@ -861,17 +768,10 @@ export default function Aichat() {
                 style={{
                   color: theme.text,
                   fontWeight: "700",
-<<<<<<< HEAD
                   fontSize: dimensions.fontSM,
                 }}
               >
                 {t("aiChat.button.capture")}
-=======
-                  fontSize: dimensions.fontMD,
-                }}
-              >
-                Fotoğraf Çek
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
 
@@ -901,17 +801,10 @@ export default function Aichat() {
                 style={{
                   color: theme.text,
                   fontWeight: "700",
-<<<<<<< HEAD
                   fontSize: dimensions.fontSM,
                 }}
               >
                 {t("aiChat.button.gallery")}
-=======
-                  fontSize: dimensions.fontMD,
-                }}
-              >
-                Galeriden Seç
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
           </View>
@@ -943,11 +836,7 @@ export default function Aichat() {
                   fontSize: dimensions.fontMD,
                 }}
               >
-<<<<<<< HEAD
                 {t("aiChat.button.stop")}
-=======
-                Durdur
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
           )}

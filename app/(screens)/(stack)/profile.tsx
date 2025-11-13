@@ -4,10 +4,7 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-<<<<<<< HEAD
   FlatList,
-=======
->>>>>>> 2742bcc (ilk yükleme)
   Image,
   Modal,
   ScrollView,
@@ -22,20 +19,8 @@ import { ProfileCard } from "../../../src/components/ui/profile-card";
 import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
 import { useTheme } from "../../../src/contexts/theme";
 import { hp, useResponsive, wp } from "../../../src/hooks/useRespons";
-import {
-  getProfil,
-<<<<<<< HEAD
-  updateAvatar,
-=======
->>>>>>> 2742bcc (ilk yükleme)
-  updatecurrency,
-  updatename,
-  updateusername,
-} from "../../../src/lib/profil";
-<<<<<<< HEAD
+import { getProfil, updateAvatar, updatecurrency, updatename, updateusername } from "../../../src/lib/profil";
 import { avatar } from "../../../src/utils/avatar";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
 // Form types
 interface NameFormData {
@@ -52,36 +37,20 @@ export default function ProfilePage() {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState<string | null>(null);
 
-<<<<<<< HEAD
-=======
-  // Form controllers
->>>>>>> 2742bcc (ilk yükleme)
   const nameForm = useForm<NameFormData>({
     defaultValues: {
       name: "",
     },
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 2742bcc (ilk yükleme)
   const usernameForm = useForm<UsernameFormData>({
     defaultValues: {
       username: "",
     },
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 2742bcc (ilk yükleme)
   const { data: profileData } = useQuery({
     queryKey: ["profile"],
     queryFn: () => getProfil(),
   });
-<<<<<<< HEAD
-=======
-
->>>>>>> 2742bcc (ilk yükleme)
   const createdAt = new Date(profileData?.data?.created_at).toLocaleDateString(
     "tr-TR",
     { day: "2-digit", month: "long", year: "numeric" }
@@ -101,21 +70,11 @@ export default function ProfilePage() {
       showSuccessToast("Başarılı", "Para birimi güncellendi");
       setShowModal("currency");
     },
-<<<<<<< HEAD
     onError: async () => {
       showErrorToast("Hata", "Para birimi güncellenemedi");
       setShowModal("currency");
     },
   });
-=======
-    onError: async (error: any) => {
-      showErrorToast("Hata", "Para birimi güncellenemedi");
-      console.error("error", error);
-      setShowModal("currency");
-    },
-  });
-
->>>>>>> 2742bcc (ilk yükleme)
   const mutationname = useMutation({
     mutationFn: async (name: string) => {
       const data = await updatename(name);
@@ -130,7 +89,6 @@ export default function ProfilePage() {
       setShowModal(null);
       nameForm.reset();
     },
-<<<<<<< HEAD
     onError: async () => {
       showErrorToast("Hata", "Ad güncellenemedi");
     },
@@ -153,14 +111,6 @@ export default function ProfilePage() {
       showErrorToast("Hata", error.message);
     },
   });
-=======
-    onError: async (error: any) => {
-      showErrorToast("Hata", "Ad güncellenemedi");
-      console.error("error", error);
-    },
-  });
-
->>>>>>> 2742bcc (ilk yükleme)
   const mutationusername = useMutation({
     mutationFn: async (username: string) => {
       const data = await updateusername(username);
@@ -175,14 +125,8 @@ export default function ProfilePage() {
       setShowModal(null);
       usernameForm.reset();
     },
-<<<<<<< HEAD
     onError: async () => {
       showErrorToast("Hata", "Kullanıcı adı güncellenemedi");
-=======
-    onError: async (error: any) => {
-      showErrorToast("Hata", "Kullanıcı adı güncellenemedi");
-      console.error("error", error);
->>>>>>> 2742bcc (ilk yükleme)
     },
   });
 
@@ -407,7 +351,6 @@ export default function ProfilePage() {
         return null;
     }
   };
-<<<<<<< HEAD
   const getAvatarSource = () => {
     if (!profileData?.data?.avatar_url) return null;
     
@@ -522,8 +465,6 @@ export default function ProfilePage() {
       </Modal>
     );
   };
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   return (
     <SafeAreaView>
@@ -555,7 +496,6 @@ export default function ProfilePage() {
         </TouchableOpacity>
 
         <View style={{ alignItems: "center", paddingVertical: dimensions.md }}>
-<<<<<<< HEAD
           <TouchableOpacity
             onPress={() => {
               setShowModal("avatar");
@@ -581,29 +521,20 @@ export default function ProfilePage() {
               color={theme.text}
             />
           </TouchableOpacity>
-=======
->>>>>>> 2742bcc (ilk yükleme)
           <View
             style={{
               width: wp(34),
               height: hp(17),
               borderRadius: 99,
               borderWidth: 4,
-<<<<<<< HEAD
               borderColor: theme.border,
               justifyContent: "center",
               alignItems: "center",
               overflow: "hidden",
-=======
-              borderColor: "#FFF",
-              justifyContent: "center",
-              alignItems: "center",
->>>>>>> 2742bcc (ilk yükleme)
             }}
           >
             {profileData?.data?.avatar_url ? (
               <Image
-<<<<<<< HEAD
                 source={getAvatarSource()}
                 style={{
                   width: "100%",
@@ -613,11 +544,6 @@ export default function ProfilePage() {
                 }}
                 resizeMode="contain"
               />
-=======
-                source={{ uri: profileData?.data?.avatar_url }}
-                style={{ width: wp(34), height: hp(17) , borderRadius: 99 }}
-              /> 
->>>>>>> 2742bcc (ilk yükleme)
             ) : (
               <Text
                 style={{
@@ -703,10 +629,7 @@ export default function ProfilePage() {
           {modalname("currency")}
           {modalname("name")}
           {modalname("username")}
-<<<<<<< HEAD
           {modalavatar()}
-=======
->>>>>>> 2742bcc (ilk yükleme)
           <ProfileCard
             icon="calendar"
             label="Oluşturulma Tarihi"

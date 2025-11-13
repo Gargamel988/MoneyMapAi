@@ -1,21 +1,15 @@
-import { useTheme } from "@/src/contexts/theme";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
-<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import { Linking, Text, TouchableOpacity, View } from "react-native";
+import { useTheme } from "../../../src/contexts/theme";
 import { supabase } from "../../../src/lib/supabase";
 
 export default function Emailcontrol() {
   const [linkOpened, setLinkOpened] = useState(false);
   const { theme } = useTheme();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   useEffect(() => {
     let isMounted = true;
@@ -28,15 +22,8 @@ export default function Emailcontrol() {
       try {
         const { params } = QueryParams.getQueryParams(url);
 
-<<<<<<< HEAD
         const code = params["code"];
 
-=======
-        // PKCE flow için code parametresi
-        const code = params["code"];
-
-        // Eski flow için token parametreleri
->>>>>>> 2742bcc (ilk yükleme)
         const access_token = params["access_token"];
         const refresh_token = params["refresh_token"];
 
@@ -67,12 +54,7 @@ export default function Emailcontrol() {
             setLinkOpened(true);
           } 
         } 
-<<<<<<< HEAD
       } catch  {
-=======
-      } catch (error) {
-        console.error(error);
->>>>>>> 2742bcc (ilk yükleme)
       }
     };
 
@@ -133,11 +115,7 @@ export default function Emailcontrol() {
               marginBottom: 20,
             }}
           >
-<<<<<<< HEAD
             {t("emailControl.title")}
-=======
-            E-postanı Kontrol Et
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
           <Text
             style={{
@@ -148,12 +126,7 @@ export default function Emailcontrol() {
               lineHeight: 24,
             }}
           >
-<<<<<<< HEAD
             {t("emailControl.description")}
-=======
-            Doğrulama bağlantısını e-posta adresine gönderdik. Lütfen gelen
-            kutunu (ve spam klasörünü) kontrol et.
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
 
           <TouchableOpacity
@@ -176,11 +149,7 @@ export default function Emailcontrol() {
                 textAlign: "center",
               }}
             >
-<<<<<<< HEAD
               {t("emailControl.backButton")}
-=======
-              Geri Dön
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
           </TouchableOpacity>
         </View>
@@ -202,11 +171,7 @@ export default function Emailcontrol() {
               lineHeight: 22,
             }}
           >
-<<<<<<< HEAD
             {t("emailControl.successMessage")}
-=======
-            Doğrulama bağlantısı açıldı. Giriş yapabilirsiniz.
->>>>>>> 2742bcc (ilk yükleme)
           </Text>
 
           <TouchableOpacity
@@ -234,11 +199,7 @@ export default function Emailcontrol() {
                 textAlign: "center",
               }}
             >
-<<<<<<< HEAD
               {t("emailControl.goToHomeButton")}
-=======
-              Ana Sayfaya Git
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
           </TouchableOpacity>
         </View>

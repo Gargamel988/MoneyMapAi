@@ -1,10 +1,8 @@
 import { Feather } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 import { router } from "expo-router";
-<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
+
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../../../src/contexts/theme";
@@ -18,10 +16,7 @@ const FinanceAppScreen = () => {
   });
   const { hp, wp, dimensions } = useResponsive();
   const { theme } = useTheme();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   if (!fontsLoaded || error) {
     return null;
@@ -39,11 +34,7 @@ const FinanceAppScreen = () => {
     },
     {
       id: 3,
-<<<<<<< HEAD
-      title: "Tercihinize göre: Elle ekleme seçeneğiyle tam kontrol sizde",
-=======
       title: "Tercihinize göre: Elle ekleme seçeneğiyle tam kontrol sizde.",
->>>>>>> 2742bcc (ilk yükleme)
     },
     {
       id: 4,
@@ -58,10 +49,7 @@ const FinanceAppScreen = () => {
         <View
           style={{
             padding: wp(4),
-<<<<<<< HEAD
             marginTop: hp(3),
-=======
->>>>>>> 2742bcc (ilk yükleme)
             borderRadius: dimensions.borderRadiusXL + 5,
             backgroundColor: theme.imagecard,
             shadowColor: "black",
@@ -114,19 +102,11 @@ const FinanceAppScreen = () => {
               fontFamily: "display",
             }}
           >
-<<<<<<< HEAD
             {t("welcome.title")}
           </Text>
         </View>
 
         <View style={{ gap: hp(2), flex: 1, marginBottom: hp(20) }}>
-=======
-            uygulamamıza hoşgeldiniz!
-          </Text>
-        </View>
-
-        <View style={{ gap: hp(2) ,flex:1}}>
->>>>>>> 2742bcc (ilk yükleme)
           {Properties.map((property) => (
             <View
               key={property.id}
@@ -145,11 +125,7 @@ const FinanceAppScreen = () => {
                   textAlign: "left",
                 }}
               >
-<<<<<<< HEAD
                 {t(`welcome.property.${property.id}`)}
-=======
-                {property.title}
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </View>
           ))}
@@ -181,11 +157,7 @@ const FinanceAppScreen = () => {
                 fontWeight: "bold",
               }}
             >
-<<<<<<< HEAD
               {t("start.button")}
-=======
-              Başla
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
           </TouchableOpacity>
 
@@ -203,17 +175,10 @@ const FinanceAppScreen = () => {
                 marginRight: wp(1),
               }}
             >
-<<<<<<< HEAD
               {t("login.link")}
             </Text>
             <TouchableOpacity
               onPress={() => router.push("/(screens)/(auth)/login")}
-=======
-              Zaten hesabın var mı?{" "}
-            </Text>
-            <TouchableOpacity
-              onPress={() => router.push("/(screens)/(auth)/login" as never)}
->>>>>>> 2742bcc (ilk yükleme)
               activeOpacity={0.8}
             >
               <Text
@@ -224,7 +189,6 @@ const FinanceAppScreen = () => {
                   color: theme.link,
                 }}
               >
-<<<<<<< HEAD
                 {t("login.button")}
               </Text>
             </TouchableOpacity>
@@ -241,9 +205,6 @@ const FinanceAppScreen = () => {
                 }}
               >
                 {t("login.button")}
-=======
-                Giriş Yap
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
           </View>

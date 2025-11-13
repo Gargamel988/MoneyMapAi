@@ -77,10 +77,7 @@ export const useAuthsignupMutation = () => {
   } = useMutation({
     mutationFn: (data: SignInWithEmailProps) => signInWithEmail(data),
     onSuccess: (authData: any) => {
-<<<<<<< HEAD
-=======
       // ✅ signInWithEmail de null dönebilir
->>>>>>> 2742bcc (ilk yükleme)
       if (!authData) {
         resetLogin();
         return;

@@ -1,12 +1,8 @@
-
-import { Transaction, TransactionList } from '@/src/types/transactıonstype';
-<<<<<<< HEAD
 import { useTranslation } from 'react-i18next';
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import { Text, View } from 'react-native';
 import { useTheme } from '../../contexts/theme';
 import { useResponsive } from '../../hooks/useRespons';
+import { Transaction, TransactionList } from '../../types/transactıonstype';
 import { formatWeekRange } from '../../utils/date';
 import { WeeklyCard } from '../ui/weekly-card';
 import InfoCard from '../ui/ınfo-card';
@@ -63,10 +59,7 @@ function calculatePercentageChange(current: number, previous: number): { percent
 export default function WeeklySummary({ data, isLoading, error, currency }: WeeklySummaryProps) {
   const { theme } = useTheme();
   const { hp, wp } = useResponsive();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
   const sevenDaysAgoData = Array.isArray(data) ? data : [];
 
   // Bu haftanın verileri
@@ -138,11 +131,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
           letterSpacing: 0.3,
         }}
       >
-<<<<<<< HEAD
         {t('weeklySummary.title')}
-=======
-        📊 Haftalık Özet
->>>>>>> 2742bcc (ilk yükleme)
       </Text>
       <Text
         style={{
@@ -163,12 +152,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
           textAlign: "center",
         }}
       >
-<<<<<<< HEAD
         {t('weeklySummary.description')}
-=======
-        Bu hafta finansal performansınızı inceleyin. Gelir, gider ve
-        bakiyenizin geçen haftaya göre değişimini takip edin.
->>>>>>> 2742bcc (ilk yükleme)
       </Text>
     </View>
 
@@ -181,11 +165,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
     >
       <WeeklyCard
         id="income"
-<<<<<<< HEAD
         name={t('weeklySummary.cards.income')}
-=======
-        name="Haftalık Gelir"
->>>>>>> 2742bcc (ilk yükleme)
         value={totalincome}
         currency={currency}
         change={incomeChange}
@@ -194,11 +174,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
       />
       <WeeklyCard
         id="expense"
-<<<<<<< HEAD
         name={t('weeklySummary.cards.expense')}
-=======
-        name="Haftalık Gider"
->>>>>>> 2742bcc (ilk yükleme)
         value={totalexpense}
         currency={currency}
         change={expenseChange}
@@ -207,11 +183,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
       />
       <WeeklyCard
         id="balance"
-<<<<<<< HEAD
         name={t('weeklySummary.cards.balance')}
-=======
-        name="Haftalık Bakiye"
->>>>>>> 2742bcc (ilk yükleme)
         value={totalbalance}
         currency={currency}
         change={balanceChange}
@@ -222,12 +194,7 @@ export default function WeeklySummary({ data, isLoading, error, currency }: Week
 
     {/* Alt Bilgi Notu */}
   <InfoCard>
-<<<<<<< HEAD
     {t('weeklySummary.tip')}
-=======
-    💡 İpucu: Yüzdelik değişimler geçen haftaya göre hesaplanmıştır.
-    Finansal hedeflerinize ulaşmak için düzenli takip yapmayı unutmayın!
->>>>>>> 2742bcc (ilk yükleme)
   </InfoCard>
   </View>
   );

@@ -1,11 +1,7 @@
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-<<<<<<< HEAD
 import React, { useState } from "react";
-=======
-import { useState } from "react";
->>>>>>> 2742bcc (ilk yükleme)
 import { Controller, useForm } from "react-hook-form";
 import {
   Pressable,
@@ -16,7 +12,6 @@ import {
   View
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-<<<<<<< HEAD
 import { showErrorToast, showSuccessToast } from "../../constanst/toast";
 import { useTheme } from "../../contexts/theme";
 import { useAuth } from "../../hooks/useAuth";
@@ -29,23 +24,6 @@ import { Category } from "../../types/transactıonstype";
 import { formatDate, formatTime } from "../../utils/date";
 import { formatTotal } from "../../utils/total";
 import ModalCategory from "../categories/modal-category";
-=======
-import ModalCategory from "../../../src/components/categories/modal-category";
-import { useAuth } from "../../../src/hooks/useAuth";
-import { getUserincomeCategories } from "../../../src/lib/category";
-import { getCurrency } from "../../../src/lib/profil";
-import { getUser, transactionsApi } from "../../../src/lib/transactions";
-import {
-  IncomeFormData,
-  incomeSchema,
-} from "../../../src/schemas/transactionSchemas";
-import { formatDate, formatTime } from "../../../src/utils/date";
-import { formatTotal } from "../../../src/utils/total";
-import { showErrorToast, showSuccessToast } from "../../constanst/toast";
-import { useTheme } from "../../contexts/theme";
-import { hp, useResponsive, wp } from "../../hooks/useRespons";
-import { Category } from "../../types/transactıonstype";
->>>>>>> 2742bcc (ilk yükleme)
 
 const incomeApi = {
   createIncome: async (incomeData: IncomeFormData) => {

@@ -1,10 +1,8 @@
 import React, { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Animated, Easing, Text, TouchableOpacity, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
-<<<<<<< HEAD
-import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
+
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
 import { Transaction, TransactionList } from "../../types/transactıonstype";
@@ -12,21 +10,14 @@ import { formatTotal } from "../../utils/total";
 import { NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";
 
-<<<<<<< HEAD
 type PieChartTabs = "daily" | "weekly" | "monthly" | "yearly";
 
-=======
->>>>>>> 2742bcc (ilk yükleme)
 type PieChartComponentProps = {
   data: TransactionList;
   isLoading: boolean;
   error: Error;
   currency: string;
-<<<<<<< HEAD
   tabs: PieChartTabs;
-=======
-  tabs: 'Günlük' | 'Haftalık' | 'Aylık' | 'Yıllık';
->>>>>>> 2742bcc (ilk yükleme)
 };
 
 interface PieChartData {
@@ -47,10 +38,8 @@ export default function PieChartComponent({
   const { hp, wp } = useResponsive();
   const [showCategories, setShowCategories] = useState(false);
   const { theme } = useTheme();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
+
   const translateY = useRef(new Animated.Value(-200)).current;
 
   const chartConfig = {
@@ -67,11 +56,7 @@ export default function PieChartComponent({
     if (!data) {
       return [
         {
-<<<<<<< HEAD
           name: t("pieChart.noDataPlaceholder"),
-=======
-          name: "Veri Yok",
->>>>>>> 2742bcc (ilk yükleme)
           amount: 1,
           color: theme.textSecondary,
           legendFontColor: theme.textPrimary,
@@ -81,20 +66,15 @@ export default function PieChartComponent({
     }
 
     const dataArray: TransactionList = Array.isArray(data) ? data : [];
-<<<<<<< HEAD
     const rawArray = dataArray.filter(
       (transaction: Transaction) => transaction.type === "gider"
     );
-=======
-const rawArray = dataArray.filter((transaction: Transaction) => transaction.type === "gider");
->>>>>>> 2742bcc (ilk yükleme)
 
     const categoryTotals: {
       [key: string]: { amount: number; color: string; name: string };
     } = {};
 
     rawArray.forEach((transaction: Transaction) => {
-<<<<<<< HEAD
       if (!transaction?.categories) {
         console.warn("Transaction categories is undefined:", {
           id: transaction?.id,
@@ -105,19 +85,6 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
       }
 
       const categoryName = transaction.categories?.name || t("pieChart.unknownCategory");
-=======
-      // Categories kontrolü - güvenli erişim
-      if (!transaction?.categories) {
-        console.warn('Transaction categories is undefined:', {
-          id: transaction?.id,
-          category_id: transaction?.category_id,
-          description: transaction?.description
-        });
-        return;
-      }
-      
-      const categoryName = transaction.categories?.name || "Bilinmeyen";
->>>>>>> 2742bcc (ilk yükleme)
       const amount = Number(transaction?.total_amount) || 0;
       const color = transaction.categories?.color || "#9E9E9E";
 
@@ -142,15 +109,12 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
     (acc, curr) => acc + (Number(curr.amount) || 0),
     0
   );
-<<<<<<< HEAD
   const formattedTotal = formatTotal(total, currency);
   const periodLabel = t(`pieChart.period.${tabs}`);
   const headerText = t("pieChart.header", { period: periodLabel });
   const subtitleText = t("pieChart.subtitle", { period: periodLabel });
   const totalLabel = t("pieChart.total", { amount: formattedTotal });
 
-=======
->>>>>>> 2742bcc (ilk yükleme)
   const toggleCategories = () => {
     const next = !showCategories;
     setShowCategories(next);
@@ -163,31 +127,18 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
       if (!next) setShowCategories(false);
     });
   };
-<<<<<<< HEAD
   const percentage = (amount: number) => ((amount / total) * 100 || 0).toFixed(2);
 
   return (
     <View style={{ flex: 1, marginHorizontal: wp(4), marginTop: hp(2) }}>
       <View
         style={{
-=======
-  const percentage = (amount: number) => ((amount / total) * 100).toFixed(2);
-
-  return (
-    <View style={{ flex: 1, marginHorizontal: wp(4), marginTop: hp(2) }}>
-      {/* Başlık */}
-      <View style={{  
->>>>>>> 2742bcc (ilk yükleme)
           width: wp(90),
           alignItems: "center",
           gap: hp(0.3),
           marginBottom: hp(2),
-<<<<<<< HEAD
         }}
       >
-=======
-      }}>
->>>>>>> 2742bcc (ilk yükleme)
         <Text
           style={{
             fontSize: hp(2.4),
@@ -196,11 +147,7 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
             letterSpacing: 0.3,
           }}
         >
-<<<<<<< HEAD
           {headerText}
-=======
-{`📊 ${tabs} Gider Dağılımı`}
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
         <Text
           style={{
@@ -209,11 +156,7 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
             color: theme.text,
           }}
         >
-<<<<<<< HEAD
           {totalLabel}
-=======
-          {`Toplam Gider: ${formatTotal(total, currency)}`}
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
         <Text
           style={{
@@ -225,26 +168,16 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
             textAlign: "center",
           }}
         >
-<<<<<<< HEAD
           {subtitleText}
         </Text>
       </View>
 
-=======
-        {`${tabs} gider dağılımınızı inceleyin. Kategori bazında oranları
-          görmek için grafiğe dokunun.`}
-        </Text>
-      </View>
-
-      {/* PieChart */}
->>>>>>> 2742bcc (ilk yükleme)
       {isLoading ? (
         <GreenLoadingComponent />
       ) : error ? (
         <Text>{error.message}</Text>
       ) : chartData.length === 0 ? (
         <NoDataErrorComponent
-<<<<<<< HEAD
           title={t("pieChart.noDataTitle")}
           message={t("pieChart.noDataMessage")}
           icon="info"
@@ -272,36 +205,8 @@ const rawArray = dataArray.filter((transaction: Transaction) => transaction.type
         </TouchableOpacity>
       )}
 
-=======
-          title="Henüz işlem yapılmadı."
-          message="İşlemlerinizi ekleyebilirsiniz."
-          icon="info"
-        />
-      ) : (
-      <TouchableOpacity
-        activeOpacity={0.8}
-        onPress={toggleCategories}
-        style={{
-          paddingVertical: hp(2),
-          marginBottom: hp(2),
-        }}
-      >
-        <PieChart
-          data={chartData}
-          width={wp(80)}
-          height={hp(32)}
-          chartConfig={chartConfig}
-          accessor="amount"
-          backgroundColor="transparent"
-          paddingLeft={"0"}
-          center={[90, 0]}
-          hasLegend={false}
-        />
-      </TouchableOpacity>
-      )}
 
       {/* Kategori Detayları */}
->>>>>>> 2742bcc (ilk yükleme)
       {showCategories && (
         <Animated.ScrollView
           style={{

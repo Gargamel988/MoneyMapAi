@@ -18,31 +18,21 @@ import { useResponsive } from "../../../src/hooks/useRespons";
 import { exportToCSV } from "../../../src/lib/export/exportCSV";
 import { exportToExcel } from "../../../src/lib/export/exportExcel";
 import { exportToPDF } from "../../../src/lib/export/exportPDF";
-<<<<<<< HEAD
 import { getCurrency, getLanguage, updatecurrency } from "../../../src/lib/profil";
-=======
-import { getCurrency, updatecurrency } from "../../../src/lib/profil";
->>>>>>> 2742bcc (ilk yükleme)
 import { transactionsApi } from "../../../src/lib/transactions";
 // @ts-ignore
-import { useTheme } from "@/src/contexts/theme";
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import appConfig from "../../../app.json";
-<<<<<<< HEAD
 import ModalLanguage from "../../../src/components/setting/modal-language";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
+import { useTheme } from "../../../src/contexts/theme";
 export default function SettingsScreen() {
   const [showCurrencyModal, setShowCurrencyModal] = useState<boolean>(false);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
-<<<<<<< HEAD
 const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
@@ -58,17 +48,12 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
     queryFn: getCurrency,
   });
 
-<<<<<<< HEAD
   const {
     data: languageData,
-    isLoading: languageLoading,
-    error: languageError,
   } = useQuery({
     queryKey: ["language"],
     queryFn: getLanguage,
   });
-=======
->>>>>>> 2742bcc (ilk yükleme)
   const mutation = useMutation({
     mutationFn: async (currency: string) => {
       const data = await updatecurrency(currency);
@@ -80,17 +65,12 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currency"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
+
       showSuccessToast("Başarılı", "Para birimi güncellendi");
       setShowCurrencyModal(false);
     },
-<<<<<<< HEAD
     onError: async () => {
       showErrorToast("Hata", "Para birimi güncellenemedi");
-=======
-    onError: async (error: any) => {
-      showErrorToast("Hata", "Para birimi güncellenemedi");
-      console.error("error", error);
->>>>>>> 2742bcc (ilk yükleme)
       setShowCurrencyModal(false);
     },
   });
@@ -188,7 +168,6 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
                 : Currency
             })`}
           />
-<<<<<<< HEAD
           <ItemRow
             iconName="globe"
             title="dil"
@@ -203,8 +182,6 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
               language={languageData?.language}
             />
           )}
-=======
->>>>>>> 2742bcc (ilk yükleme)
 
           <ItemRow
             iconName="folder"
@@ -263,28 +240,17 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
           />
           <ItemRow
             iconName="file-text"
-<<<<<<< HEAD
             title="kullanım şartları"
             subtitle="kullanım şartlarını görüntüle"
             showArrow
             onPress={() => router.push("/(screens)/(stack)/terms-of-service")}
-=======
-            title="hizmet sözleşmesi"
-            subtitle="hizmet sözleşmesini görüntüle"
-            showArrow
-            onPress={() => Alert.alert("Bilgi", "Şartlar ve Koşullar yakında.")}
->>>>>>> 2742bcc (ilk yükleme)
           />
           <ItemRow
             iconName="shield"
             title="gizlilik politikası"
             subtitle="gizlilik politikasını görüntüle"
             showArrow
-<<<<<<< HEAD
             onPress={() => router.push("/(screens)/(stack)/privacy-policy")}
-=======
-            onPress={() => Alert.alert("Bilgi", "Gizlilik Politikası yakında.")}
->>>>>>> 2742bcc (ilk yükleme)
             withDivider={false}
           />
         </CardSection>

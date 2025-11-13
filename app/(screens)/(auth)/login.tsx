@@ -1,14 +1,10 @@
-import GoogleSignIn from "@/src/components/googleauth";
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-<<<<<<< HEAD
 import { useTranslation } from "react-i18next";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import {
   ActivityIndicator,
   Text,
@@ -17,6 +13,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import GoogleSignIn from "../../../src/components/googleauth";
 import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useRespons";
 import { useAuthsignupMutation } from "../../../src/lib/authmutation";
@@ -27,10 +24,8 @@ export default function Login() {
   const { hp, wp, dimensions } = useResponsive();
   const [showPassword, setShowPassword] = useState(false);
   const { login, isLoggingIn, resetLogin } = useAuthsignupMutation();
-<<<<<<< HEAD
   const { t } = useTranslation();
-=======
->>>>>>> 2742bcc (ilk yükleme)
+
 
   const {
     handleSubmit,
@@ -68,11 +63,7 @@ export default function Login() {
             color: theme.text,
           }}
         >
-<<<<<<< HEAD
           {t("login.title")}
-=======
-          Giriş Yap
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
         <Text
           style={{
@@ -81,11 +72,7 @@ export default function Login() {
             textAlign: "center",
           }}
         >
-<<<<<<< HEAD
           {t("login.description")}
-=======
-          Hesabınıza erişmek için bilgilerinizi girin.
->>>>>>> 2742bcc (ilk yükleme)
         </Text>
       </View>
 
@@ -110,11 +97,7 @@ export default function Login() {
                 color: theme.inputtitle,
               }}
             >
-<<<<<<< HEAD
               {t("login.emailLabel")}
-=======
-              E-posta Adresi
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
             <Controller
               control={control}
@@ -129,11 +112,7 @@ export default function Login() {
                       backgroundColor: theme.input,
                       borderColor: errors.email ? theme.error : theme.border,
                     }}
-<<<<<<< HEAD
                     placeholder={t("login.emailPlaceholder")}
-=======
-                    placeholder="ornek@email.com"
->>>>>>> 2742bcc (ilk yükleme)
                     placeholderTextColor={theme.inputplaceholder}
                     keyboardType="email-address"
                     autoCapitalize="none"
@@ -170,11 +149,7 @@ export default function Login() {
                 color: theme.inputtitle,
               }}
             >
-<<<<<<< HEAD
               {t("login.passwordLabel")}
-=======
-              Şifre
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
             <Controller
               control={control}
@@ -193,11 +168,7 @@ export default function Login() {
                           ? theme.error
                           : theme.border,
                       }}
-<<<<<<< HEAD
                       placeholder={t("login.passwordPlaceholder")}
-=======
-                      placeholder="Şifrenizi girin"
->>>>>>> 2742bcc (ilk yükleme)
                       placeholderTextColor={theme.inputplaceholder}
                       secureTextEntry={!showPassword}
                       value={field.value}
@@ -217,11 +188,7 @@ export default function Login() {
                       onPress={() => setShowPassword(!showPassword)}
                       disabled={isSubmitting || isLoggingIn}
                       accessibilityLabel={
-<<<<<<< HEAD
                         showPassword ? t("login.hidePassword") : t("login.showPassword")
-=======
-                        showPassword ? "Şifreyi gizle" : "Şifreyi göster"
->>>>>>> 2742bcc (ilk yükleme)
                       }
                       accessibilityRole="button"
                     >
@@ -262,11 +229,7 @@ export default function Login() {
                   color: theme.link,
                 }}
               >
-<<<<<<< HEAD
                 {t("login.forgotPassword")}
-=======
-                Şifremi Unuttum
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
           </View>
@@ -301,7 +264,6 @@ export default function Login() {
                 textAlign: "center",
               }}
             >
-<<<<<<< HEAD
               {isSubmitting || isLoggingIn ? t("login.buttonLoading") : t("login.button")}
             </Text>
           </TouchableOpacity>
@@ -346,12 +308,6 @@ export default function Login() {
             />
           </View>
           <GoogleSignIn text={t("login.googleLogin")} />
-=======
-              {isSubmitting || isLoggingIn ? "Giriş Yapılıyor..." : "Giriş Yap"}
-            </Text>
-          </TouchableOpacity>
-          <GoogleSignIn text="Google ile Giriş Yap" />
->>>>>>> 2742bcc (ilk yükleme)
 
           {/* Sign Up Link */}
           <View
@@ -369,11 +325,7 @@ export default function Login() {
                 color: theme.textQuaternary,
               }}
             >
-<<<<<<< HEAD
               {t("login.noAccount")}{" "}
-=======
-              Hesabın yok mu?{" "}
->>>>>>> 2742bcc (ilk yükleme)
             </Text>
             <TouchableOpacity
               onPress={() =>
@@ -389,11 +341,7 @@ export default function Login() {
                   color: theme.link,
                 }}
               >
-<<<<<<< HEAD
                 {t("login.createAccount")}
-=======
-                Hesap Oluştur
->>>>>>> 2742bcc (ilk yükleme)
               </Text>
             </TouchableOpacity>
           </View>

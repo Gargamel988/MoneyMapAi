@@ -1,13 +1,10 @@
-import { getProfil } from "@/src/lib/profil";
-<<<<<<< HEAD
-import { avatar } from "@/src/utils/avatar";
-=======
->>>>>>> 2742bcc (ilk yükleme)
 import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
+import { getProfil } from "../../../src/lib/profil";
+import { avatar } from "../../../src/utils/avatar";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
 
@@ -18,16 +15,11 @@ const Header = () => {
     queryKey: ["profil"],
     queryFn: () => getProfil(),
   });
-<<<<<<< HEAD
-  
-=======
->>>>>>> 2742bcc (ilk yükleme)
   const avatarUrl = user?.data?.avatar_url;
   const name =  user?.data?.name;
   const username = user?.data?.username;
   const firstName = name?.charAt(0);
   const lastName = username?.charAt(0);
-<<<<<<< HEAD
   const getAvatarSource = () => {
     if (!avatarUrl) return null;
     
@@ -41,8 +33,6 @@ const Header = () => {
     // Değilse URL olarak kullan
     return { uri: avatarUrl }; 
   };
-=======
->>>>>>> 2742bcc (ilk yükleme)
   return (
     <View
       style={{
@@ -96,7 +86,7 @@ const Header = () => {
         <TouchableOpacity
           onPress={() => router.push("/(screens)/(stack)/profile")}
         >
-<<<<<<< HEAD
+
           {getAvatarSource() ? (
             <View
               style={{
@@ -113,19 +103,6 @@ const Header = () => {
               <Image
                 source={getAvatarSource()}
                 style={{ width: "100%", height: "100%",  objectFit: "cover", backgroundColor: theme.white}}
-=======
-          {avatarUrl ? (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              <Image
-                source={{ uri: avatarUrl }}
-                style={{ width: "100%", height: "100%", objectFit: "cover" }}
->>>>>>> 2742bcc (ilk yükleme)
               />
             </View>
           ) : (

@@ -1,17 +1,17 @@
-import { showErrorToast, showSuccessToast } from "@/src/constanst/toast";
-import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
-import { updateLanguage } from "@/src/lib/profil";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
-	ActivityIndicator,
-	Modal,
-	Text,
-	TouchableOpacity,
-	View,
+  ActivityIndicator,
+  Modal,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+import { showErrorToast, showSuccessToast } from "../../constanst/toast";
+import { useTheme } from "../../contexts/theme";
+import { useResponsive } from "../../hooks/useRespons";
+import { updateLanguage } from "../../lib/profil";
 
 interface ModalLanguageProps {
   showLanguageModal: boolean;

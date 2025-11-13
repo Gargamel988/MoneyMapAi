@@ -169,7 +169,6 @@ export const updateusername = async (username: string) => {
     return null;
   }
   return updatedData;
-<<<<<<< HEAD
 };
 export const updateAvatar = async (avatar: string) => {
   const user = await getUser();
@@ -223,6 +222,4 @@ export const updateLanguage = async (language: string) => {
   }
 
   return updatedData;
-=======
->>>>>>> 2742bcc (ilk yükleme)
 };
