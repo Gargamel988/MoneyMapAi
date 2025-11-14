@@ -1,5 +1,6 @@
 import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
 import { hp, useResponsive, wp } from "../../hooks/useRespons";
 import { Category } from "../../types/transactıonstype";
@@ -17,6 +18,7 @@ export const CategoryCard = ({
 	onDelete,
 	deleting,
   } : CategoryCardProps) => {
+	const { t } = useTranslation();
 	const { theme } = useTheme();
 	const { dimensions } = useResponsive();
 	return (
@@ -52,7 +54,7 @@ export const CategoryCard = ({
 	  <View style={{ flex: 1 }}>
 		<Text style={{ fontSize: dimensions.fontLG, fontWeight: '700', color: theme.textTertiary }}>{category.name}</Text>
 		<Text style={{ fontSize: dimensions.fontSM, textTransform: 'capitalize', opacity: 0.6, color: theme.textTertiary }}>
-		  {category.type === 'gelir' ? 'Gelir' : 'Gider'}
+		  {category.type === 'gelir' ? t("searchFilterBar.income") : t("searchFilterBar.expense")}
 		</Text>
 	  </View>
   

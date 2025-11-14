@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   Modal,
@@ -35,6 +36,7 @@ export default function ModalCategory({
   edit,
   categoryData,
 }: ModalCategoryProps) {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
 
@@ -149,7 +151,7 @@ export default function ModalCategory({
       const categoryId = categoryData?.id;
   
       if (!categoryId) {
-        showWarningToast("Hata", "Düzenlenecek kategori ID'si bulunamadı");
+        showWarningToast(t("modalCategory.error.title"), t("modalCategory.error.noId"));
         return;
       }
   
@@ -238,7 +240,7 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                {edit ? "Kategori Düzenle" : "Yeni Kategori"}
+                {edit ? t("modalCategory.title.edit") : t("modalCategory.title.new")}
               </Text>
               <TouchableOpacity
                 onPress={onClose}
@@ -263,7 +265,7 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                Kategori Tipi
+                {t("modalCategory.type")}
               </Text>
               <Controller
                 control={control}
@@ -316,7 +318,7 @@ export default function ModalCategory({
                           fontSize: dimensions.fontMD,
                         }}
                       >
-                        Gelir
+                        {t("searchFilterBar.income")}
                       </Text>
                     </TouchableOpacity>
 
@@ -360,7 +362,7 @@ export default function ModalCategory({
                           fontSize: dimensions.fontMD,
                         }}
                       >
-                        Gider
+                        {t("searchFilterBar.expense")}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -379,7 +381,7 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                Kategori Adı
+                {t("modalCategory.name")}
               </Text>
               <Controller
                 control={control}
@@ -389,7 +391,7 @@ export default function ModalCategory({
                     <TextInput
                       value={value}
                       onChangeText={onChange}
-                      placeholder="Kategori adını girin"
+                      placeholder={t("modalCategory.namePlaceholder")}
                       placeholderTextColor={theme.inputplaceholder}
                       style={{
                         width: "100%",
@@ -430,7 +432,7 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                Kategori Rengi
+                {t("modalCategory.color")}
               </Text>
               <TouchableOpacity
                 onPress={() => setModalVisible(true)}
@@ -474,7 +476,7 @@ export default function ModalCategory({
                     color: theme.inputtitle,
                   }}
                 >
-                  {selectedColor ? "Renk Değiştir" : "Renk Seç"}
+                  {selectedColor ? t("modalCategory.colorChange") : t("modalCategory.colorSelect")}
                 </Text>
                 <Feather
                   name="chevron-right"
@@ -507,7 +509,7 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                Kategori İkonu
+                {t("modalCategory.icon")}
               </Text>
               <TouchableOpacity
                 onPress={() => setIconModalVisible(true)}
@@ -546,7 +548,7 @@ export default function ModalCategory({
                     color: theme.inputtitle,
                   }}
                 >
-                  {selectedIcon ? "İkon Değiştir" : "İkon Seç"}
+                  {selectedIcon ? t("modalCategory.iconChange") : t("modalCategory.iconSelect")}
                 </Text>
                 <Feather
                   name="chevron-right"
@@ -602,10 +604,10 @@ export default function ModalCategory({
                 }}
               >
                 {formState.isSubmitting
-                  ? "Kaydediliyor..."
+                  ? t("modalCategory.saving")
                   : edit
-                  ? "Düzenle"
-                  : "Kaydet"}
+                  ? t("modalCategory.edit")
+                  : t("modalCategory.save")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -663,7 +665,7 @@ export default function ModalCategory({
                         color: theme.inputtitle,
                       }}
                     >
-                      İkon Seç
+                      {t("modalCategory.iconModalTitle")}
                     </Text>
                     <TouchableOpacity
                       onPress={() => setIconModalVisible(false)}

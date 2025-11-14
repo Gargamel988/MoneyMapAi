@@ -1,26 +1,15 @@
 import { useAuth } from "@/src/hooks/useAuth";
 import { Redirect } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
-import { useTheme } from "../src/contexts/theme";
+import { useTranslation } from "react-i18next";
+import { GreenLoadingComponent } from "../src/components/common/loading";
 
 export default function Index() {
   const { isLoading, user } = useAuth();
-  const { theme } = useTheme();
-
+  const { t } = useTranslation();
 
   if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: theme.white,
-        }}
-      >
-        <ActivityIndicator size="large" color={theme.primary} />
-      </View>
-    );
+    return <GreenLoadingComponent text={t("common.loading")} />;
+  
   }
 
   if (user) {

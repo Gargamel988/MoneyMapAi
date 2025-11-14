@@ -1,18 +1,19 @@
 import { AuthError } from "@supabase/supabase-js";
+import i18next from "../../services/i18next";
 
 const getErrorMessage = (error: AuthError): string => {
 
 	switch (error.message) {
 		case 'Email already in use':
-			return 'Bu email adresi zaten kullanılmaktadır.';
+			return i18next.t('auth.errors.emailExists');
 		case 'Email not confirmed':
-			return 'Email adresiniz doğrulanmamış. Lütfen mailinizi kontrol edin ve doğrulama bağlantısına tıklayın.';
+			return i18next.t('auth.errors.emailNotConfirmed');
 		case 'User not found':
-			return 'Bu email ile kayıtlı bir kullanıcı bulunamadı. Hesap oluşturmak için kayıt ol butonuna tıklayın.';
+			return i18next.t('auth.errors.userNotFound');
 		case 'Too many requests':
-			return 'Çok fazla deneme yapıldı. Lütfen birkaç dakika bekleyin.';
+			return i18next.t('auth.errors.tooManyRequests');
 		case 'Invalid login credentials':
-			return 'Email veya şifre yanlış. Lütfen tekrar deneyin.';
+			return i18next.t('auth.errors.invalidCredentials');
 		default:
 			return error.message;
 	}
@@ -23,13 +24,13 @@ const getsignInErrorMessage = (error: AuthError): string => {
 
 	switch (error.message) {
 		case 'Invalid login credentials':
-			return 'Email veya şifre yanlış. Lütfen tekrar deneyin.';
+			return i18next.t('auth.errors.invalidCredentials');
 		case 'Email not confirmed':
-			return 'Email adresiniz doğrulanmamış. Lütfen mailinizi kontrol edin ve doğrulama bağlantısına tıklayın.';
+			return i18next.t('auth.errors.emailNotConfirmed');
 		case 'User not found':
-			return 'Bu email ile kayıtlı bir kullanıcı bulunamadı. Hesap oluşturmak için kayıt ol butonuna tıklayın.';
+			return i18next.t('auth.errors.userNotFound');
 		case 'Too many requests':
-			return 'Çok fazla deneme yapıldı. Lütfen birkaç dakika bekleyin.';
+			return i18next.t('auth.errors.tooManyRequests');
 		default:
 			return error.message;
 	}

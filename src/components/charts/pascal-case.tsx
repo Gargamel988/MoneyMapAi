@@ -1,5 +1,6 @@
 import { Transaction, TransactionList } from "@/src/types/transactıonstype";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { ScrollView, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useTheme } from "../../contexts/theme";
@@ -26,6 +27,7 @@ export default function Pascalcase({
   error,
   currency,
 }: PascalcaseProps) {
+  const { t } = useTranslation();
   const { hp, wp, dimensions, moderateScale, isTablet, isPhone } =
     useResponsive();
   const { theme } = useTheme();
@@ -98,43 +100,45 @@ export default function Pascalcase({
   const lastYearIncome = getMonthlyData(lastYearTransactions, "gelir");
   const lastYearExpense = getMonthlyData(lastYearTransactions, "gider");
 
+  const monthLabels = [
+    t("pascalCase.months.jan"),
+    t("pascalCase.months.feb"),
+    t("pascalCase.months.mar"),
+    t("pascalCase.months.apr"),
+    t("pascalCase.months.may"),
+    t("pascalCase.months.jun"),
+    t("pascalCase.months.jul"),
+    t("pascalCase.months.aug"),
+    t("pascalCase.months.sep"),
+    t("pascalCase.months.oct"),
+    t("pascalCase.months.nov"),
+    t("pascalCase.months.dec"),
+  ];
+
   const chartData = {
-    labels: [
-      "Oca",
-      "Şub",
-      "Mar",
-      "Nis",
-      "May",
-      "Haz",
-      "Tem",
-      "Ağu",
-      "Eyl",
-      "Eki",
-      "Kas",
-      "Ara",
-    ],
+    labels: monthLabels,
     datasets: [
       {
         data: currentYearIncome.map((amount) => (amount || 0) / 1000),
-        label: `${currentYear} Gelir`,
+        label: t("pascalCase.currentYearIncome", { year: currentYear }),
         color: (opacity = 1) => `rgba(110, 231, 183, ${opacity})`,
         strokeWidth: moderateScale(3),
       },
       {
         data: lastYearIncome.map((amount) => (amount || 0) / 1000),
-        label: `${lastYear} Gelir`,
+        label: t("pascalCase.lastYearIncome", { year: lastYear }),
         color: (opacity = 1) => `rgba(108, 144, 195, ${opacity})`,
         strokeWidth: moderateScale(2),
       },
       {
         data: currentYearExpense.map((amount) => (amount || 0) / 1000),
-        label: `${currentYear} Gider`,
+        label: t("pascalCase.currentYearExpense", { year: currentYear }),
         color: (opacity = 1) => `rgba(239, 68, 68, ${opacity})`,
         strokeWidth: moderateScale(3),
       },
       {
         data: lastYearExpense.map((amount) => (amount || 0) / 1000),
-        label: `${lastYear} Gider`,
+        label: t("pascalCase.lastYearExpense", { year: lastYear }),
         color: (opacity = 1) => `rgba(249, 220, 92, ${opacity})`,
         strokeWidth: moderateScale(2),
       },
@@ -176,11 +180,11 @@ export default function Pascalcase({
         }}
       >
         {isLoading ? (
-          <GreenLoadingComponent text="Grafik yükleniyor..." />
+          <GreenLoadingComponent text={t("pascalCase.loading")} />
         ) : !hasData ? (
           <NoDataErrorComponent
-            title="Bilgiler bulunamadı"
-            message="Bilgiler bulunamadı"
+            title={t("pascalCase.noData.title")}
+            message={t("pascalCase.noData.message")}
             icon="inbox"
           />
         ) : error ? (
@@ -203,7 +207,7 @@ export default function Pascalcase({
                   marginBottom: dimensions.xs,
                 }}
               >
-                📊 Yıllık Finansal Analiz
+                {t("pascalCase.title")}
               </Text>
               <Text
                 style={{
@@ -213,7 +217,10 @@ export default function Pascalcase({
                   lineHeight: moderateScale(20),
                 }}
               >
-                {currentYear} ve {lastYear} yıllarının detaylı karşılaştırması
+                {t("pascalCase.description", {
+                  currentYear,
+                  lastYear,
+                })}
               </Text>
             </View>
 
@@ -243,7 +250,7 @@ export default function Pascalcase({
                     marginBottom: dimensions.xs,
                   }}
                 >
-                  Gelir Değişimi
+                  {t("pascalCase.incomeChange")}
                 </Text>
                 <Text
                   style={{
@@ -274,7 +281,7 @@ export default function Pascalcase({
                     marginBottom: dimensions.xs,
                   }}
                 >
-                  Gider Değişimi
+                  {t("pascalCase.expenseChange")}
                 </Text>
                 <Text
                   style={{
@@ -315,7 +322,7 @@ export default function Pascalcase({
                   color: theme.inputtitle,
                 }}
               >
-                Aylık Gelir-Gider Karşılaştırması
+                {t("pascalCase.chartTitle")}
               </Text>
           
 
@@ -367,7 +374,7 @@ export default function Pascalcase({
                   marginBottom: dimensions.xs,
                 }}
               >
-                Grafik Açıklaması
+                {t("pascalCase.legendTitle")}
               </Text>
 
               <View
@@ -408,7 +415,7 @@ export default function Pascalcase({
                         color: "#6EE7B7",
                       }}
                     >
-                      {currentYear} Gelir
+                      {t("pascalCase.currentYearIncome", { year: currentYear })}
                     </Text>
                   </View>
 
@@ -434,7 +441,7 @@ export default function Pascalcase({
                         color: "#EF4444",
                       }}
                     >
-                      {currentYear} Gider
+                      {t("pascalCase.currentYearExpense", { year: currentYear })}
                     </Text>
                   </View>
                 </View>
@@ -468,7 +475,7 @@ export default function Pascalcase({
                         color: "#6C90C3",
                       }}
                     >
-                      {lastYear} Gelir
+                      {t("pascalCase.lastYearIncome", { year: lastYear })}
                     </Text>
                   </View>
 
@@ -494,7 +501,7 @@ export default function Pascalcase({
                         color: "#F9DC5C",
                       }}
                     >
-                      {lastYear} Gider
+                      {t("pascalCase.lastYearExpense", { year: lastYear })}
                     </Text>
                   </View>
                 </View>
@@ -519,7 +526,7 @@ export default function Pascalcase({
                   color: theme.text,
                 }}
               >
-                💰 Net Kar/Zarar Analizi
+                {t("pascalCase.netProfitLoss.title")}
               </Text>
               <Text
                 style={{
@@ -528,7 +535,7 @@ export default function Pascalcase({
                   marginTop: dimensions.xs,
                 }}
               >
-                Yıllık gelir ve gider farkınızın karşılaştırması
+                {t("pascalCase.netProfitLoss.description")}
               </Text>
             </View>
 
@@ -589,7 +596,9 @@ export default function Pascalcase({
                       marginTop: dimensions.xs,
                     }}
                   >
-                    {currentYearTotalIncome - currentYearTotalExpense >= 0 ? "Kar" : "Zarar"}
+                    {currentYearTotalIncome - currentYearTotalExpense >= 0
+                      ? t("pascalCase.profit")
+                      : t("pascalCase.loss")}
                   </Text>
                 </View>
 
@@ -640,7 +649,9 @@ export default function Pascalcase({
                       marginTop: dimensions.xs,
                     }}
                   >
-                    {lastYearTotalIncome - lastYearTotalExpense >= 0 ? "Kar" : "Zarar"}
+                    {lastYearTotalIncome - lastYearTotalExpense >= 0
+                      ? t("pascalCase.profit")
+                      : t("pascalCase.loss")}
                   </Text>
                 </View>
               </View>
@@ -664,7 +675,7 @@ export default function Pascalcase({
                   color: theme.text,
                 }}
               >
-                📅 Aylık Detaylı İnceleme
+                {t("pascalCase.monthlyDetails.title")}
               </Text>
               <Text
                 style={{
@@ -673,7 +684,7 @@ export default function Pascalcase({
                   marginTop: dimensions.xs,
                 }}
               >
-                Her ay için gelir, gider ve net durum karşılaştırması
+                {t("pascalCase.monthlyDetails.description")}
               </Text>
             </View>
 
@@ -776,7 +787,7 @@ export default function Pascalcase({
                                 marginRight: dimensions.xs,
                               }}
                             >
-                              Gelir:
+                              {t("pascalCase.monthlyDetails.income")}
                             </Text>
                             <Text
                               style={{
@@ -820,7 +831,7 @@ export default function Pascalcase({
                                 marginRight: dimensions.xs,
                               }}
                             >
-                              Gider:
+                              {t("pascalCase.monthlyDetails.expense")}
                             </Text>
                             <Text
                               style={{
@@ -866,7 +877,7 @@ export default function Pascalcase({
                                 marginRight: dimensions.xs,
                               }}
                             >
-                              Net:
+                              {t("pascalCase.monthlyDetails.net")}
                             </Text>
                             <Text
                               style={{

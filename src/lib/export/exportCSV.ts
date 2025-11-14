@@ -1,5 +1,6 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
+import i18next from '../../../services/i18next';
 import { showErrorToast, showSuccessToast } from '../../constanst/toast';
 import { Transaction, TransactionList } from '../../types/transactıonstype';
 
@@ -15,7 +16,7 @@ export const exportToCSV = async (
 	  const fs: any = FileSystem;
 	  // CSV formatında veri oluştur (UTF-8 BOM ile Türkçe karakter desteği)
 	  const BOM = '\uFEFF'; // UTF-8 BOM
-	  const headers = 'Kategori,Tip,Tutar,Tarih,Saat,Açıklama\n';
+	  const headers = `${i18next.t('export.headers.category')},${i18next.t('export.headers.type')},${i18next.t('export.headers.amount')},${i18next.t('export.headers.date')},${i18next.t('export.headers.time')},${i18next.t('export.headers.description')}\n`;
 	  const csvContent = data
 		.map(
 		  (user: Transaction) =>
@@ -38,9 +39,9 @@ export const exportToCSV = async (
 		});
 	  }
   
-	  showSuccessToast('CSV Başarılı!', `CSV dosyası başarıyla oluşturuldu!\nDosya: ${fileName}`);
+	  showSuccessToast(i18next.t('export.csv.success'), i18next.t('export.csv.successMessage', { fileName }));
 	} catch  {
-	  showErrorToast('Hata', 'CSV dosyası oluşturulurken bir hata oluştu.');
+	  showErrorToast(i18next.t('common.error'), i18next.t('export.csv.error'));
 	} finally {
 	  setLoading(false);
 	}

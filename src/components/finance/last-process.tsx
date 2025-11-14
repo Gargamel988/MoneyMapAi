@@ -128,12 +128,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                 />
               </View>
 
-              <TouchableOpacity
-                style={{
-                  flexDirection: "column",
-                  alignItems: "flex-start",
-                }}
-              >
+            
                 <View
                   style={{
                     flexDirection: "row",
@@ -141,19 +136,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                     gap: 10,
                   }}
                 >
-                  <View
-                    style={{
-                      backgroundColor: item.categories.color,
-                      padding: dimensions.iconSM - 2,
-                      borderRadius: dimensions.borderRadiusLG,
-                    }}
-                  >
-                    <Feather
-                      name={item.categories.icon as any}
-                      size={dimensions.iconMD}
-                      color={theme.white}
-                    />
-                  </View>
+                
 
                   <View
                     style={{
@@ -228,7 +211,6 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                     {formatTotal(Math.abs(item.total_amount), currency)}
                   </Text>
                 </View>
-              </TouchableOpacity>
             </View>
 
             </TouchableOpacity>

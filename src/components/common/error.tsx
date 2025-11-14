@@ -1,4 +1,5 @@
 import Feather from "@expo/vector-icons/Feather";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
@@ -10,12 +11,16 @@ type NoDataErrorComponentProps = {
 };
 
 export const NoDataErrorComponent: React.FC<NoDataErrorComponentProps> = ({
-  title = "Veri Bulunamadı",
-  message = "Gösterilecek veri bulunmamaktadır.",
+  title,
+  message,
   icon = "inbox",
 }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, moderateScale, isTablet } = useResponsive();
+  
+  const defaultTitle = title || t("error.noData.title");
+  const defaultMessage = message || t("error.noData.message");
 
   return (
     <View
@@ -53,7 +58,7 @@ export const NoDataErrorComponent: React.FC<NoDataErrorComponentProps> = ({
           <Feather 
             name={icon as any} 
             size={isTablet ? dimensions.iconXL : dimensions.iconLG} 
-            color={theme.primaryDark} 
+            color={theme.primary} 
           />
         </View>
 
@@ -67,7 +72,7 @@ export const NoDataErrorComponent: React.FC<NoDataErrorComponentProps> = ({
             marginBottom: dimensions.sm,
           }}
         >
-          {title}
+          {defaultTitle}
         </Text>
 
         {/* Message */}
@@ -79,7 +84,7 @@ export const NoDataErrorComponent: React.FC<NoDataErrorComponentProps> = ({
             marginBottom: dimensions.sm,
           }}
         >
-          {message}
+          {defaultMessage}
         </Text>
       </View>
     </View>
@@ -87,6 +92,7 @@ export const NoDataErrorComponent: React.FC<NoDataErrorComponentProps> = ({
 };
 
 export const ErrorFallback: React.FC<{ error: any }> = ({ error }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, moderateScale, isTablet } = useResponsive();
 
@@ -140,7 +146,7 @@ export const ErrorFallback: React.FC<{ error: any }> = ({ error }) => {
             marginBottom: dimensions.sm,
           }}
         >
-          Hata Oluştu
+          {t("error.fallback.title")}
         </Text>
 
         {/* Error Message */}
@@ -152,7 +158,7 @@ export const ErrorFallback: React.FC<{ error: any }> = ({ error }) => {
             marginBottom: dimensions.sm,
           }}
         >
-          lütfen daha sonra tekrar deneyin
+          {t("error.fallback.message")}
         </Text>
       </View>
     </View>

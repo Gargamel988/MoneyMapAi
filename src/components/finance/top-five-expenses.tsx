@@ -1,4 +1,5 @@
 import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
@@ -20,6 +21,7 @@ export default function TopFiveExpenses({
   error,
   currency,
 }: TopFiveExpensesProps) {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
 
@@ -36,7 +38,7 @@ export default function TopFiveExpenses({
 
   const mergedByCategory = dataArrayFilter.reduce(
     (acc: { [key: string]: Transaction }, item: Transaction) => {
-      const categoryName = item.categories?.name || "Bilinmeyen Kategori";
+      const categoryName = item.categories?.name || t("topFiveExpenses.unknownCategory");
 
       if (!acc[categoryName]) {
         acc[categoryName] = { ...item, total_amount: item.total_amount || 0 };
@@ -70,13 +72,19 @@ export default function TopFiveExpenses({
     const topPercentage = percentages[0] || 0;
 
     if (topPercentage > 50) {
-      insightMessage = `${topCategory} harcamalarınız toplam giderinizin yarısından fazlasını oluşturuyor. Bu kategoriye dikkat etmek isteyebilirsiniz.`;
+      insightMessage = t("topFiveExpenses.insight.high", {
+        category: topCategory,
+      });
     } else if (topPercentage > 30) {
-      insightMessage = `${topCategory} kategorisinde harcamalarınız dikkat çekici düzeyde yüksek. Küçük optimizasyonlar fark yaratabilir.`;
+      insightMessage = t("topFiveExpenses.insight.medium", {
+        category: topCategory,
+      });
     } else if (topPercentage < 15) {
-      insightMessage = `Harcamalarınız dengeli görünüyor, hiçbir kategori toplamın %15’inden fazla değil.`;
+      insightMessage = t("topFiveExpenses.insight.balanced");
     } else {
-      insightMessage = `${topCategory} kategorisi bu ay öne çıkıyor, ancak genel denge korunmuş.`;
+      insightMessage = t("topFiveExpenses.insight.normal", {
+        category: topCategory,
+      });
     }
   }
 
@@ -84,13 +92,13 @@ export default function TopFiveExpenses({
   return (
     <>
       {isLoading ? (
-        <GreenLoadingComponent text="Grafik yükleniyor..." />
+        <GreenLoadingComponent text={t("topFiveExpenses.loading")} />
       ) : error ? (
         <ErrorFallback error={error as Error} />
       ) : !max5?.length ? (
         <NoDataErrorComponent
-          title="Bilgiler bulunamadı"
-          message="Bilgiler bulunamadı"
+          title={t("topFiveExpenses.noData.title")}
+          message={t("topFiveExpenses.noData.message")}
           icon="inbox"
         />
       ) : (
@@ -105,13 +113,13 @@ export default function TopFiveExpenses({
                textAlign: "center",
             }}
           >
-            En Yüksek 5 Gider
+            {t("topFiveExpenses.title")}
           </Text>
 
           {/* Liste */}
           <View style={{ gap: 8 }}>
             {max5.map((item: Transaction, index: number) => {
-              const categoryName = item.categories.name || "Kategori";
+              const categoryName = item.categories.name || t("topFiveExpenses.category");
               const categoryColor = item.categories.color || theme.textTertiary;
               const percentage = percentages[index] || 0;
 
@@ -186,7 +194,7 @@ export default function TopFiveExpenses({
           {/* Öngörü Bölümü */}
       
             <InfoCard>
-              {`💡 Öngörü:
+              {`${t("topFiveExpenses.insight.title")}
 ${insightMessage}`}
             </InfoCard>
         </View>

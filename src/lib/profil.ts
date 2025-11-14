@@ -1,3 +1,4 @@
+import i18next from "../../services/i18next";
 import { showErrorToast } from "../constanst/toast";
 import { supabase } from "./supabase";
 import { getUser } from "./transactions";
@@ -72,7 +73,7 @@ export const updatecurrency = async (currency: string) => {
   }
   return updatedData;
 };
-export const insertProfil = async (data: any) => {
+export const insertProfil = async (data: any, language: string = 'tr') => {
   try {
 
     const fullName = data.user_metadata?.name || "";
@@ -86,6 +87,7 @@ export const insertProfil = async (data: any) => {
       email: data.email,
       currency: "TRY",
       theme: "system",
+      language: language,
     };
     
 
@@ -96,14 +98,14 @@ export const insertProfil = async (data: any) => {
 
     if (error) {
       console.error("Supabase insert hatası:", error);
-      showErrorToast("Profil Kaydı Hatası", error.message);
+      showErrorToast(i18next.t('profile.save.error'), error.message);
       return null;
     }
 
     return insertedData;
   } catch (err: any) {
     console.error("insertProfil hatası:", err);
-    showErrorToast("Hata", err.message || "Profil kaydı sırasında hata oluştu");
+    showErrorToast(i18next.t('common.error'), err.message || i18next.t('profile.save.error.general'));
     return null;
   }
 };

@@ -1,3 +1,4 @@
+import i18next from "../../services/i18next";
 import { supabase } from "../lib/supabase";
 import { Category } from "../types/transactıonstype";
 import { getUser } from "./transactions";
@@ -51,7 +52,7 @@ export const addCustomCategory = async (categoryData: Category) => {
 	}
 	
 	if (usageCheck && usageCheck.length > 0) {
-	  const error = new Error('Bu kategori kullanımda olduğu için silinemiyor');
+	  const error = new Error(i18next.t('categories.delete.inUse'));
 	  (error as any).code = 'CATEGORY_IN_USE'; // Custom error code
 	  throw error;
 	}

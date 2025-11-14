@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../src/contexts/theme';
 import { useResponsive } from '../../../src/hooks/useRespons';
 
 export default function TermsOfService() {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
 
@@ -41,7 +43,7 @@ export default function TermsOfService() {
             marginBottom: dimensions.xs,
           }}
         >
-          Kullanım Şartları
+          {t("termsOfService.title")}
         </Text>
 
         <Text
@@ -52,12 +54,11 @@ export default function TermsOfService() {
             fontSize: dimensions.fontSM,
           }}
         >
-          Son güncelleme: 31 Ekim 2025
+          {t("termsOfService.lastUpdated")}
         </Text>
 
         <Text style={{ lineHeight: 22, marginBottom: dimensions.md, color: theme.textSenary }}>
-          <Text style={{ fontWeight: '700' }}>MoneyMapAi</Text> mobil uygulamasını kullanmadan önce lütfen bu kullanım şartlarını dikkatlice
-          okuyunuz. Uygulamayı indirerek veya kullanarak, bu şartları kabul etmiş sayılırsınız.
+          {t("termsOfService.intro")}
         </Text>
 
         {/* Important Notice */}
@@ -72,27 +73,25 @@ export default function TermsOfService() {
           }}
         >
           <Text style={{ color: theme.textSenary, fontSize: dimensions.fontXL, fontWeight: '700', marginBottom: dimensions.sm }}>
-            ⚠️ Önemli Bilgilendirme
+            {t("termsOfService.important.title")}
           </Text>
           <Text style={{ marginBottom: 0, lineHeight: 22, color: theme.textSenary }}>
-            Bu uygulama finansal tavsiye, muhasebe veya vergi danışmanlığı hizmeti sağlamaz. Uygulamadaki veriler yalnızca kişisel finansal
-            takip amacıyla kullanılmalıdır. Resmi mali işlemler için profesyonel bir muhasebeci veya mali müşavirle görüşmeniz önerilir.
+            {t("termsOfService.important.text")}
           </Text>
         </View>
 
         {/* License to Use */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          1. Lisans ve Kullanım Hakları
+          {t("termsOfService.license.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          ömer (Hizmet Sağlayıcı), size kişisel, ticari olmayan, devredilemez, münhasır olmayan bir lisans vermektedir. Bu lisans yalnızca şu
-          amaçlarla geçerlidir:
+          {t("termsOfService.license.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Uygulamayı kişisel cihazınıza indirmek ve yüklemek</Text>
-          <Text style={{ color: theme.textSenary }}>• Kişisel finansal takibiniz için kullanmak</Text>
-          <Text style={{ color: theme.textSenary }}>• Fatura ve makbuzlarınızı kaydetmek ve analiz etmek</Text>
-          <Text style={{ color: theme.textSenary }}>• Harcama raporları ve istatistikler oluşturmak</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.download")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.tracking")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.receipts")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.reports")}</Text>
         </View>
 
         <View
@@ -106,38 +105,37 @@ export default function TermsOfService() {
           }}
         >
           <Text style={{ margin: 0, lineHeight: 22, color: theme.textSenary }}>
-            <Text style={{ fontWeight: '700' }}>Yasak Kullanımlar:</Text> Uygulamayı kopyalamak, değiştirmek, tersine mühendislik yapmak,
-            kaynak kodunu çıkarmak, satmak, dağıtmak veya türev çalışmalar oluşturmak kesinlikle yasaktır.
+            {t("termsOfService.license.prohibited")}
           </Text>
         </View>
 
         {/* User Responsibilities */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          2. Kullanıcı Sorumlulukları
+          {t("termsOfService.responsibilities.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          Uygulamayı kullanırken şu sorumluluklara sahipsiniz:
+          {t("termsOfService.responsibilities.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Doğru Bilgi:</Text> Girdiğiniz finansal verilerin doğruluğundan siz sorumlusunuz</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Güvenlik:</Text> Hesap bilgilerinizi ve cihazınızı güvende tutmalısınız</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Yedekleme:</Text> Önemli verilerinizi düzenli olarak yedeklemelisiniz</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Yasal Uyum:</Text> Uygulamayı yasalara uygun şekilde kullanmalısınız</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Kamera İzni:</Text> Kamera iznini yalnızca fatura/makbuz çekmek için kullanmalısınız</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.security")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.backup")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.legal")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.camera")}</Text>
         </View>
 
         {/* AI and Data Processing */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          3. Yapay Zeka ve Veri İşleme
+          {t("termsOfService.ai.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          MoneyMapAi, fatura ve makbuz analizi için yapay zeka teknolojisi kullanır:
+          {t("termsOfService.ai.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>OCR Teknolojisi:</Text> Fotoğraflarınız metin tanıma ile işlenir</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Otomatik Kategorizasyon:</Text> Harcamalarınız AI tarafından otomatik olarak kategorize edilir</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Doğruluk:</Text> AI analizi yüzde yüz doğru olmayabilir, sonuçları kontrol etmeniz önerilir</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Öğrenme:</Text> Sistem zamanla sizin düzeltmelerinizden öğrenerek gelişir</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.ocr")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.categorization")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.learning")}</Text>
         </View>
 
         <View
@@ -151,131 +149,127 @@ export default function TermsOfService() {
           }}
         >
           <Text style={{ margin: 0, lineHeight: 22, color: theme.textSenary }}>
-            <Text style={{ fontWeight: '700' }}>Not:</Text> AI analizinin sonuçları yalnızca yardımcı amaçlıdır. Kritik finansal kararlar için mutlaka
-            verileri manuel olarak kontrol edin.
+            {t("termsOfService.ai.note")}
           </Text>
         </View>
 
         {/* Data Ownership */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          4. Veri Sahipliği ve Kontrol
+          {t("termsOfService.dataOwnership.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          Uygulamaya yüklediğiniz tüm veriler size aittir:
+          {t("termsOfService.dataOwnership.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Fatura ve makbuz fotoğraflarınızın sahibi sizsiniz</Text>
-          <Text style={{ color: theme.textSenary }}>• Harcama kayıtlarınız ve notlarınız size aittir</Text>
-          <Text style={{ color: theme.textSenary }}>• Verilerinizi istediğiniz zaman dışa aktarabilirsiniz</Text>
-          <Text style={{ color: theme.textSenary }}>• Hesabınızı ve tüm verilerinizi istediğiniz zaman silebilirsiniz</Text>
-          <Text style={{ color: theme.textSenary }}>• Hizmet Sağlayıcı verilerinizi pazarlama veya reklam amaçlı kullanmaz</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.photos")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.records")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.export")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.delete")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.marketing")}</Text>
         </View>
 
         {/* Service Availability */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          5. Hizmet Kullanılabilirliği
+          {t("termsOfService.availability.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Hizmet Sağlayıcı, uygulamanın kesintisiz veya hatasız çalışacağını garanti etmez. Aşağıdaki durumlarda hizmet kesintisi yaşanabilir:
+          {t("termsOfService.availability.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Planlı bakım ve güncellemeler</Text>
-          <Text style={{ color: theme.textSenary }}>• Teknik arızalar ve sunucu sorunları</Text>
-          <Text style={{ color: theme.textSenary }}>• İnternet bağlantısı kesintileri</Text>
-          <Text style={{ color: theme.textSenary }}>• Üçüncü taraf servislerdeki aksaklıklar</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.maintenance")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.technical")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.internet")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.thirdParty")}</Text>
         </View>
 
         {/* Disclaimers */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          6. Sorumluluk Reddi
+          {t("termsOfService.disclaimer.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          Uygulama OLDUĞU GİBİ ve MEVCUT OLDUĞU HALDE sunulmaktadır:
+          {t("termsOfService.disclaimer.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Finansal Tavsiye Değil:</Text> Uygulama finansal tavsiye veya yatırım önerisi içermez</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Doğruluk Garantisi Yok:</Text> AI analiz sonuçlarının yüzde yüz doğru olacağı garanti edilmez</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Veri Kaybı:</Text> Teknik sorunlar nedeniyle veri kaybı yaşanabilir (düzenli yedekleme önerilir)</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Üçüncü Taraf Servisler:</Text> Entegre servislerin performansından sorumlu değiliz</Text>
-          <Text style={{ color: theme.textSenary }}>• <Text style={{ fontWeight: '700' }}>Cihaz Uyumluluğu:</Text> Tüm cihazlarda aynı performansta çalışmayabilir</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.advice")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.dataLoss")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.thirdParty")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.compatibility")}</Text>
         </View>
 
         {/* Limitation of Liability */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          7. Sorumluluk Sınırlaması
+          {t("termsOfService.liability.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Yasaların izin verdiği ölçüde, Hizmet Sağlayıcı aşağıdakilerden sorumlu değildir:
+          {t("termsOfService.liability.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Uygulamanın kullanımından kaynaklanan mali kayıplar</Text>
-          <Text style={{ color: theme.textSenary }}>• Yanlış veri girişi veya AI analizinden kaynaklanan hatalar</Text>
-          <Text style={{ color: theme.textSenary }}>• Veri kaybı veya veri bozulması</Text>
-          <Text style={{ color: theme.textSenary }}>• Üçüncü taraf servislerin sebep olduğu sorunlar</Text>
-          <Text style={{ color: theme.textSenary }}>• İnternet bağlantısı veya cihaz kaynaklı problemler</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.financial")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.errors")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.dataLoss")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.thirdParty")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.connection")}</Text>
         </View>
 
         {/* Age Restrictions */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          8. Yaş Sınırlaması
+          {t("termsOfService.age.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          MoneyMapAi uygulaması 13 yaş ve üzeri kullanıcılar içindir. 13 yaşından küçükseniz, uygulamayı ebeveyn veya vasi izni ve gözetimi
-          altında kullanmalısınız.
+          {t("termsOfService.age.text")}
         </Text>
 
         {/* Updates and Changes */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          9. Güncellemeler ve Değişiklikler
+          {t("termsOfService.updates.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Hizmet Sağlayıcı, önceden bildirimde bulunmaksızın:
+          {t("termsOfService.updates.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Uygulamayı güncelleyebilir veya değiştirebilir</Text>
-          <Text style={{ color: theme.textSenary }}>• Yeni özellikler ekleyebilir veya mevcut özellikleri kaldırabilir</Text>
-          <Text style={{ color: theme.textSenary }}>• Bu kullanım şartlarını değiştirebilir (önemli değişiklikler bildirilir)</Text>
-          <Text style={{ color: theme.textSenary }}>• Uygulamayı geçici veya kalıcı olarak durdurabilir</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.update")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.features")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.terms")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.stop")}</Text>
         </View>
 
         {/* Termination */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          10. Hesap Sonlandırma
+          {t("termsOfService.termination.title")}
         </Text>
         <Text style={{ lineHeight: 22, marginBottom: dimensions.sm, color: theme.textSenary }}>
-          Hizmet Sağlayıcı, aşağıdaki durumlarda önceden bildirimde bulunmaksızın hesabınızı askıya alabilir veya sonlandırabilir:
+          {t("termsOfService.termination.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Bu kullanım şartlarını ihlal etmeniz</Text>
-          <Text style={{ color: theme.textSenary }}>• Uygulamayı yasadışı amaçlarla kullanmanız</Text>
-          <Text style={{ color: theme.textSenary }}>• Diğer kullanıcılara veya sisteme zarar vermeye çalışmanız</Text>
-          <Text style={{ color: theme.textSenary }}>• Sahte bilgiler veya belge yüklemeniz</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.violation")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.illegal")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.harm")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.fake")}</Text>
         </View>
 
         {/* Governing Law */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          11. Geçerli Hukuk
+          {t("termsOfService.law.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Bu kullanım şartları, Türkiye Cumhuriyeti yasalarına tabidir. Uyuşmazlıklar Türkiye mahkemelerinde çözülecektir.
+          {t("termsOfService.law.text")}
         </Text>
 
         {/* Intellectual Property */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          12. Fikri Mülkiyet Hakları
+          {t("termsOfService.intellectual.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Uygulamanın tasarımı, logosu, içeriği ve kaynak kodu Hizmet Sağlayıcıya aittir ve telif hakkı yasalarıyla korunmaktadır. İzinsiz
-          kullanım, kopyalama veya dağıtım yasaktır.
+          {t("termsOfService.intellectual.text")}
         </Text>
 
         {/* Entire Agreement */}
         <Text style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}>
-          13. Tam Anlaşma
+          {t("termsOfService.agreement.title")}
         </Text>
         <Text style={{ lineHeight: 22, color: theme.textSenary }}>
-          Bu kullanım şartları, MoneyMapAi uygulamasının kullanımına ilişkin sizinle Hizmet Sağlayıcı arasındaki tam anlaşmayı oluşturur ve
-          önceki tüm sözlü veya yazılı anlaşmaların yerini alır.
+          {t("termsOfService.agreement.text")}
         </Text>
 
         {/* Effective Date */}
@@ -290,8 +284,7 @@ export default function TermsOfService() {
           }}
         >
           <Text style={{ margin: 0, lineHeight: 22, color: theme.textSenary }}>
-            <Text style={{ fontWeight: '700' }}>Yürürlük Tarihi:</Text> Bu kullanım şartları 31 Ekim 2025 tarihi itibarıyla yürürlüktedir.
-            Uygulamayı kullanmaya devam ederek, bu şartları kabul etmiş sayılırsınız.
+            {t("termsOfService.effectiveDate")}
           </Text>
         </View>
 
@@ -305,21 +298,21 @@ export default function TermsOfService() {
           }}
         >
           <Text style={{ color: theme.white, fontSize: dimensions.fontXL, fontWeight: '700', marginBottom: dimensions.xs }}>
-            İletişim
+            {t("termsOfService.contact.title")}
           </Text>
           <Text style={{ lineHeight: 22, marginBottom: dimensions.xs, color: theme.white }}>
-            Bu kullanım şartları hakkında sorularınız veya endişeleriniz varsa, lütfen bizimle iletişime geçin:
+            {t("termsOfService.contact.text")}
           </Text>
           <TouchableOpacity onPress={() => openMail('gargamel9288@gmail.com')} activeOpacity={0.7}>
             <Text style={{ color: theme.textPrimary, fontWeight: '700', textDecorationLine: 'underline' }}>
-              E-posta: gargamel9288@gmail.com
+              {t("termsOfService.contact.email")}
             </Text>
           </TouchableOpacity>
           <Text style={{ marginTop: dimensions.sm, marginBottom: 0, color: theme.white }}>
-            <Text style={{ fontWeight: '700' }}>Uygulama Adı:</Text> MoneyMapAi
+            <Text style={{ fontWeight: '700' }}>{t("termsOfService.contact.appName")}:</Text> {t("termsOfService.contact.appName")}
           </Text>
           <Text style={{ color: theme.white }}>
-            <Text style={{ fontWeight: '700' }}>Geliştirici:</Text> Ömer Aydın
+            <Text style={{ fontWeight: '700' }}>{t("termsOfService.contact.developer")}:</Text> {t("termsOfService.contact.developer")}
           </Text>
         </View>
 
@@ -333,7 +326,7 @@ export default function TermsOfService() {
             lineHeight: 20,
           }}
         >
-          MoneyMapAi © 2025 - Tüm hakları saklıdır.
+          {t("termsOfService.footer")}
         </Text>
       </View>
     </ScrollView>

@@ -3,6 +3,7 @@ import { useResponsive } from "@/src/hooks/useRespons";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Text, TextInput, TouchableOpacity, View } from "react-native";
 type SortType = "name-asc" | "name-desc" | "date-newest" | "date-oldest";
 type FilterType = "hepsi" | "gelir" | "gider";
@@ -34,6 +35,7 @@ export default function SearchFilterBar({
   sortBy,
   onAdd,
 }: SearchFilterBarProps) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { dimensions, isSmall, moderateScale } = useResponsive();
 	const { theme } = useTheme();
@@ -93,8 +95,8 @@ export default function SearchFilterBar({
               marginLeft: moderateScale(8),
               color: "#FFFFFF",
             }}
-          >
-            {bool ? "Kategoriler" : "Geçmiş"}
+            >
+            {bool ? t("searchFilterBar.title") : t("searchFilterBar.history")}
           </Text>
         </View>
         {bool && (
@@ -145,7 +147,7 @@ export default function SearchFilterBar({
             color={theme.white}
           />
           <TextInput
-            placeholder="Kategori ara..."
+            placeholder={t("searchFilterBar.searchPlaceholder")}
             placeholderTextColor={theme.imputplaceholderprimary}
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -170,7 +172,7 @@ export default function SearchFilterBar({
           color: theme.text,
         }}
       >
-        Filtreler
+        {t("searchFilterBar.filters")}
       </Text>
 
       <View
@@ -213,10 +215,10 @@ export default function SearchFilterBar({
                 }}
               >
                 {type === "hepsi"
-                  ? `Hepsi (${allCount})`
+                  ? `${t("searchFilterBar.all")} (${allCount})`
                   : type === "gelir"
-                  ? `Gelir (${incomeCount})`
-                  : `Gider (${expenseCount})`}
+                  ? `${t("searchFilterBar.income")} (${incomeCount})`
+                  : `${t("searchFilterBar.expense")} (${expenseCount})`}
               </Text>
             </TouchableOpacity>
           ))}
@@ -233,7 +235,7 @@ export default function SearchFilterBar({
           color: theme.text,
         }}
       >
-        Sıralama
+        {t("searchFilterBar.sort")}
       </Text>
 
       <View
@@ -277,12 +279,12 @@ export default function SearchFilterBar({
                   }}
                 >
                   {sort === "name-asc"
-                    ? "A-Z"
+                    ? t("searchFilterBar.sortAZ")
                     : sort === "name-desc"
-                    ? "Z-A"
+                    ? t("searchFilterBar.sortZA")
                     : sort === "date-newest"
-                    ? "Yeni"
-                    : "Eski"}
+                    ? t("searchFilterBar.sortNewest")
+                    : t("searchFilterBar.sortOldest")}
                 </Text>
               </TouchableOpacity>
             )

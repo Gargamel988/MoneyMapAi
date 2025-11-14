@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import XLSX from 'xlsx-js-style';
+import i18next from '../../../services/i18next';
 import { showErrorToast, showSuccessToast } from "../../constanst/toast";
 import { Transaction, TransactionList } from "../../types/transactıonstype";
 import { formatTotal } from "../../utils/total";
@@ -15,7 +16,14 @@ export const exportToExcel = async (
 	try {
 	  const fs: any = FileSystem;
 	  // Excel başlıkları
-	  const headers = ['Kategori', 'Tip', 'Tutar', 'Tarih', 'Saat', 'Açıklama'];
+	  const headers = [
+		i18next.t('export.headers.category'),
+		i18next.t('export.headers.type'),
+		i18next.t('export.headers.amount'),
+		i18next.t('export.headers.date'),
+		i18next.t('export.headers.time'),
+		i18next.t('export.headers.description')
+	  ];
   
 	  // Veriyi Excel formatına dönüştür
 	  const wsData = [
@@ -57,7 +65,7 @@ export const exportToExcel = async (
   
 	  // Workbook oluştur
 	  const wb = XLSX.utils.book_new();
-	  XLSX.utils.book_append_sheet(wb, ws, 'Gelirler ve Giderler');
+	  XLSX.utils.book_append_sheet(wb, ws, i18next.t('export.sheetName'));
   
 	  // Base64 olarak yaz ve kaydet
 	  const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' });
@@ -76,9 +84,9 @@ export const exportToExcel = async (
 		});
 	  }
   
-	  showSuccessToast('Başarılı!', `Excel dosyası paylaşıldı!\nDosya: ${fileName}`);
+	  showSuccessToast(i18next.t('export.excel.success'), i18next.t('export.excel.successMessage', { fileName }));
 	} catch  {
-	  showErrorToast('Hata', 'Excel dosyası oluşturulurken bir hata oluştu.');
+	  showErrorToast(i18next.t('common.error'), i18next.t('export.excel.error'));
 	} finally {
 	  setLoading(false);
 	}

@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   Modal,
@@ -29,6 +30,7 @@ import ModalLanguage from "../../../src/components/setting/modal-language";
 import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
 import { useTheme } from "../../../src/contexts/theme";
 export default function SettingsScreen() {
+  const { t } = useTranslation();
   const [showCurrencyModal, setShowCurrencyModal] = useState<boolean>(false);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
@@ -58,7 +60,7 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
     mutationFn: async (currency: string) => {
       const data = await updatecurrency(currency);
       if (!data) {
-        throw new Error("Para birimi güncellenemedi");
+        throw new Error(t("settings.currency.updateError"));
       }
       return data;
     },
@@ -66,11 +68,11 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
       queryClient.invalidateQueries({ queryKey: ["currency"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
 
-      showSuccessToast("Başarılı", "Para birimi güncellendi");
+      showSuccessToast(t("common.success"), t("settings.currency.updateSuccess"));
       setShowCurrencyModal(false);
     },
     onError: async () => {
-      showErrorToast("Hata", "Para birimi güncellenemedi");
+      showErrorToast(t("common.error"), t("settings.currency.updateError"));
       setShowCurrencyModal(false);
     },
   });
@@ -99,7 +101,7 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
             color: theme.text,
           }}
         >
-          Ayarlar
+          {t("settings.title")}
         </Text>
       </View>
 
@@ -113,44 +115,44 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
       )}
 
       <ScrollView>
-        <CardSection title="hesap">
+        <CardSection title={t("settings.sections.account")}>
           <ItemRow
             iconName="user"
-            title="profil"
-            subtitle="profili düzenle"
+            title={t("settings.account.profile.title")}
+            subtitle={t("settings.account.profile.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/profile")}
           />
           <ItemRow
             iconName="clock"
-            title="geçmiş"
-            subtitle="geçmiş işlemlerinizi görüntüle"
+            title={t("settings.account.history.title")}
+            subtitle={t("settings.account.history.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/history")}
           />
           <ItemRow
             iconName="log-out"
-            title="çıkış yap"
-            subtitle="hesabından çıkış yap"
+            title={t("settings.account.signOut.title")}
+            subtitle={t("settings.account.signOut.subtitle")}
             showArrow
             onPress={() => signOut()}
             withDivider={false}
           />
         </CardSection>
 
-        <CardSection title="genel ayarlar">
+        <CardSection title={t("settings.sections.general")}>
           <ItemRow
             iconName="sliders"
-            title="tema"
-            subtitle="uygulama temasını seç"
+            title={t("settings.general.theme.title")}
+            subtitle={t("settings.general.theme.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/ThemeSelector")}
             withDivider={false}
           />
           <ItemRow
             iconName="dollar-sign"
-            title="para birimi"
-            subtitle="varsayılan para birimi"
+            title={t("settings.general.currency.title")}
+            subtitle={t("settings.general.currency.subtitle")}
             onPress={() => setShowCurrencyModal(true)}
             value={`${Currency} (${
               Currency === "USD"
@@ -170,8 +172,8 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
           />
           <ItemRow
             iconName="globe"
-            title="dil"
-            subtitle="uygulama dilini seç"
+            title={t("settings.general.language.title")}
+            subtitle={t("settings.general.language.subtitle")}
             value={languageData?.language.toUpperCase()}
             onPress={() => setShowLanguageModal(true)}
           />
@@ -185,8 +187,8 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
 
           <ItemRow
             iconName="folder"
-            title="kategori yönetimi"
-            subtitle="kategori yönetimi"
+            title={t("settings.general.categories.title")}
+            subtitle={t("settings.general.categories.subtitle")}
             showArrow
             onPress={() =>
               router.push("/(screens)/(stack)/categories" as never)
@@ -194,61 +196,71 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
           />
         </CardSection>
 
-        <CardSection title="veri yönetimi">
+        <CardSection title={t("settings.sections.data")}>
           <ItemRow
             iconName="download"
-            title="veri aktarımı"
-            subtitle="veri aktarımı"
+            title={t("settings.data.export.title")}
+            subtitle={t("settings.data.export.subtitle")}
             showArrow
             onPress={() => setShowExportModal(true)}
           />
           <ItemRow
             iconName="trash-2"
-            title="veri temizle"
-            subtitle="veri temizle"
+            title={t("settings.data.clear.title")}
+            subtitle={t("settings.data.clear.subtitle")}
             showArrow
             onPress={() => {
-              Alert.alert("Verileri Temizle", "Tüm işlemler silinsin mi?", [
-                { text: "İptal", style: "cancel" },
-                {
-                  text: "Sil",
-                  style: "destructive",
-                  onPress: async () => {
-                    try {
-                      await transactionsApi.deleteAllTransactions();
-                      queryClient.invalidateQueries({
-                        queryKey: ["allTables"],
-                      });
-                      showSuccessToast("Başarılı", "Tüm veriler silindi");
-                    } catch (e: Error | unknown) {
-                      showErrorToast("Hata", "Veriler silinemedi" + (e as Error)?.message);
-                    }
+              Alert.alert(
+                t("settings.data.clear.alert.title"),
+                t("settings.data.clear.alert.message"),
+                [
+                  { text: t("settings.data.clear.alert.cancel"), style: "cancel" },
+                  {
+                    text: t("settings.data.clear.alert.delete"),
+                    style: "destructive",
+                    onPress: async () => {
+                      try {
+                        await transactionsApi.deleteAllTransactions();
+                        queryClient.invalidateQueries({
+                          queryKey: ["allTables"],
+                        });
+                        showSuccessToast(
+                          t("common.success"),
+                          t("settings.data.clear.success")
+                        );
+                      } catch (e: Error | unknown) {
+                        showErrorToast(
+                          t("common.error"),
+                          t("settings.data.clear.error") + (e as Error)?.message
+                        );
+                      }
+                    },
                   },
-                },
-              ]);
+                ]
+              );
             }}
             withDivider={false}
           />
         </CardSection>
 
-        <CardSection title="hakkında">
+        <CardSection title={t("settings.sections.about")}>
           <ItemRow
             iconName="info"
-            title="versiyon"
-            subtitle="uygulama versiyonu"
+            title={t("settings.about.version.title")}
+            subtitle={t("settings.about.version.subtitle")}
             value={appConfig?.expo?.version as string}
           />
           <ItemRow
             iconName="file-text"
-            title="kullanım şartları"
-            subtitle="kullanım şartlarını görüntüle"
+            title={t("settings.about.terms.title")}
+            subtitle={t("settings.about.terms.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/terms-of-service")}
           />
           <ItemRow
             iconName="shield"
-            title="gizlilik politikası"
-            subtitle="gizlilik politikasını görüntüle"
+            title={t("settings.about.privacy.title")}
+            subtitle={t("settings.about.privacy.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/privacy-policy")}
             withDivider={false}
@@ -294,7 +306,7 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
                   color: theme.textPrimary,
                 }}
               >
-                veri aktarımı
+                {t("settings.export.modal.title")}
               </Text>
               <View>
                 <TouchableOpacity

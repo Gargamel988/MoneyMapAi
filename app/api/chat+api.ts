@@ -1,3 +1,5 @@
+
+import i18next from "@/services/i18next";
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
 
@@ -5,7 +7,13 @@ import { streamText } from "ai";
 export async function POST(request: Request) {
   try {
     const body = await request.text();
-    const { messages } = JSON.parse(body);
+    const { messages, language } = JSON.parse(body);
+    console.log(language);
+    // Kullanıcının dilini request'ten al, yoksa varsayılan olarak 'tr' kullan
+    const userLanguage = (language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
+    
+    // Kullanıcının diline göre translation fonksiyonu oluştur
+    const t = i18next.getFixedT(userLanguage);
 
     if (!messages || !Array.isArray(messages)) {
       return Response.json(
@@ -42,36 +50,32 @@ export async function POST(request: Request) {
       }
       return msg;
     });
+    
+    // Kullanıcının diline göre system prompt oluştur
+    const languageName = t(`ai.languageNames.${userLanguage}`, { defaultValue: userLanguage });
+    const systemPrompt = `${t('ai.systemPrompt.intro')}
+${t('ai.systemPrompt.imageCheck')}
+${t('ai.systemPrompt.language')}
+${t('ai.systemPrompt.format')}
+${t('ai.systemPrompt.important', { language: languageName })}
+${t('ai.systemPrompt.items.multiple')}
+${t('ai.systemPrompt.items.quantity')}
+${t('ai.systemPrompt.items.quantityNote')}
+${t('ai.systemPrompt.items.shortName')}
+
+${t('ai.systemPrompt.total.format')}
+
+${t('ai.systemPrompt.headers')}
+
+${t('ai.systemPrompt.items.format')}
+
+${t('ai.systemPrompt.categories')}
+
+${t('ai.systemPrompt.notReceipt')}`;
 
     const result = streamText({
       model: google("gemini-2.0-flash"),
-      system: `Bir fiş tespit edicisiniz.
-Görsel varsa bunun fiş,makbuz veya fatura olup olmadığını belirtin.
-Fişse Türkçe, kullanıcıya uygun ve okunaklı bir yanıt verin.
-JSON veya kod bloğu KULLANMAYIN. YILDIZ (*) KULLANMAYIN.
-kalemlerde birden fazla ürün varsa her ürün için bir satır açın.
-kalemlerde adet yoksa 1 adet olarak yazın.
-kalemlerde adete DİKKAT EDENİZ bazı fişlerde adet ürün adının üstünde yazılır.
-kalemlerde ürün adı uzun ise kısa yazın.
-
-ÖNEMLİ: Toplam tutarı şu formatta yazın:
-💰 Toplam: [tutar] TL
-Örnek: 💰 Toplam: 567.57 TL
-
-Başlıkları EMOJİ ile belirtin (kalın yapmayın):
-- 🏪 Mağaza/Restoran 
-- 📅 Tarih / ⏰ Saat 
-- 💰 Toplam: [tutar] TL
-- 🏷️ Kategori: [kategori adını buraya yaz]
-- 🧾 Kalemler (her satırda madde madde)
-- 🧠 Özet (tek cümle)
-
-Kalemleri madde madde yazın ve her satırı eksiksiz yazın ve bir emojili işaretle başlatın (örn. ✅):
-- Ürün Adı x Adet — Fiyat TL
-
-Kategori önerisi için şu kategorilerden birini seç: Market, Ulaşım, Faturalar, Kira, Eğlence, Sağlık, Giyim, Yemek, Eğitim, Diğer
-
-Fiş , makbuz veya fatura değilse, kısa bir gerekçe yazın ve doğru görsel için yönlendirin. Görsel yoksa kullanıcıdan görsel göndermesini isteyin.`,
+      system: systemPrompt,
       messages: normalizedMessages,
     });
 
@@ -91,9 +95,9 @@ export async function OPTIONS() {
   return new Response(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, GET, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type",
     },
   });
 }

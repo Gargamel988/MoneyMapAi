@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
 
@@ -118,12 +119,13 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
   onColorSelect,
   selectedColor,
 }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
 
   const colorFamilies: ColorFamily[] = [
     {
-      name: "Uygulama Teması",
+      name: t("colorPalette.families.appTheme"),
       emoji: "🎨",
       colors: [
         "#0B2240", // deep navy
@@ -136,7 +138,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Kırmızı Tonları",
+      name: t("colorPalette.families.red"),
       emoji: "🔴",
       colors: [
         "#FFEBEE",
@@ -152,7 +154,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Pembe Tonları",
+      name: t("colorPalette.families.pink"),
       emoji: "🩷",
       colors: [
         "#FCE4EC",
@@ -168,7 +170,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Mor Tonları",
+      name: t("colorPalette.families.purple"),
       emoji: "🟣",
       colors: [
         "#F3E5F5",
@@ -184,7 +186,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Mavi Tonları",
+      name: t("colorPalette.families.blue"),
       emoji: "🔵",
       colors: [
         "#E3F2FD",
@@ -200,7 +202,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Yeşil Tonları",
+      name: t("colorPalette.families.green"),
       emoji: "🟢",
       colors: [
         "#E8F5E8",
@@ -216,7 +218,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Sarı Tonları",
+      name: t("colorPalette.families.yellow"),
       emoji: "🟡",
       colors: [
         "#FFFDE7",
@@ -232,7 +234,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Turuncu Tonları",
+      name: t("colorPalette.families.orange"),
       emoji: "🟠",
       colors: [
         "#FFF3E0",
@@ -248,7 +250,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Kahverengi Tonları",
+      name: t("colorPalette.families.brown"),
       emoji: "🤎",
       colors: [
         "#EFEBE9",
@@ -264,7 +266,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
       ],
     },
     {
-      name: "Gri Tonları",
+      name: t("colorPalette.families.gray"),
       emoji: "⚪",
       colors: [
         "#FAFAFA",
@@ -316,7 +318,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
               color: theme.inputtitle,
             }}
           >
-            🎨 Renk Paleti
+            {t("colorPalette.title")}
           </Text>
           <TouchableOpacity
             onPress={onClose}
@@ -397,7 +399,7 @@ export const ColorSelectionModal: React.FC<ColorSelectionModalProps> = ({
                   color: theme.inputtitle,
                 }}
               >
-                Açık → Koyu
+                {t("colorPalette.gradient")}
               </Text>
             </Animated.View>
           ))}

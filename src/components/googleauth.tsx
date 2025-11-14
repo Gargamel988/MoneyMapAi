@@ -3,6 +3,7 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity } from "react-native";
 import { showErrorToast, showSuccessToast } from "../constanst/toast";
 import { useTheme } from "../contexts/theme";
@@ -14,6 +15,7 @@ import { supabase } from "../lib/supabase";
 WebBrowser.maybeCompleteAuthSession();
 
 const GoogleSignIn = ({ text }: { text: string }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const { theme } = useTheme();
   const { wp, dimensions } = useResponsive();
@@ -40,13 +42,13 @@ const GoogleSignIn = ({ text }: { text: string }) => {
       });
 
       if (error) {
-        showErrorToast("Hata", "Giriş başlatılamadı");
+        showErrorToast(t('common.error'), t('auth.login.error.startFailed'));
         setLoading(false);
         return;
       }
 
       if (!data?.url) {
-        showErrorToast("Hata", "OAuth URL alınamadı");
+        showErrorToast(t('common.error'), t('auth.login.error.oauthUrl'));
         setLoading(false);
         return;
       }
@@ -78,7 +80,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
           });
 
           if (setSessionError || !sessionData?.session) {
-            showErrorToast("Hata", "Oturum oluşturulamadı");
+            showErrorToast(t('common.error'), t('auth.login.error.sessionFailed'));
             setLoading(false);
             return;
           }
@@ -89,7 +91,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
           const { data: { session }, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
           
           if (exchangeError || !session) {
-            showErrorToast("Hata", "Kimlik doğrulama başarısız");
+            showErrorToast(t('common.error'), t('auth.login.error.authFailed'));
             setLoading(false);
             return;
           }
@@ -97,12 +99,12 @@ const GoogleSignIn = ({ text }: { text: string }) => {
           await handleProfileCreation(session);
         } 
         else {
-          showErrorToast("Hata", "Kimlik doğrulama bilgileri alınamadı");
+          showErrorToast(t('common.error'), t('auth.login.error.authInfo'));
           setLoading(false);
         }
       }
     } catch  {
-      showErrorToast("Hata", "Giriş sırasında bir hata oluştu");
+      showErrorToast(t('common.error'), t('auth.login.error.general'));
       setLoading(false);
     }
   };
@@ -115,7 +117,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
         const insertResult = await insertProfil(session.user);
         
         if (!insertResult || insertResult?.[0]?.error) {
-          showErrorToast("Hata", "Profil oluşturulamadı");
+          showErrorToast(t('common.error'), t('auth.profile.createFailed'));
           await supabase.auth.signOut();
           setLoading(false);
           return;
@@ -127,12 +129,12 @@ const GoogleSignIn = ({ text }: { text: string }) => {
             insertDefaultIncomeCategories(session.user)
           ]);
         } catch  {
-          showErrorToast("Hata", "Kategoriler oluşturulamadı");
+          showErrorToast(t('common.error'), t('auth.profile.createCategoriesFailed'));
         }
 
-        showSuccessToast("Başarılı", "Hesabınız oluşturuldu");
+        showSuccessToast(t('common.success'), t('auth.profile.createSuccess'));
       } else {
-        showSuccessToast("Başarılı", "Giriş başarılı");
+        showSuccessToast(t('common.success'), t('auth.profile.loginSuccess'));
       }
 
       await queryClient.invalidateQueries({ queryKey: ["profil"] });
@@ -142,7 +144,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
       setLoading(false);
       
     } catch  {
-      showErrorToast("Hata", "Profil işlemi sırasında hata oluştu");
+      showErrorToast(t('common.error'), t('auth.profile.error'));
       await supabase.auth.signOut();
     } finally {
       setLoading(false);
@@ -168,7 +170,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
           textAlign: "center",
         }}
       >
-        {loading ? "Giriş Yapılıyor..." : text}
+        {loading ? t('auth.login.loading') : text}
       </Text>
     </TouchableOpacity>
   );

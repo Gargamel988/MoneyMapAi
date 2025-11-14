@@ -8,13 +8,15 @@ import "../services/i18next"; // Initialize i18next
 import { toastConfig } from "../src/constanst/toast";
 import { ThemeProvider, useTheme } from "../src/contexts/theme";
 
+
 const queryClient = new QueryClient();
 
 function AppContent() {
   const { theme } = useTheme();
 
   return (
-    <LinearGradient
+    
+      <LinearGradient
       colors={theme.appbackgroundgradient as [string, string]}
       start={{ x: 0.15, y: 0.15 }}
       end={{ x: 0.85, y: 0.85 }}
@@ -30,6 +32,7 @@ function AppContent() {
       />
       <Toast config={toastConfig} />
     </LinearGradient>
+  
   );
 }
 

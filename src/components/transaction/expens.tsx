@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   ScrollView,
@@ -12,20 +13,21 @@ import {
   View
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
-import ModalCategory from "../categories/modal-category";
+import { showErrorToast, showSuccessToast } from "../../constanst/toast";
+import { useTheme } from "../../contexts/theme";
+import { hp, useResponsive, wp } from "../../hooks/useRespons";
 import { getUserexpenseCategories } from "../../lib/category";
 import { getCurrency } from "../../lib/profil";
 import { supabase } from "../../lib/supabase";
 import { transactionsApi } from "../../lib/transactions";
 import { ExpenseData, expenseSchema } from "../../schemas/transactionSchemas";
+import { Category } from "../../types/transactıonstype";
 import { formatDate, formatTime } from "../../utils/date";
 import { formatTotal } from "../../utils/total";
-import { showErrorToast, showSuccessToast } from "../../constanst/toast";
-import { useTheme } from "../../contexts/theme";
-import { hp, useResponsive, wp } from "../../hooks/useRespons";
-import { Category } from "../../types/transactıonstype";
+import ModalCategory from "../categories/modal-category";
 
 export const ExpenseEntry: React.FC = () => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
   const queryClient = useQueryClient();
@@ -97,7 +99,7 @@ export const ExpenseEntry: React.FC = () => {
 
       // Transaction data kontrolü
       if (!transactionData || !transactionData.data || !transactionData.data.id) {
-        throw new Error('Transaction oluşturulamadı');
+        throw new Error(t("expense.error.transaction"));
       }
 
       // list değişkenini expense_items olarak kullan
@@ -135,8 +137,10 @@ export const ExpenseEntry: React.FC = () => {
       }
 
       showSuccessToast(
-        "Başarılı! 🎉",
-        `${formatTotal(totalAmount, currency)} gider başarıyla eklendi`
+        t("expense.success.title"),
+        t("expense.success.message", {
+          amount: formatTotal(totalAmount, currency),
+        })
       );
 
       setList([]);
@@ -150,7 +154,7 @@ export const ExpenseEntry: React.FC = () => {
       setCurrentItem({ itemName: "", price: 0, priceString: "", quantity: 1 });
     },
     onError: (error: Error) => {
-      showErrorToast("Hata", error.message);
+      showErrorToast(t("common.error"), error.message);
     },
   });
 
@@ -249,7 +253,7 @@ export const ExpenseEntry: React.FC = () => {
               fontSize: dimensions.fontXL,
             }}
           >
-            Gider Ekle
+            {t("expense.title")}
           </Text>
         </View>
         <TouchableOpacity
@@ -269,7 +273,7 @@ export const ExpenseEntry: React.FC = () => {
           <Text
             style={{ color: theme.textTertiary, fontSize: dimensions.fontXS }}
           >
-            kategori ekle
+            {t("expense.addCategory")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -293,7 +297,7 @@ export const ExpenseEntry: React.FC = () => {
                   fontSize: dimensions.fontMD,
                 }}
               >
-                Kategori Seçin
+                {t("expense.selectCategory")}
               </Text>
               <Controller
                 control={control}
@@ -322,7 +326,7 @@ export const ExpenseEntry: React.FC = () => {
                             paddingVertical: 8,
                           }}
                         >
-                          Yükleniyor...
+                          {t("expense.loading")}
                         </Text>
                       ) : (
                         expenseCategories?.data?.map((category: Category) => (
@@ -404,10 +408,10 @@ export const ExpenseEntry: React.FC = () => {
                     fontSize: dimensions.fontMD,
                   }}
                 >
-                  Ürün Adı
+                  {t("expense.productName")}
                 </Text>
                 <TextInput
-                  placeholder="Ürün adını girin"
+                  placeholder={t("expense.productNamePlaceholder")}
                   placeholderTextColor={theme.inputplaceholder}
                   style={{
                     borderColor: theme.border,
@@ -436,7 +440,7 @@ export const ExpenseEntry: React.FC = () => {
                       fontSize: dimensions.fontMD,
                     }}
                   >
-                    Fiyat
+                    {t("expense.price")}
                   </Text>
 
                   <TextInput
@@ -474,7 +478,7 @@ export const ExpenseEntry: React.FC = () => {
                       fontSize: dimensions.fontMD,
                     }}
                   >
-                    Adet
+                    {t("expense.quantity")}
                   </Text>
                   <View
                     style={{
@@ -586,7 +590,7 @@ export const ExpenseEntry: React.FC = () => {
                 fontSize: dimensions.fontMD,
               }}
             >
-              Ürün Ekle
+              {t("expense.addProduct")}
             </Text>
           </TouchableOpacity>
 
@@ -608,7 +612,7 @@ export const ExpenseEntry: React.FC = () => {
                 fontSize: dimensions.fontMD,
               }}
             >
-              Ürün Listesi
+              {t("expense.productList")}
             </Text>
             <ScrollView
               showsVerticalScrollIndicator={false}
@@ -631,7 +635,7 @@ export const ExpenseEntry: React.FC = () => {
                     marginTop: 20,
                   }}
                 >
-                  Henüz ürün eklenmedi
+                  {t("expense.noProducts")}
                 </Text>
               ) : (
                 list.map((item, index) => (
@@ -706,7 +710,7 @@ export const ExpenseEntry: React.FC = () => {
                   fontSize: dimensions.fontMD,
                 }}
               >
-                Sepet Toplamı
+                {t("expense.cartTotal")}
               </Text>
               <View
                 style={{
@@ -751,18 +755,18 @@ export const ExpenseEntry: React.FC = () => {
                       fontSize: dimensions.fontMD,
                     }}
                   >
-                    Açıklama{" "}
+                    {t("expense.description")}{" "}
                     <Text
                       style={{
                         fontSize: dimensions.fontSM,
                         color: theme.textSecondary,
                       }}
                     >
-                      {"(İsteğe bağlı)"}
+                      {t("expense.optional")}
                     </Text>
                   </Text>
                   <TextInput
-                    placeholder="Açıklama girin"
+                    placeholder={t("expense.descriptionPlaceholder")}
                     placeholderTextColor={theme.inputplaceholder}
                     style={{
                       borderRadius: dimensions.borderRadiusLG,
@@ -800,7 +804,7 @@ export const ExpenseEntry: React.FC = () => {
                 color: theme.textSecondary,
               }}
             >
-              Tarih ve Saat
+              {t("expense.dateTime")}
             </Text>
             <View
               style={{
@@ -926,8 +930,7 @@ export const ExpenseEntry: React.FC = () => {
                   color: theme.textQuaternary,
                 }}
               >
-                tarih ve saati doldurmaya özen gösteriniz işlemleriniz tarih ve
-                saat bazında filtrelenebilir
+                {t("expense.dateTimeInfo")}
               </Text>
             </View>
           </View>
@@ -957,7 +960,7 @@ export const ExpenseEntry: React.FC = () => {
                 color: theme.white,
               }}
             >
-              {addExpenseMutation.isPending ? "Kaydediliyor..." : "Gider Ekle"}
+              {addExpenseMutation.isPending ? t("expense.saving") : t("expense.submit")}
             </Text>
           </TouchableOpacity>
 
@@ -980,7 +983,7 @@ export const ExpenseEntry: React.FC = () => {
                   marginBottom: 8,
                 }}
               >
-                Eksik Alanlar:
+                {t("expense.missingFields")}
               </Text>
               {Object.entries(formState.errors).map(([field, error]) => (
                 <Text
@@ -991,7 +994,7 @@ export const ExpenseEntry: React.FC = () => {
                     marginBottom: 4,
                   }}
                 >
-                  • {field}: {error?.message || 'Bu alan zorunludur'}
+                  • {field}: {error?.message || t("expense.fieldRequired")}
                 </Text>
               ))}
             </View>

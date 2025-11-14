@@ -3,12 +3,14 @@ import { useResponsive } from '@/src/hooks/useRespons';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { ExpenseEntry } from '../../../src/components/transaction/expens';
 import { IncomeEntry } from '../../../src/components/transaction/income';
 import { useTheme } from '../../../src/contexts/theme';
 
 const AddTransaction: React.FC = () => {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<'expense' | 'income'>('expense');
   const { dimensions, wp } = useResponsive();
   const { theme } = useTheme();
@@ -57,15 +59,14 @@ const AddTransaction: React.FC = () => {
             
             <Text
               style={{
-                fontSize: dimensions.fontTitle,
+                fontSize: dimensions.fontTitle-2,
                 fontWeight: '800',
                 textAlign: 'center',
                 color: theme.text,
-                letterSpacing: 0.5,
                 marginHorizontal: dimensions.md,
               }}
             >
-              💼 Yeni İşlem Ekle
+              {t("addTransaction.title")}
             </Text>
             
             {/* Boş alan - geri butonu ile başlık arasında denge için */}
@@ -89,8 +90,7 @@ const AddTransaction: React.FC = () => {
                 maxWidth: '90%',
               }}
             >
-              Gelir veya gider işlemi ekleyerek kişisel bütçeni güncel tut.
-              Takip etmesi kolay, kontrol sende!
+              {t("addTransaction.description")}
             </Text>
           </View>
 
@@ -135,7 +135,7 @@ const AddTransaction: React.FC = () => {
                       : theme.textTertiary,
                 }}
               >
-                Gider Ekle
+                {t("addTransaction.tabs.expense")}
               </Text>
             </TouchableOpacity>
 
@@ -165,7 +165,7 @@ const AddTransaction: React.FC = () => {
                       : theme.textTertiary,
                 }}
               >
-                Gelir Ekle
+                {t("addTransaction.tabs.income")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -192,7 +192,7 @@ const AddTransaction: React.FC = () => {
                     flex: 1,
                   }}
                 >
-                  AI ile hızlı ekle
+                  {t("addTransaction.aiPromo.title")}
                 </Text>
               </View>
               <TouchableOpacity
@@ -211,7 +211,7 @@ const AddTransaction: React.FC = () => {
                     fontWeight: '600',
                   }}
                 >
-                  Dene
+                  {t("addTransaction.aiPromo.button")}
                 </Text>
               </TouchableOpacity>
             </View>

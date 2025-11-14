@@ -7,7 +7,7 @@ export const createDefaultCategories = (user: User, type: 'gelir' | 'gider') => 
     { name: 'Yatırım', icon: 'trending-up', color: '#8B5CF6' },
     { name: 'İkramiye', icon: 'gift', color: '#F59E0B' },
     { name: 'Satış', icon: 'shopping-bag', color: '#06B6D4' },
-    { name: 'Kira', icon: 'home', color: '#EC4899' },
+    { name: 'Kira Geliri', icon: 'home', color: '#EC4899' },
     { name: 'Diğer', icon: 'more-horizontal', color: '#6B7280' },
   ];
 

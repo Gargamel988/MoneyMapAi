@@ -1,4 +1,5 @@
 import { Alert } from 'react-native';
+import i18next from '../../services/i18next';
 import { showErrorToast, showSuccessToast } from '../constanst/toast';
 import { SignInWithEmailProps, SignUpWithEmailProps } from '../types/authtype';
 import { getErrorMessage } from '../utils/authutils';
@@ -11,11 +12,11 @@ const signInWithEmail = async (data: SignInWithEmailProps) => {
     password: data.password.trim(),
   });
   if (authData.user?.identities?.length === 0) {
-    Alert.alert('Hata', 'Email adresiniz doğrulanmamış. Lütfen mailinizi kontrol edin ve doğrulama bağlantısına tıklayın.');
+    Alert.alert(i18next.t('common.error'), i18next.t('auth.email.notVerified'));
     return null;
   }
   if (error) {
-    showErrorToast('Hata', getErrorMessage(error));
+    showErrorToast(i18next.t('common.error'), getErrorMessage(error));
     return null;
   }
 
@@ -36,14 +37,14 @@ const signUpWithEmail = async (data: SignUpWithEmailProps) => {
     });
 
     if (error) {
-      showErrorToast('Hata', getErrorMessage(error));
+      showErrorToast(i18next.t('common.error'), getErrorMessage(error));
 
       return null;
     }
 
     return authData;
   } catch (error: any) {
-    showErrorToast('Hata', getErrorMessage(error));
+    showErrorToast(i18next.t('common.error'), getErrorMessage(error));
     return null;
   }
 };
@@ -52,11 +53,11 @@ const signUpWithEmail = async (data: SignUpWithEmailProps) => {
 const updateEmail = async (email: string) => {
   const { data, error } = await supabase.auth.updateUser({ email });
   if (error) {
-    showErrorToast('Hata', getErrorMessage(error));
+    showErrorToast(i18next.t('common.error'), getErrorMessage(error));
     return null;
   }
   if (!data.user) {
-    showErrorToast('Hata', 'Email güncellenemedi');
+    showErrorToast(i18next.t('common.error'), i18next.t('auth.email.updateFailed'));
     return null;
   }
   const { data: updatedData, error: updatedError } = await supabase
@@ -64,10 +65,10 @@ const updateEmail = async (email: string) => {
     .update({ email: email })
     .eq('user_id', data.user.id);
 	if(updatedData) {
-		showSuccessToast('Başarılı', 'Email güncellendi');
+		showSuccessToast(i18next.t('common.success'), i18next.t('auth.email.updateSuccess'));
 	}
   if (updatedError) {
-    showErrorToast('Hata', updatedError.message);
+    showErrorToast(i18next.t('common.error'), updatedError.message);
     return null;
   }
   return updatedData;

@@ -1,9 +1,11 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../src/contexts/theme';
 import { useResponsive } from '../../../src/hooks/useRespons';
 
 export default function PrivacyPolicy() {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
 
@@ -42,7 +44,7 @@ export default function PrivacyPolicy() {
             marginBottom: dimensions.xs,
           }}
         >
-          Gizlilik Politikası
+          {t("privacyPolicy.title")}
         </Text>
 
         <Text
@@ -53,13 +55,11 @@ export default function PrivacyPolicy() {
             fontSize: dimensions.fontSM,
           }}
         >
-          Son güncelleme: 31 Ekim 2025
+          {t("privacyPolicy.lastUpdated")}
         </Text>
 
         <Text style={{ color: theme.textSenary, lineHeight: 22, marginBottom: dimensions.md }}>
-          Bu gizlilik politikası, ömer (bundan böyle Hizmet Sağlayıcı olarak anılacaktır) tarafından ücretsiz bir hizmet olarak oluşturulan
-          mobil cihazlar için <Text style={{ fontWeight: '700' }}>MoneyMapAi</Text> uygulaması (bundan böyle Uygulama olarak anılacaktır)
-          için geçerlidir. Bu hizmet OLDUĞU GİBİ kullanılmak üzere tasarlanmıştır.
+          {t("privacyPolicy.intro")}
         </Text>
 
         {/* Important Notice */}
@@ -81,36 +81,33 @@ export default function PrivacyPolicy() {
               marginBottom: dimensions.sm,
             }}
           >
-            ⚠️ Önemli: Kamera İzni ve Kullanımı
+            {t("privacyPolicy.camera.title")}
           </Text>
 
           <Text style={{ color: theme.textSenary, marginBottom: dimensions.sm }}>
-            <Text style={{ fontWeight: '700' }}>Uygulama kamera izni (android.permission.CAMERA) kullanır.</Text> Bu izin aşağıdaki amaçlarla
-            kullanılır:
+            <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.permission")}</Text>
           </Text>
 
           <View style={{ gap: dimensions.xs, marginBottom: dimensions.md }}>
             <Text style={{ color: theme.textSenary }}>
-              • <Text style={{ fontWeight: '700' }}>Fatura ve Makbuz Fotoğrafı Çekmek:</Text> Harcamalarınızı kaydetmek için fatura ve
-              makbuz fotoğrafları çekebilirsiniz
+              • <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.receipt")}</Text>
             </Text>
             <Text style={{ color: theme.textSenary }}>
-              • <Text style={{ fontWeight: '700' }}>Yapay Zeka ile Analiz:</Text> Çekilen fotoğraflar, harcama bilgilerini otomatik olarak
-              çıkarmak için AI teknolojisi ile işlenir
+              • <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.ai")}</Text>
             </Text>
           </View>
 
           <Text style={{ color: theme.textSenary, marginBottom: dimensions.xs, fontWeight: '700' }}>
-            Gizliliğiniz Bizim İçin Önemli:
+            {t("privacyPolicy.camera.privacy")}
           </Text>
           <View style={{ gap: dimensions.xs }}>
-            <Text style={{ color: theme.textSenary }}>✓ Çekilen fotoğraflar yalnızca AI analizi için kullanılır</Text>
+            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point1")}</Text>
             <Text style={{ color: theme.textSenary }}>
-              ✓ Fotoğraflar cihazınızda yerel olarak işlenir veya güvenli şekilde şifrelenmiş sunucularımıza gönderilir
+              ✓ {t("privacyPolicy.camera.point2")}
             </Text>
-            <Text style={{ color: theme.textSenary }}>✓ İşlenen fotoğraflar, analiz tamamlandıktan sonra silinebilir</Text>
-            <Text style={{ color: theme.textSenary }}>✓ Kamera izninizi istediğiniz zaman cihaz ayarlarından iptal edebilirsiniz</Text>
-            <Text style={{ color: theme.textSenary }}>✓ Hiçbir fotoğraf üçüncü taraflarla paylaşılmaz</Text>
+            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point3")}</Text>
+            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point4")}</Text>
+            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point5")}</Text>
           </View>
         </View>
 
@@ -118,21 +115,21 @@ export default function PrivacyPolicy() {
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Bilgi Toplama ve Kullanımı
+          {t("privacyPolicy.collection.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22, marginBottom: dimensions.sm }}>
-          Uygulamayı indirip kullandığınızda bilgi toplar. Bu bilgiler aşağıdaki gibi bilgileri içerebilir:
+          {t("privacyPolicy.collection.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Cihazınızın İnternet Protokolü adresi (örneğin IP adresi)</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.ip")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • Ziyaret ettiğiniz Uygulama sayfaları, ziyaretinizin saati ve tarihi, bu sayfalarda harcanan süre
+            • {t("privacyPolicy.collection.pages")}
           </Text>
-          <Text style={{ color: theme.textSenary }}>• Uygulamada harcanan süre</Text>
-          <Text style={{ color: theme.textSenary }}>• Mobil cihazınızda kullandığınız işletim sistemi</Text>
-          <Text style={{ color: theme.textSenary }}>• Fatura ve makbuz fotoğrafları (yalnızca sizin onayınızla)</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.time")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.os")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.photos")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • AI analizi sonucu çıkarılan harcama bilgileri (tutar, tarih, kategori, vb.)
+            • {t("privacyPolicy.collection.ai")}
           </Text>
         </View>
 
@@ -147,7 +144,7 @@ export default function PrivacyPolicy() {
           }}
         >
           <Text style={{ margin: 0, color: theme.textSenary }}>
-            <Text style={{ fontWeight: '700' }}>Not:</Text> Uygulama mobil cihazınızın konumu hakkında kesin bilgi toplamaz.
+            {t("privacyPolicy.collection.note")}
           </Text>
         </View>
 
@@ -155,19 +152,19 @@ export default function PrivacyPolicy() {
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Yapay Zeka (AI) Kullanımı
+          {t("privacyPolicy.ai.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22, marginBottom: dimensions.sm }}>
-          Uygulama, fatura ve makbuz fotoğraflarınızı analiz etmek için yapay zeka teknolojisi kullanır. Bu süreçte:
+          {t("privacyPolicy.ai.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• Fotoğraflarınız otomatik olarak işlenir ve metin tanıma (OCR) yapılır</Text>
-          <Text style={{ color: theme.textSenary }}>• Tutar, tarih, satıcı adı ve kategori bilgileri çıkarılır</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.ai.ocr")}</Text>
+          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.ai.extract")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • İşlem tamamlandıktan sonra orijinal fotoğraf silinebilir veya şifrelenmiş olarak saklanabilir
+            • {t("privacyPolicy.ai.delete")}
           </Text>
           <Text style={{ color: theme.textSenary }}>
-            • AI analizi için kullanılan üçüncü taraf servisler, kendi gizlilik politikalarına tabidir
+            • {t("privacyPolicy.ai.thirdParty")}
           </Text>
         </View>
 
@@ -175,87 +172,76 @@ export default function PrivacyPolicy() {
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Üçüncü Taraf Erişimi
+          {t("privacyPolicy.thirdParty.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22, marginBottom: dimensions.sm }}>
-          Uygulamanın, verilerin işlenmesine ilişkin kendi Gizlilik Politikaları olan üçüncü taraf hizmetlerinden yararlandığını
-          lütfen unutmayın:
+          {t("privacyPolicy.thirdParty.intro")}
         </Text>
         <TouchableOpacity onPress={() => openUrl('https://policies.google.com/privacy')} activeOpacity={0.7}>
-          <Text style={{ color: theme.link, textDecorationLine: 'underline' }}>Google Play Hizmetleri</Text>
+          <Text style={{ color: theme.link, textDecorationLine: 'underline' }}>{t("privacyPolicy.thirdParty.google")}</Text>
         </TouchableOpacity>
 
         {/* Opt-out Rights */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Çıkış Hakları
+          {t("privacyPolicy.optOut.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Uygulamayı kaldırarak tüm bilgi toplama işlemlerini kolayca durdurabilirsiniz. Mobil cihazınızda veya mobil uygulama
-          pazaryeri veya ağı aracılığıyla mevcut olabilecek standart kaldırma işlemlerini kullanabilirsiniz.
+          {t("privacyPolicy.optOut.text")}
         </Text>
 
         {/* Data Retention */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Veri Saklama Politikası
+          {t("privacyPolicy.retention.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Hizmet Sağlayıcı, Kullanıcı Tarafından Sağlanan verileri, Uygulamayı kullandığınız süre boyunca ve sonrasında makul bir süre
-          boyunca saklayacaktır. Uygulama aracılığıyla sağladığınız Kullanıcı Tarafından Sağlanan Verilerin (fatura fotoğrafları dahil)
-          silinmesini isterseniz, lütfen <Text style={{ fontWeight: '700' }}>gargamel9288@gmail.com</Text> adresinden onlarla iletişime
-          geçin; makul bir süre içinde yanıt vereceklerdir.
+          {t("privacyPolicy.retention.text")}
         </Text>
 
         {/* Children */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Çocuklar
+          {t("privacyPolicy.children.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Uygulama 13 yaşın altındaki kişilere yönelik değildir. Hizmet Sağlayıcı, 13 yaşın altındaki çocuklardan bilerek kişisel olarak
-          tanımlanabilir bilgi toplamaz. Hizmet Sağlayıcı, 13 yaşın altındaki bir çocuğun kişisel bilgi verdiğini tespit ederse, bu bilgileri
-          derhal sunucularından siler.
+          {t("privacyPolicy.children.text")}
         </Text>
 
         {/* Security */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Güvenlik
+          {t("privacyPolicy.security.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Hizmet Sağlayıcı, bilgilerinizin gizliliğini korumayı önemsemektedir. Hizmet Sağlayıcı, işlediği ve sakladığı bilgileri (fatura
-          fotoğrafları dahil) korumak için fiziksel, elektronik ve prosedürel güvenlik önlemleri sağlar. Tüm hassas veriler şifrelenerek
-          saklanır ve iletilir.
+          {t("privacyPolicy.security.text")}
         </Text>
 
         {/* Changes */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Değişiklikler
+          {t("privacyPolicy.changes.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Bu Gizlilik Politikası, herhangi bir nedenle zaman zaman güncellenebilir. Hizmet Sağlayıcı, bu sayfayı yeni Gizlilik Politikası ile
-          güncelleyerek Gizlilik Politikası kapsamındaki değişiklikleri size bildirecektir.
+          {t("privacyPolicy.changes.text1")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          <Text style={{ fontWeight: '700' }}>Bu gizlilik politikası 31 Ekim 2025 tarihi itibarıyla geçerlidir.</Text>
+          <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.changes.text2")}</Text>
         </Text>
 
         {/* Consent */}
         <Text
           style={{ color: theme.textQuaternary, marginTop: dimensions.lg, fontSize: dimensions.fontXL, fontWeight: '700' }}
         >
-          Onayınız
+          {t("privacyPolicy.consent.title")}
         </Text>
         <Text style={{ color: theme.textSenary, lineHeight: 22 }}>
-          Uygulamayı kullanarak, bilgilerinizin (kamera izni ve çekilen fotoğraflar dahil) bu Gizlilik Politikasında belirtildiği ve
-          tarafımızca değiştirildiği şekilde işlenmesine onay vermiş olursunuz.
+          {t("privacyPolicy.consent.text")}
         </Text>
 
         {/* Contact */}
@@ -268,15 +254,14 @@ export default function PrivacyPolicy() {
           }}
         >
           <Text style={{ color: theme.white, fontSize: dimensions.fontXL, fontWeight: '700', marginBottom: dimensions.xs }}>
-            Bize Ulaşın
+            {t("privacyPolicy.contact.title")}
           </Text>
           <Text style={{ color: theme.white, lineHeight: 22, marginBottom: dimensions.xs }}>
-            Uygulamayı kullanırken gizlilikle ilgili herhangi bir sorunuz varsa, kamera izni veya fotoğraf işleme hakkında sorularınız
-            varsa, lütfen e-posta yoluyla Hizmet Sağlayıcı ile iletişime geçin:
+            {t("privacyPolicy.contact.text")}
           </Text>
           <TouchableOpacity onPress={() => openMail('gargamel9288@gmail.com')} activeOpacity={0.7}>
             <Text style={{ color: theme.textPrimary, fontWeight: '700', textDecorationLine: 'underline' }}>
-              E-posta: gargamel9288@gmail.com
+              {t("privacyPolicy.contact.email")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -291,8 +276,7 @@ export default function PrivacyPolicy() {
             lineHeight: 20,
           }}
         >
-          Bu gizlilik politikası sayfası, Uygulama Gizlilik Politikası Oluşturucu kullanılarak oluşturulmuş ve MoneyMapAi uygulamasının
-          ihtiyaçlarına göre özelleştirilmiştir.
+          {t("privacyPolicy.footer")}
         </Text>
       </View>
     </ScrollView>

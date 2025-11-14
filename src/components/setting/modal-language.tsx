@@ -11,6 +11,7 @@ import {
 import { showErrorToast, showSuccessToast } from "../../constanst/toast";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
+import { updateDefaultCategoriesByLanguage } from "../../lib/category";
 import { updateLanguage } from "../../lib/profil";
 
 interface ModalLanguageProps {
@@ -51,6 +52,15 @@ const ModalLanguage = ({
 
       if (!response) {
         throw new Error("language-update-failed");
+      }
+
+      // Kategorileri yeni dile göre güncelle
+      const categoryUpdateResult = await updateDefaultCategoriesByLanguage(code);
+      if (categoryUpdateResult.success) {
+        // Kategori query'lerini invalidate et
+        await queryClient.invalidateQueries({ queryKey: ["categories"] });
+        await queryClient.invalidateQueries({ queryKey: ["income_categories"] });
+        await queryClient.invalidateQueries({ queryKey: ["expense_categories"] });
       }
 
       await i18n.changeLanguage(code);

@@ -3,6 +3,7 @@ import { ExpenseItem, Transaction } from "@/src/types/transactıonstype";
 import { formatTotal } from "@/src/utils/total";
 import { Feather } from "@expo/vector-icons";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Modal, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 type TransactionDetailProps = {
@@ -13,6 +14,7 @@ export default function TransactionDetail({
   transaction,
   onClose,
 }: TransactionDetailProps) {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
   if (!transaction) {
@@ -66,7 +68,7 @@ export default function TransactionDetail({
                 color: theme.textSenary,
               }}
             >
-              İşlem Detayı
+              {t("transactionDetail.title")}
             </Text>
             <TouchableOpacity onPress={handleClose}>
               <Feather name="x" size={24} color={theme.buttonsecondary} />
@@ -104,7 +106,7 @@ export default function TransactionDetail({
                     {transaction.categories.name}
                   </Text>
                   <Text style={{ fontSize: dimensions.fontSM, color: theme.textQuinary, marginTop: dimensions.xs }}>
-                    {transaction.description || "Açıklama yok"}
+                    {transaction.description || t("transactionDetail.noDescription")}
                   </Text>
                 </View>
               </View>
@@ -125,7 +127,7 @@ export default function TransactionDetail({
                   <Text
                     style={{ fontSize: dimensions.fontSM, color: theme.textQuinary, marginBottom: dimensions.xs }}
                   >
-                    İşlem Tipi
+                    {t("transactionDetail.type")}
                   </Text>
                   <View
                     style={{
@@ -139,7 +141,7 @@ export default function TransactionDetail({
                     <Text
                       style={{ color: theme.text, fontSize: dimensions.fontSM, fontWeight: "600" }}
                     >
-                      {transaction.type === "gelir" ? "↑ Gelir" : "↓ Gider"}
+                      {transaction.type === "gelir" ? t("transactionDetail.income") : t("transactionDetail.expense")}
                     </Text>
                   </View>
                 </View>
@@ -147,7 +149,7 @@ export default function TransactionDetail({
                   <Text
                     style={{ fontSize: dimensions.fontSM, color: theme.textQuinary, marginBottom: dimensions.xs }}
                   >
-                    Toplam Tutar
+                    {t("transactionDetail.totalAmount")}
                   </Text>
                   <Text
                     style={{
@@ -173,7 +175,7 @@ export default function TransactionDetail({
                     marginBottom: dimensions.md,
                   }}
                 >
-                  İşlem Kalemleri
+                  {t("transactionDetail.items")}
                 </Text>
 
                 {(transaction.expense_items || []).map(
@@ -203,7 +205,7 @@ export default function TransactionDetail({
                         <Text
                           style={{ fontSize: dimensions.fontSM, color: theme.textQuinary, marginTop: dimensions.xs }}
                         >
-                          {Number(item.quantity || 1)} adet ×{" "}
+                          {Number(item.quantity || 1)} {t("transactionDetail.quantity")} ×{" "}
                           {formatTotal(item.unit_price)}
                         </Text>
                       </View>

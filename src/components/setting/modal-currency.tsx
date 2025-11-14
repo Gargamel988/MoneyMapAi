@@ -1,4 +1,5 @@
 import { useResponsive } from "@/src/hooks/useRespons";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, Modal, Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 
@@ -15,21 +16,22 @@ export const ModalCurrency = ({
   currency,
   mutation,
 }: ModalCurrencyProps) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
   const currencyOptions = [
-    { code: "TRY", symbol: "₺", name: "Türk Lirası" },
-    { code: "USD", symbol: "$", name: "Amerikan Doları" },
-    { code: "EUR", symbol: "€", name: "Euro" },
-    { code: "GBP", symbol: "£", name: "İngiliz Sterlini" },
-    { code: "JPY", symbol: "¥", name: "Japon Yeni" },
-    { code: "CNY", symbol: "¥", name: "Çin Yuanı" },
+    { code: "TRY", symbol: "₺", name: t("modalCurrency.currencies.TRY") },
+    { code: "USD", symbol: "$", name: t("modalCurrency.currencies.USD") },
+    { code: "EUR", symbol: "€", name: t("modalCurrency.currencies.EUR") },
+    { code: "GBP", symbol: "£", name: t("modalCurrency.currencies.GBP") },
+    { code: "JPY", symbol: "¥", name: t("modalCurrency.currencies.JPY") },
+    { code: "CNY", symbol: "¥", name: t("modalCurrency.currencies.CNY") },
   ];
 
   const onpress = ( currency: string ) => {
-Alert.alert('Para birimi değiştiriliyor?', 'Para birimi değiştirmek istediğinize emin misiniz?', [
-  { text: 'İptal', style: 'cancel' },
-  { text: 'Tamam', onPress: () => {
+Alert.alert(t("modalCurrency.alert.title"), t("modalCurrency.alert.message"), [
+  { text: t("modalCurrency.alert.cancel"), style: 'cancel' },
+  { text: t("modalCurrency.alert.confirm"), onPress: () => {
 	mutation.mutate(currency);
     setShowCurrencyModal(false);
   } },
@@ -100,7 +102,7 @@ Alert.alert('Para birimi değiştiriliyor?', 'Para birimi değiştirmek istediğ
                     color: theme.inputtitle,
                   }}
                 >
-                  Para birimi seç
+                  {t("modalCurrency.title")}
                 </Text>
                 <Text
                   style={{
@@ -109,13 +111,13 @@ Alert.alert('Para birimi değiştiriliyor?', 'Para birimi değiştirmek istediğ
                     color: theme.textTertiary,
                   }}
                 >
-                  Geçerli: {currency}
+                  {t("modalCurrency.current")}: {currency}
                 </Text>
               </View>
               <TouchableOpacity
                 onPress={() => setShowCurrencyModal(false)}
                 accessibilityRole="button"
-                accessibilityLabel="Kapat"
+                accessibilityLabel={t("modalCurrency.close")}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
                 style={{
                   marginLeft: dimensions.md,

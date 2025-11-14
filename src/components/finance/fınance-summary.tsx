@@ -1,6 +1,7 @@
 import { useTheme } from "@/src/contexts/theme";
 import { useResponsive } from "@/src/hooks/useRespons";
 import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { WeeklyCard } from "../ui/weekly-card";
 import InfoCard from "../ui/ınfo-card";
@@ -10,7 +11,7 @@ interface FinanceSummaryProps {
   error: Error;
   data: TransactionList;
   currency: string;
-  tabs?: string; // Analytics'ten gelen 'Günlük, Aylık...' bilgisi
+  tabs?: "daily" | "weekly" | "monthly" | "yearly"; // Analytics'ten gelen period bilgisi
 }
 
 export default function FinanceSummary({
@@ -20,6 +21,7 @@ export default function FinanceSummary({
   currency,
   tabs,
 }: FinanceSummaryProps) {
+  const { t } = useTranslation();
   const items = Array.isArray(data) ? data : [];
   const { theme } = useTheme();
   const { wp, hp, isTablet } = useResponsive();
@@ -43,24 +45,26 @@ export default function FinanceSummary({
   // 💡 Akıllı öneri kısmı
   let insightText = "";
   const diff = incomeTotal - expenseTotal;
+  const periodLabel = tabs ? t(`analytics.periods.${tabs}`) : t("analytics.periods.monthly");
 
   if (incomeTotal === 0 && expenseTotal === 0) {
-    insightText =
-      "Henüz işlem bulunmuyor. Veri eklendikçe analizler burada görünecek.";
+    insightText = t("financeSummary.insight.noData");
   } else if (diff > 0) {
     const percent = ((diff / incomeTotal) * 100).toFixed(1);
-    insightText = `Harika! Bu ${
-      tabs?.toLowerCase() || "dönem"
-    } gelirlerin giderlerinden %${percent} fazla.`;
+    insightText = t("financeSummary.insight.positive", {
+      period: periodLabel,
+      percent,
+    });
   } else if (diff === 0) {
-    insightText = `Bu ${
-      tabs?.toLowerCase() || "dönem"
-    } gelir ve giderlerin dengede.`;
+    insightText = t("financeSummary.insight.balanced", {
+      period: periodLabel,
+    });
   } else {
     const deficit = ((Math.abs(diff) / incomeTotal) * 100).toFixed(1);
-    insightText = `Dikkat! Bu ${
-      tabs?.toLowerCase() || "dönem"
-    } giderlerin gelirlerinden %${deficit} daha fazla.`;
+    insightText = t("financeSummary.insight.negative", {
+      period: periodLabel,
+      deficit,
+    });
   }
 
   return (
@@ -80,7 +84,7 @@ export default function FinanceSummary({
           marginBottom: hp(0.5),
         }}
       >
-        Finansal Özet
+        {t("financeSummary.title")}
       </Text>
       <Text
         style={{
@@ -89,13 +93,15 @@ export default function FinanceSummary({
           marginBottom: hp(1),
         }}
       >
-        {tabs} dönemi gelir, gider ve bakiye özeti
+        {t("financeSummary.description", {
+          period: periodLabel,
+        })}
       </Text>
 
       {/* Kartlar */}
       <WeeklyCard
         id="income"
-        name="Toplam Gelir"
+        name={t("financeSummary.cards.totalIncome")}
         value={incomeTotal}
         isLoading={isLoading}
         error={error}
@@ -103,7 +109,7 @@ export default function FinanceSummary({
       />
       <WeeklyCard
         id="expense"
-        name="Toplam Gider"
+        name={t("financeSummary.cards.totalExpense")}
         value={expenseTotal}
         isLoading={isLoading}
         error={error}
@@ -111,7 +117,7 @@ export default function FinanceSummary({
       />
       <WeeklyCard
         id="balance"
-        name="Net Bakiye"
+        name={t("financeSummary.cards.netBalance")}
         value={total}
         currency={currency}
         isLoading={isLoading}
@@ -120,7 +126,7 @@ export default function FinanceSummary({
 
       {/* 💬 Akıllı Öneri */}
       <InfoCard>
-        {`💡 Finansal İçgörü:
+        {`${t("financeSummary.insight.title")}
 ${insightText}`}
       </InfoCard>
     </View>

@@ -192,21 +192,8 @@ const FinanceAppScreen = () => {
                 {t("login.button")}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => router.push("/(screens)/(main)/home")}
-              activeOpacity={0.8}
-            >
-              <Text
-                style={{
-                  fontSize: dimensions.fontMD - 0.5,
-                  textDecorationLine: "underline",
-                  fontWeight: "bold",
-                  color: theme.link,
-                }}
-              >
-                {t("login.button")}
-              </Text>
-            </TouchableOpacity>
+          
+             
           </View>
         </View>
       </View>

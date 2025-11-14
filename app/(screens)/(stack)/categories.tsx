@@ -1,6 +1,7 @@
 import { ErrorFallback } from "@/src/components/common/error";
 import SearchFilterBar from "@/src/components/ui/search-filter-bar";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   Alert,
   FlatList,
@@ -21,6 +22,7 @@ import { Category } from "../../../src/types/transactıonstype";
 type SortType = "name-asc" | "name-desc" | "date-newest" | "date-oldest";
 
 const CategoryManagement = () => {
+  const { t } = useTranslation();
   const { dimensions,  wp } = useResponsive();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
@@ -43,12 +45,12 @@ const CategoryManagement = () => {
 
   const handleDeleteCategory = (id: string) => {
     Alert.alert(
-      "Kategoriyi Sil",
-      "Bu kategoriyi silmek istediğinizden emin misiniz?",
+      t("categories.delete.title"),
+      t("categories.delete.message"),
       [
-        { text: "İptal", style: "cancel" },
+        { text: t("categories.delete.cancel"), style: "cancel" },
         {
-          text: "Sil",
+          text: t("categories.delete.confirm"),
           style: "destructive",
           onPress: () => {
             setDeletingCategoryId(id);

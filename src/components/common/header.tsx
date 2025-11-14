@@ -2,6 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
+import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { getProfil } from "../../../src/lib/profil";
 import { avatar } from "../../../src/utils/avatar";
@@ -9,6 +10,7 @@ import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useRespons";
 
 const Header = () => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet, wp, hp } = useResponsive();
   const { data: user } = useQuery({
@@ -69,13 +71,13 @@ const Header = () => {
             fontWeight: "bold",
           }}
         >
-          MoneyMap
+          {t("header.brand.name")}
           <Text
             style={{
               color: theme.textPrimary,
             }}
           >
-            Ai
+            {t("header.brand.ai")}
           </Text>
         </Text>
       </View>

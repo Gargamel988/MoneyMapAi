@@ -2,6 +2,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { Theme, themes } from '../constanst/themes';
 import { getTheme, updateTheme } from '../lib/profil';
 
@@ -18,6 +19,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const { t } = useTranslation();
   const [themeMode, setThemeMode] = useState<string>('system');
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -80,7 +82,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
             fontWeight: '500',
           }}
         >
-          Yükleniyor...
+          {t('common.loading')}
         </Text>
       </View>
     );

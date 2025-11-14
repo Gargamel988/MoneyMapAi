@@ -1,14 +1,19 @@
 import { User } from '@supabase/supabase-js';
 import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
+import i18next from '../../services/i18next';
 import { showErrorToast, showSuccessToast, showWarningToast } from '../constanst/toast';
 import { SignInWithEmailProps, SignUpWithEmailProps } from '../types/authtype';
 import { getsignInErrorMessage } from '../utils/authutils';
 import { signInWithEmail, signUpWithEmail } from './authapi';
+import { insertDefaultExpenseCategories, insertDefaultIncomeCategories } from './category';
 import { supabase } from './supabase';
 
 const onpress = async (user: User): Promise<boolean> => {
   try {
+    // Mevcut dili al (varsayılan: 'tr')
+    const currentLanguage = (i18next.language || 'tr').split('-')[0];
+    
     const profileData = {
       user_id: user.id,
       name: user.user_metadata.first_name || '', 
@@ -16,6 +21,7 @@ const onpress = async (user: User): Promise<boolean> => {
       email: user.email || '',
       currency: 'TRY',
       theme: 'system',
+      language: currentLanguage,
     };
     
     const { error } = await supabase
@@ -23,13 +29,13 @@ const onpress = async (user: User): Promise<boolean> => {
       .insert([profileData]);
     
     if (error) {
-      showWarningToast('Uyarı', `Profil oluşturulamadı: ${error.message}`);
+      showWarningToast(i18next.t('common.warning'), i18next.t('auth.profile.warning', { message: error.message }));
       return false;
     }
     
     return true;
   } catch (error) {
-    showErrorToast('Hata', 'Beklenmeyen bir hata oluştu: ' + (error as Error).message);
+    showErrorToast(i18next.t('common.error'), i18next.t('auth.profile.error.unexpected', { message: (error as Error).message }));
     return false;
   }
 };
@@ -44,29 +50,38 @@ export const useAuthsignupMutation = () => {
     mutationFn: (data: SignUpWithEmailProps) => signUpWithEmail(data),
     onSuccess: async (authData) => {
       if (!authData?.user) {
-        showErrorToast('Hata', 'Kayıt başarılı ama kullanıcı bilgisi alınamadı.');
+        showErrorToast(i18next.t('common.error'), i18next.t('auth.register.error.userInfo'));
         return;
       }
       
-      showSuccessToast('Başarılı', 'Kayıt başarılı bir şekilde gerçekleşti.');
+      showSuccessToast(i18next.t('common.success'), i18next.t('auth.register.success'));
       
       const profileCreated = await onpress(authData.user);
       if (!profileCreated) {
         return;
       }
       
-    
+      // Varsayılan kategorileri oluştur
+      try {
+        await Promise.all([
+          insertDefaultExpenseCategories(authData.user),
+          insertDefaultIncomeCategories(authData.user)
+        ]);
+      } catch (error) {
+        console.error('Error creating default categories:', error);
+        // Kategori oluşturma hatası kayıt işlemini durdurmaz
+      }
       
       router.push('/(screens)/(auth)/email-control');
       resetRegister();
     },
     onError: (error: Error) => {
       if (error.message.includes('already registered')) {
-        showErrorToast('Hata', 'Bu email adresi zaten kullanılmaktadır.');
+        showErrorToast(i18next.t('common.error'), i18next.t('auth.register.error.emailExists'));
         return;
       }
 
-      showErrorToast('Hata', 'Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.');
+      showErrorToast(i18next.t('common.error'), i18next.t('auth.register.error.general'));
     },
   });
   
@@ -83,12 +98,12 @@ export const useAuthsignupMutation = () => {
         return;
       }
       
-      showSuccessToast('Başarılı', 'Giriş başarılı bir şekilde gerçekleşti.');
+      showSuccessToast(i18next.t('common.success'), i18next.t('auth.login.success'));
       router.push('/(screens)/(main)/home' as never);
        resetLogin();
     },
     onError: (error: any) => {
-      showErrorToast('Hata', getsignInErrorMessage(error));
+      showErrorToast(i18next.t('common.error'), getsignInErrorMessage(error));
     },
   });
   

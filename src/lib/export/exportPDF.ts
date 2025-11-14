@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import i18next from '../../../services/i18next';
 import { showErrorToast, showSuccessToast } from '../../constanst/toast';
 import { Transaction, TransactionList } from '../../types/transactıonstype';
 export const exportToPDF = async (
@@ -25,10 +26,10 @@ export const exportToPDF = async (
 			  </style>
 			</head>
 			<body>
-			  <h1>Çalışan Verileri</h1>
+			  <h1>${i18next.t('export.pdf.title')}</h1>
 			  <table>
 				<thead>
-				  <tr><th>Kategori</th><th>Tip</th><th>Tutar</th><th>Tarih</th><th>Saat</th><th>Açıklama</th></tr>
+				  <tr><th>${i18next.t('export.headers.category')}</th><th>${i18next.t('export.headers.type')}</th><th>${i18next.t('export.headers.amount')}</th><th>${i18next.t('export.headers.date')}</th><th>${i18next.t('export.headers.time')}</th><th>${i18next.t('export.headers.description')}</th></tr>
 				</thead>
 				<tbody>
 				  ${data
@@ -59,9 +60,9 @@ export const exportToPDF = async (
 		await Sharing.shareAsync(target, { UTI: "com.adobe.pdf", mimeType: "application/pdf" });
 	  }
   
-	  showSuccessToast('Başarılı!', 'PDF dosyası başarıyla oluşturuldu.');
+	  showSuccessToast(i18next.t('export.pdf.success'), i18next.t('export.pdf.successMessage'));
 	} catch  {
-	  showErrorToast('Hata', 'PDF dosyası oluşturulurken bir hata oluştu.');
+	  showErrorToast(i18next.t('common.error'), i18next.t('export.pdf.error'));
 	} finally {
 	  setLoading(false);
 	}

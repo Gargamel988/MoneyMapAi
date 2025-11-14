@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   Pressable,
   ScrollView,
@@ -25,12 +26,12 @@ import { formatDate, formatTime } from "../../utils/date";
 import { formatTotal } from "../../utils/total";
 import ModalCategory from "../categories/modal-category";
 
-const incomeApi = {
+const incomeApi = (t: (key: string) => string) => ({
   createIncome: async (incomeData: IncomeFormData) => {
     const user = await getUser();
     if (!user || !user.id)
       throw new Error(
-        "Kullanıcı oturumu bulunamadı. Lütfen tekrar giriş yapın."
+        t("income.error.session")
       );
     const data = await transactionsApi.addTransaction({
       user_id: user.id,
@@ -47,9 +48,10 @@ const incomeApi = {
     const data = await getUserincomeCategories();
     return data;
   },
-};
+});
 
 export const IncomeEntry = () => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
 
@@ -57,6 +59,8 @@ export const IncomeEntry = () => {
   const queryClient = useQueryClient();
   const { user, isLoading: authLoading } = useAuth();
   const [showAddForm, setShowAddForm] = useState(false);
+  
+  const incomeApiInstance = incomeApi(t);
   const { control, handleSubmit, reset, formState } = useForm<IncomeFormData>({
     resolver: zodResolver(incomeSchema),
     defaultValues: {
@@ -75,7 +79,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
   queries: [
     {
       queryKey: ["income_categories"],
-      queryFn: incomeApi.getIncomeCategories,
+      queryFn: incomeApiInstance.getIncomeCategories,
     },
     {
       queryKey: ["currency"],
@@ -93,14 +97,16 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
   
 
   const createIncomeMutation = useMutation({
-    mutationFn: incomeApi.createIncome,
+    mutationFn: incomeApiInstance.createIncome,
     onSuccess: (data) => {
       showSuccessToast(
-        "Başarılı! 🎉",
-        `${formatTotal(
-          data?.data.total_amount,
-          currency
-        )} gelir başarıyla eklendi`
+        t("income.success.title"),
+        t("income.success.message", {
+          amount: formatTotal(
+            data?.data.total_amount,
+            currency
+          ),
+        })
       );
       reset({
         category_id: "",
@@ -117,7 +123,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
       queryClient.invalidateQueries({ queryKey: ["categories"] });
     },
     onError: (error) => {
-      showErrorToast("Hata ❌", error.message);
+      showErrorToast(t("income.error.title"), error.message);
     },
   });
 
@@ -195,7 +201,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               color: theme.text,
             }}
           >
-            Gelir Ekle
+            {t("income.title")}
           </Text>
         </View>
         <TouchableOpacity
@@ -215,7 +221,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
           <Text
             style={{ color: theme.textTertiary, fontSize: dimensions.fontXS }}
           >
-            kategori ekle
+            {t("income.addCategory")}
           </Text>
         </TouchableOpacity>
       </View>
@@ -238,7 +244,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               marginBottom: dimensions.sm,
             }}
           >
-            Kategori Seçin
+            {t("income.selectCategory")}
           </Text>
           <Controller
             control={control}
@@ -266,7 +272,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
                         padding: dimensions.sm,
                       }}
                     >
-                      Yükleniyor...
+                      {t("income.loading")}
                     </Text>
                   ) : (
                     incomeCategories?.data?.map((category: Category) => (
@@ -340,7 +346,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               marginBottom: dimensions.sm,
             }}
           >
-            Tutar
+            {t("income.amount")}
           </Text>
           <View >
             <Text
@@ -422,14 +428,14 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               marginBottom: dimensions.sm,
             }}
           >
-            Açıklama{" "}
+            {t("income.description")}{" "}
             <Text
               style={{
                 fontSize: dimensions.fontSM,
                 color: theme.textSecondary,
               }}
             >
-              (isteğe bağlı)
+              {t("income.optional")}
             </Text>
           </Text>
           <Controller
@@ -439,7 +445,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               <TextInput
                 value={value || ""}
                 onChangeText={onChange}
-                placeholder="Örn: Şubat maaşı, freelance projesi..."
+                placeholder={t("income.descriptionPlaceholder")}
                 placeholderTextColor={theme.textTertiary}
                 editable={!createIncomeMutation.isPending}
                 multiline
@@ -479,7 +485,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
 
               }}
             >
-              Tarih ve Saat
+              {t("income.dateTime")}
             </Text>
             <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center", gap: 8 }}>
               <Controller
@@ -589,8 +595,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               <Text
                 style={{ marginLeft: 8, fontSize: dimensions.fontXS, color: theme.textQuaternary }}
               >
-                tarih ve saati doldurmaya özen gösteriniz işlemleriniz tarih ve
-                saat bazında filtrelenebilir
+                {t("income.dateTimeInfo")}
               </Text>
             </View>
           </View>
@@ -607,7 +612,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
             }}
           >
             <Text style={{ fontSize: dimensions.fontSM, color: theme.error }}>
-              Lütfen tüm gerekli alanları doğru şekilde doldurun
+              {t("income.error.fillFields")}
             </Text>
           </View>
         )}
@@ -641,7 +646,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               color: theme.white,
             }}
           >
-            {createIncomeMutation.isPending ? "Ekleniyor..." : "Gelir Ekle"}
+            {createIncomeMutation.isPending ? t("income.adding") : t("income.submit")}
           </Text>
         </TouchableOpacity>
       </View>

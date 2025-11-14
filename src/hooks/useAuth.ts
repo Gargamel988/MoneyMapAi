@@ -2,9 +2,11 @@ import { Session, User } from '@supabase/supabase-js';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Alert } from 'react-native';
+import { useTranslation } from 'react-i18next';
 import { supabase } from '../lib/supabase';
 
 export const useAuth = () => {
+  const { t } = useTranslation();
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -64,14 +66,14 @@ export const useAuth = () => {
 
 
 
-    Alert.alert("Çıkış Yapılıyor...", "Çıkış yapmak istediğinize emin misiniz?", [
+    Alert.alert(t('auth.signOut.title'), t('auth.signOut.message'), [
       {
-        text: "İptal",
+        text: t('common.cancel'),
         style: "cancel",
         isPreferred: true,
       },
       {
-        text: "Çıkış Yap",
+        text: t('auth.signOut.confirm'),
         onPress: async () => await supabase.auth.signOut().then(() => router.replace('/(screens)/(auth)/login' )),
         style: 'destructive',
       },

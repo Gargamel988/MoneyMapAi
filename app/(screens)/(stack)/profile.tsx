@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   Image,
@@ -15,6 +16,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ModalCurrency } from "../../../src/components/setting/modal-currency";
+import ModalLanguage from "../../../src/components/setting/modal-language";
 import { ProfileCard } from "../../../src/components/ui/profile-card";
 import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
 import { useTheme } from "../../../src/contexts/theme";
@@ -32,11 +34,12 @@ interface UsernameFormData {
 }
 
 export default function ProfilePage() {
+  const { t, i18n } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState<string | null>(null);
-
+  const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
   const nameForm = useForm<NameFormData>({
     defaultValues: {
       name: "",
@@ -52,7 +55,7 @@ export default function ProfilePage() {
     queryFn: () => getProfil(),
   });
   const createdAt = new Date(profileData?.data?.created_at).toLocaleDateString(
-    "tr-TR",
+    i18n.language === "tr" ? "tr-TR" : "en-US",
     { day: "2-digit", month: "long", year: "numeric" }
   );
 
@@ -60,18 +63,18 @@ export default function ProfilePage() {
     mutationFn: async (currency: string) => {
       const data = await updatecurrency(currency);
       if (!data) {
-        throw new Error("Para birimi güncellenemedi");
+        throw new Error(t("profile.currency.updateError"));
       }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["currency"] });
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      showSuccessToast("Başarılı", "Para birimi güncellendi");
+      showSuccessToast(t("common.success"), t("profile.currency.updateSuccess"));
       setShowModal("currency");
     },
     onError: async () => {
-      showErrorToast("Hata", "Para birimi güncellenemedi");
+      showErrorToast(t("common.error"), t("profile.currency.updateError"));
       setShowModal("currency");
     },
   });
@@ -79,18 +82,18 @@ export default function ProfilePage() {
     mutationFn: async (name: string) => {
       const data = await updatename(name);
       if (!data) {
-        throw new Error("Ad güncellenemedi");
+        throw new Error(t("profile.name.updateError"));
       }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      showSuccessToast("Başarılı", "Ad güncellendi");
+      showSuccessToast(t("common.success"), t("profile.name.updateSuccess"));
       setShowModal(null);
       nameForm.reset();
     },
     onError: async () => {
-      showErrorToast("Hata", "Ad güncellenemedi");
+      showErrorToast(t("common.error"), t("profile.name.updateError"));
     },
   });
   const mutationavatar = useMutation({
@@ -104,29 +107,29 @@ export default function ProfilePage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
       queryClient.invalidateQueries({ queryKey: ["profil"] });
-      showSuccessToast("Başarılı", "Avatar güncellendi");
+      showSuccessToast(t("common.success"), t("profile.avatar.updateSuccess"));
       setShowModal(null);
     },
     onError: async (error: any) => {
-      showErrorToast("Hata", error.message);
+      showErrorToast(t("common.error"), error.message);
     },
   });
   const mutationusername = useMutation({
     mutationFn: async (username: string) => {
       const data = await updateusername(username);
       if (!data) {
-        throw new Error("Kullanıcı adı güncellenemedi");
+        throw new Error(t("profile.username.updateError"));
       }
       return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["profile"] });
-      showSuccessToast("Başarılı", "Kullanıcı adı güncellendi");
+      showSuccessToast(t("common.success"), t("profile.username.updateSuccess"));
       setShowModal(null);
       usernameForm.reset();
     },
     onError: async () => {
-      showErrorToast("Hata", "Kullanıcı adı güncellenemedi");
+      showErrorToast(t("common.error"), t("profile.username.updateError"));
     },
   });
 
@@ -167,16 +170,16 @@ export default function ProfilePage() {
                 textAlign: "center",
               }}
             >
-              Ad Güncelle
+              {t("profile.name.modalTitle")}
             </Text>
 
             <Controller
               control={nameForm.control}
               name="name"
-              rules={{ required: "Ad gereklidir" }}
+              rules={{ required: t("profile.name.required") }}
               render={({ field: { onChange, value } }) => (
                 <TextInput
-                  placeholder="Adınızı girin"
+                  placeholder={t("profile.name.placeholder")}
                   value={value}
                   onChangeText={onChange}
                   style={{
@@ -205,7 +208,7 @@ export default function ProfilePage() {
                 }}
               >
                 <Text style={{ color: theme.textSenary, fontWeight: "600" }}>
-                  İptal
+                  {t("profile.cancel")}
                 </Text>
               </TouchableOpacity>
 
@@ -221,7 +224,7 @@ export default function ProfilePage() {
                 }}
               >
                 <Text style={{ color: "#fff", fontWeight: "600" }}>
-                  {mutationname.isPending ? "Kaydediliyor..." : "Kaydet"}
+                  {mutationname.isPending ? t("profile.saving") : t("profile.save")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -268,16 +271,16 @@ export default function ProfilePage() {
                 textAlign: "center",
               }}
             >
-              Kullanıcı Adı Güncelle
+              {t("profile.username.modalTitle")}
             </Text>
 
             <Controller
               control={usernameForm.control}
               name="username"
-              rules={{ required: "Kullanıcı adı gereklidir" }}
+              rules={{ required: t("profile.username.required") }}
               render={({ field: { onChange, value } }) => (
                 <TextInput
-                  placeholder="Kullanıcı adınızı girin"
+                  placeholder={t("profile.username.placeholder")}
                   value={value}
                   onChangeText={onChange}
                   style={{
@@ -306,7 +309,7 @@ export default function ProfilePage() {
                 }}
               >
                 <Text style={{ color: theme.textSenary, fontWeight: "600" }}>
-                  İptal
+                  {t("profile.cancel")}
                 </Text>
               </TouchableOpacity>
 
@@ -322,7 +325,7 @@ export default function ProfilePage() {
                 }}
               >
                 <Text style={{ color: "#fff", fontWeight: "600" }}>
-                  {mutationusername.isPending ? "Kaydediliyor..." : "Kaydet"}
+                  {mutationusername.isPending ? t("profile.saving") : t("profile.save")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -396,7 +399,7 @@ export default function ProfilePage() {
                 textAlign: "center",
               }}
             >
-              Avatar Seç
+              {t("profile.avatar.modalTitle")}
             </Text>
             <Text
               style={{
@@ -405,7 +408,7 @@ export default function ProfilePage() {
                 marginBottom: hp(2),
               }}
             >
-              Profil fotoğrafınız olarak kullanmak için bir avatar seçin.
+              {t("profile.avatar.description")}
             </Text>
 
             <FlatList
@@ -457,7 +460,7 @@ export default function ProfilePage() {
               }}
             >
               <Text style={{ color: theme.textSenary, fontWeight: "600" }}>
-                Kapat
+                {t("profile.close")}
               </Text>
             </TouchableOpacity>
           </View>
@@ -491,7 +494,7 @@ export default function ProfilePage() {
               marginLeft: 10,
             }}
           >
-            Profil
+            {t("profile.title")}
           </Text>
         </TouchableOpacity>
 
@@ -587,7 +590,7 @@ export default function ProfilePage() {
         <View style={{ paddingHorizontal: wp(6), gap: hp(1.5) }}>
           <ProfileCard
             icon="person"
-            label="Ad"
+            label={t("profile.labels.name")}
             value={profileData?.data?.name}
             onPress={() => {
               nameForm.setValue("name", profileData?.data?.name || "");
@@ -596,7 +599,7 @@ export default function ProfilePage() {
           />
           <ProfileCard
             icon="person-outline"
-            label="Soyad"
+            label={t("profile.labels.lastName")}
             value={profileData?.data?.username}
             onPress={() => {
               usernameForm.setValue(
@@ -608,13 +611,13 @@ export default function ProfilePage() {
           />
           <ProfileCard
             icon="mail"
-            label="E-posta"
+            label={t("profile.labels.email")}
             value={profileData?.data?.email}
             onPress={() => {}}
           />
           <ProfileCard
             icon="color-palette"
-            label="Tema"
+            label={t("profile.labels.theme")}
             value={theme.name}
             onPress={() => {
               router.push("/(screens)/(stack)/ThemeSelector");
@@ -622,22 +625,35 @@ export default function ProfilePage() {
           />
           <ProfileCard
             icon="cash"
-            label="Para Birimi"
+            label={t("profile.labels.currency")}
             value={profileData?.data?.currency}
             onPress={() => setShowModal("currency")}
-          />
+          /> 
+           <ProfileCard
+          icon="globe"
+          label={t("profile.labels.language")}
+          value={profileData?.data?.language?.toUpperCase()}
+          onPress={() => setShowLanguageModal(true)}
+        />
           {modalname("currency")}
           {modalname("name")}
           {modalname("username")}
           {modalavatar()}
           <ProfileCard
             icon="calendar"
-            label="Oluşturulma Tarihi"
+            label={t("profile.labels.createdAt")}
             value={createdAt}
             onPress={() => {}}
           />
         </View>
       </ScrollView>
+      {showLanguageModal && (
+        <ModalLanguage
+          showLanguageModal={showLanguageModal}
+          setShowLanguageModal={setShowLanguageModal}
+          language={profileData?.data?.language}
+        />
+      )}
     </SafeAreaView>
   );
 }

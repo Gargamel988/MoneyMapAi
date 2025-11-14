@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { useTheme } from '../../contexts/theme';
 import { useResponsive } from '../../hooks/useRespons';
@@ -9,11 +10,14 @@ type GreenLoadingComponentProps = {
 }
 
 export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({ 
-  text = 'Veriler yükleniyor...',
+  text,
   size = 'small'
 }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
+  
+  const defaultText = text || t("loading.default");
 
   return (
     <View style={{
@@ -31,7 +35,7 @@ export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({
           fontWeight: '500',
           marginTop: dimensions.xs,
         }}>
-          {text}
+          {defaultText}
         </Text>
       </View>
     </View>
@@ -46,7 +50,7 @@ export const LoadingScreen = () => {
       flex: 1, 
       alignItems: 'center', 
       justifyContent: 'center', 
-      backgroundColor: theme.card 
+      backgroundColor: theme.headerbackground 
     }}>
       <GreenLoadingComponent />
     </View>

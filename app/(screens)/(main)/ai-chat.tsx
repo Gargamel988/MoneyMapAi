@@ -30,11 +30,16 @@ export default function Aichat() {
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
-  const { t } = useTranslation();
-
+  const { t, i18n } = useTranslation();
+  
+  const currentLanguage = (i18n.language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
+  
   const { messages, error, status, stop, append } = useChat({
     fetch: expoFetch as unknown as typeof globalThis.fetch,
     api: generateAPIUrl("/api/chat"),
+    body: {
+      language: currentLanguage,
+    },
   });
 
   const pickImage = async () => {

@@ -1,6 +1,7 @@
 import { useTheme } from "@/src/contexts/theme";
 import { useResponsive } from "@/src/hooks/useRespons";
 import { formatTotal } from "@/src/utils/total";
+import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { GreenLoadingComponent } from "../common/loading";
 
@@ -25,6 +26,7 @@ export const WeeklyCard = ({
   isLoading,
   error,
 }: WeeklyCardProps) => {
+  const { t } = useTranslation();
   const { dimensions, hp, wp } = useResponsive();
   const { theme } = useTheme();
 
@@ -58,7 +60,7 @@ export const WeeklyCard = ({
             color: theme.textTertiary,
           }}
         >
-          Veri bulunamadı
+          {t("weeklyCard.noData")}
         </Text>
       ) : (
         <View>
@@ -87,7 +89,7 @@ export const WeeklyCard = ({
                 }}
               >
                 {change?.isIncrease ? "↗" : "↘"} {change?.percentage.toFixed(1)}
-                % {change?.isIncrease ? "Artış" : "Azalış"}
+                % {change?.isIncrease ? t("weeklyCard.increase") : t("weeklyCard.decrease")}
               </Text>
             )}
           </View>

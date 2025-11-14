@@ -4,6 +4,7 @@ import { ExpenseItem, Transaction } from "@/src/types/transactıonstype";
 import { Feather } from "@expo/vector-icons";
 import { useQueries } from "@tanstack/react-query";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
@@ -21,6 +22,7 @@ import { formatTotal } from "../../../src/utils/total";
 type sortBy = "date-newest" | "date-oldest" | "name-asc" | "name-desc";
 
 const TransactionHistory = () => {
+  const { t } = useTranslation();
   const { dimensions } = useResponsive();
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,12 +58,12 @@ const TransactionHistory = () => {
 
   const handleLongPress = (transaction: Transaction) => {
     Alert.alert(
-      "İşlemi silmek istediğinize emin misiniz?",
-      "Bu işlemi silmek işleminiz geri alınamaz.",
+      t("history.delete.title"),
+      t("history.delete.message"),
       [
-        { text: "İptal", style: "cancel" },
+        { text: t("history.delete.cancel"), style: "cancel" },
         {
-          text: "Sil",
+          text: t("history.delete.confirm"),
           style: "destructive",
           onPress: () => transactionsApi.deleteTransaction(transaction?.id),
         },
@@ -188,8 +190,8 @@ const TransactionHistory = () => {
         ListEmptyComponent={() => (
           <View style={{ padding: dimensions.lg }}>
             <NoDataErrorComponent
-              title="Herhangi bir işlem bulunamadı"
-              message="Filtrelerinizi değiştirmeyi deneyin"
+              title={t("history.noData.title")}
+              message={t("history.noData.message")}
               icon="inbox"
             />
           </View>
@@ -211,7 +213,7 @@ const TransactionHistory = () => {
                 color: theme.text,
               }}
             >
-              İşlemler ({sortedTransactions.length})
+              {t("history.title")} ({sortedTransactions.length})
             </Text>
             <Text
               style={{
@@ -225,7 +227,7 @@ const TransactionHistory = () => {
                   sum + (t.expense_items?.length || 0),
                 0
               )}{" "}
-              kalem
+              {t("history.items")}
             </Text>
           </View>
         )}
@@ -284,7 +286,7 @@ const TransactionHistory = () => {
                     marginBottom: 2,
                   }}
                 >
-                  {item.description || "Açıklama yok"}
+                  {item.description || t("transactionDetail.noDescription")}
                 </Text>
 
                 <View
