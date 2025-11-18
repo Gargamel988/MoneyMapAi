@@ -643,5 +643,6 @@
    "categories.default.expense.clothing": "Clothing",
    "categories.default.expense.food": "Food",
    "categories.default.expense.education": "Education",
-   "categories.default.expense.other": "Other"
+   "categories.default.expense.other": "Other",
+   "history.delete.success": "Transaction deleted successfully"
 }

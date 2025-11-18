@@ -15,7 +15,6 @@ const translations = {
 
 i18next.use(initReactI18next).init({
 compatibilityJSON: "v4",
-lng: "tr",
 fallbackLng: "tr",
 resources: translations,
 

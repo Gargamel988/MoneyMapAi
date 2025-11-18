@@ -10,6 +10,7 @@ import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useRespons";
 import { supabase } from "../../../src/lib/supabase";
 
+import { useIsFocused } from "@react-navigation/native";
 import {
   ActivityIndicator,
   Alert,
@@ -30,17 +31,25 @@ export default function Aichat() {
   const [isSaving, setIsSaving] = useState(false);
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
+  const isFocused = useIsFocused();
   const { t, i18n } = useTranslation();
   
   const currentLanguage = (i18n.language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
   
-  const { messages, error, status, stop, append } = useChat({
+  const { messages, error, status, stop, append ,setMessages} = useChat({
     fetch: expoFetch as unknown as typeof globalThis.fetch,
     api: generateAPIUrl("/api/chat"),
     body: {
       language: currentLanguage,
     },
+  
   });
+  useEffect(() => {
+    if (!isFocused) {
+      setMessages([]);
+    }
+  }, [isFocused]);
+
 
   const pickImage = async () => {
     try {

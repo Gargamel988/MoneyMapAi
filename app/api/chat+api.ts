@@ -8,7 +8,6 @@ export async function POST(request: Request) {
   try {
     const body = await request.text();
     const { messages, language } = JSON.parse(body);
-    console.log(language);
     // Kullanıcının dilini request'ten al, yoksa varsayılan olarak 'tr' kullan
     const userLanguage = (language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
     

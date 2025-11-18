@@ -643,5 +643,6 @@
 	"categories.default.expense.clothing": "Giyim",
 	"categories.default.expense.food": "Yemek",
 	"categories.default.expense.education": "Eğitim",
-	"categories.default.expense.other": "Diğer"
+	"categories.default.expense.other": "Diğer",
+	"history.delete.success": "İşlem başarıyla silindi"
 }

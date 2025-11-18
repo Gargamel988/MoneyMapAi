@@ -1,8 +1,9 @@
 import { GreenLoadingComponent } from "@/src/components/common/loading";
 import SearchFilterBar from "@/src/components/ui/search-filter-bar";
+import { showErrorToast, showSuccessToast } from "@/src/constanst/toast";
 import { ExpenseItem, Transaction } from "@/src/types/transactıonstype";
 import { Feather } from "@expo/vector-icons";
-import { useQueries } from "@tanstack/react-query";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, FlatList, Text, TouchableOpacity, View } from "react-native";
@@ -13,7 +14,11 @@ import {
 } from "../../../src/components/common/error";
 import TransactionDetail from "../../../src/components/transaction/Transaction-detail";
 import { useTheme } from "../../../src/contexts/theme";
-import { moderateScale, useResponsive, wp } from "../../../src/hooks/useRespons";
+import {
+  moderateScale,
+  useResponsive,
+  wp,
+} from "../../../src/hooks/useRespons";
 import { getCurrency } from "../../../src/lib/profil";
 import { transactionsApi } from "../../../src/lib/transactions";
 import { formatDate, formatTime } from "../../../src/utils/date";
@@ -22,13 +27,13 @@ import { formatTotal } from "../../../src/utils/total";
 type sortBy = "date-newest" | "date-oldest" | "name-asc" | "name-desc";
 
 const TransactionHistory = () => {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const { dimensions } = useResponsive();
   const { theme } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(
-    null
-  );
+  const [selectedTransaction, setSelectedTransaction] =
+    useState<Transaction | null>(null);
   const [refreshing, setRefreshing] = useState(false);
   const [filterType, setFilterType] = useState<"hepsi" | "gelir" | "gider">(
     "hepsi"
@@ -56,20 +61,38 @@ const TransactionHistory = () => {
 
   const currency = currencyQuery?.data?.currency || "TRY";
 
+
+
+  const mutateDeleteTransaction = useMutation({
+    mutationFn: (transactionId: string) => transactionsApi.deleteTransaction(transactionId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["allTables"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactionsByLastprocess"] });
+      queryClient.invalidateQueries({ queryKey: ["getTransactionsByTwoWeeksAgo"] });
+      queryClient.invalidateQueries({ queryKey: ["getTransactionsByYear"] });
+      queryClient.invalidateQueries({ queryKey: ["piechartData"] });
+      queryClient.invalidateQueries({ queryKey: ["getallTables"] });
+      queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
+      queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
+      queryClient.invalidateQueries({ queryKey: ["yearsexpense"] });
+      showSuccessToast(t("common.success"), t("history.delete.success"));
+    },
+    onError: (error: Error) => {
+      showErrorToast(t("common.error"), error.message);
+    },
+  });
   const handleLongPress = (transaction: Transaction) => {
-    Alert.alert(
-      t("history.delete.title"),
-      t("history.delete.message"),
-      [
-        { text: t("history.delete.cancel"), style: "cancel" },
-        {
-          text: t("history.delete.confirm"),
-          style: "destructive",
-          onPress: () => transactionsApi.deleteTransaction(transaction?.id),
-        },
-      ]
-    );
-    allTablesQuery.refetch();
+    Alert.alert(t("history.delete.title"), t("history.delete.message"), [
+      { text: t("history.delete.cancel"), style: "cancel" },
+      {
+        text: t("history.delete.confirm"),
+        style: "destructive",
+        onPress:  () => {
+          mutateDeleteTransaction.mutate(transaction?.id);
+          },
+      },
+    ]);
   };
   // 1. Önce arama filtresini uygula
   const searchFilteredTransactions = Array.isArray(allTablesQuery.data)
@@ -289,9 +312,7 @@ const TransactionHistory = () => {
                   {item.description || t("transactionDetail.noDescription")}
                 </Text>
 
-                <View
-                  style={{ flexDirection: "row" }}
-                >
+                <View style={{ flexDirection: "row" }}>
                   <Text
                     style={{
                       fontSize: 12,
@@ -299,7 +320,7 @@ const TransactionHistory = () => {
                       color: item.categories?.color,
                       backgroundColor: item.categories?.color + "15",
                       paddingHorizontal: dimensions.sm,
-                      paddingVertical: dimensions.xs-1,
+                      paddingVertical: dimensions.xs - 1,
                       borderRadius: moderateScale(7),
                     }}
                   >
@@ -369,7 +390,7 @@ const TransactionHistory = () => {
 
                 <Text
                   style={{
-                    fontSize: dimensions.fontSM-2,
+                    fontSize: dimensions.fontSM - 2,
                     color: theme.textSecondary,
                     fontWeight: "500",
                   }}

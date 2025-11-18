@@ -1,7 +1,10 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { getLanguage } from "@/src/lib/profil";
+import { QueryClient, QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import i18n from "i18next";
+import { useEffect, useState } from "react";
 import Toast from "react-native-toast-message";
 import "../polyfills";
 import "../services/i18next"; // Initialize i18next
@@ -13,6 +16,18 @@ const queryClient = new QueryClient();
 
 function AppContent() {
   const { theme } = useTheme();
+  const [ready, setReady] = useState<boolean>(false);
+const {data: language} = useQuery({
+  queryKey: ["language"],
+  queryFn: () => getLanguage(),
+});
+useEffect(() => {
+  if (language) {
+    i18n.changeLanguage(language.language);
+    setReady(true);
+  }
+}, [language]);
+if (!ready) return null;
 
   return (
     

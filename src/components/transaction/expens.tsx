@@ -131,7 +131,12 @@ export const ExpenseEntry: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: ["getTransactionsByYear"] });
         queryClient.invalidateQueries({ queryKey: ["piechartData"] });
         queryClient.invalidateQueries({ queryKey: ["getallTables"] });
-        queryClient.invalidateQueries({ queryKey: ["categories"] });
+        queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
+        queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
+        queryClient.invalidateQueries({ queryKey: ["yearsexpense"] });
+        queryClient.invalidateQueries({ queryKey: ["transactions"] });
+        queryClient.invalidateQueries({ queryKey: ["allTables"] });
+        queryClient.invalidateQueries({ queryKey: ["transactions"] });
       } catch (error) {
         console.error('Query invalidation error:', error);
       }
