@@ -561,7 +561,7 @@ export default function ProfilePage() {
                   textAlign: "center",
                 }}
               >
-                {profileData?.data?.name?.charAt(0)}{" "}
+                {profileData?.data?.name ? profileData?.data?.name?.charAt(0) : "N"}{" "}
                 {profileData?.data?.username?.charAt(0)}
               </Text>
             )}
@@ -575,7 +575,7 @@ export default function ProfilePage() {
               marginBottom: hp(0.5),
             }}
           >
-            {profileData?.data?.name} {profileData?.data?.username}
+            {profileData?.data?.name } {profileData?.data?.username }
           </Text>
           <Text
             style={{
@@ -583,7 +583,7 @@ export default function ProfilePage() {
               color: theme.textSecondary,
             }}
           >
-            {profileData?.data?.user_id}
+            {profileData?.data?.user_id ? profileData?.data?.user_id : "User ID"}
           </Text>
         </View>
 
@@ -591,7 +591,7 @@ export default function ProfilePage() {
           <ProfileCard
             icon="person"
             label={t("profile.labels.name")}
-            value={profileData?.data?.name}
+            value={profileData?.data?.name }
             onPress={() => {
               nameForm.setValue("name", profileData?.data?.name || "");
               setShowModal("name");
@@ -600,7 +600,7 @@ export default function ProfilePage() {
           <ProfileCard
             icon="person-outline"
             label={t("profile.labels.lastName")}
-            value={profileData?.data?.username}
+            value={profileData?.data?.username }
             onPress={() => {
               usernameForm.setValue(
                 "username",
@@ -612,13 +612,13 @@ export default function ProfilePage() {
           <ProfileCard
             icon="mail"
             label={t("profile.labels.email")}
-            value={profileData?.data?.email}
+            value={profileData?.data?.email }
             onPress={() => {}}
           />
           <ProfileCard
             icon="color-palette"
             label={t("profile.labels.theme")}
-            value={theme.name}
+            value={theme.name ? theme.name : "System"}
             onPress={() => {
               router.push("/(screens)/(stack)/ThemeSelector");
             }}
@@ -626,13 +626,13 @@ export default function ProfilePage() {
           <ProfileCard
             icon="cash"
             label={t("profile.labels.currency")}
-            value={profileData?.data?.currency}
+            value={profileData?.data?.currency ? profileData?.data?.currency : "TRY"}
             onPress={() => setShowModal("currency")}
           /> 
            <ProfileCard
           icon="globe"
           label={t("profile.labels.language")}
-          value={profileData?.data?.language?.toUpperCase()}
+          value={profileData?.data?.language ? profileData?.data?.language?.toUpperCase() : "TR"}
           onPress={() => setShowLanguageModal(true)}
         />
           {modalname("currency")}

@@ -174,7 +174,7 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
             iconName="globe"
             title={t("settings.general.language.title")}
             subtitle={t("settings.general.language.subtitle")}
-            value={languageData?.language.toUpperCase()}
+            value={ languageData?.language ? languageData?.language.toUpperCase() : "TR"}
             onPress={() => setShowLanguageModal(true)}
           />
           {showLanguageModal && (

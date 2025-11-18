@@ -73,7 +73,7 @@ export const updatecurrency = async (currency: string) => {
   }
   return updatedData;
 };
-export const insertProfil = async (data: any, language: string = 'tr') => {
+export const insertProfil = async (data: any) => {
   try {
 
     const fullName = data.user_metadata?.name || "";
@@ -87,7 +87,7 @@ export const insertProfil = async (data: any, language: string = 'tr') => {
       email: data.email,
       currency: "TRY",
       theme: "system",
-      language: language,
+      language: "tr",
     };
     
 

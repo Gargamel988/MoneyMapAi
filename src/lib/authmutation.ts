@@ -11,9 +11,6 @@ import { supabase } from './supabase';
 
 const onpress = async (user: User): Promise<boolean> => {
   try {
-    // Mevcut dili al (varsayılan: 'tr')
-    const currentLanguage = (i18next.language || 'tr').split('-')[0];
-    
     const profileData = {
       user_id: user.id,
       name: user.user_metadata.first_name || '', 
@@ -21,7 +18,7 @@ const onpress = async (user: User): Promise<boolean> => {
       email: user.email || '',
       currency: 'TRY',
       theme: 'system',
-      language: currentLanguage,
+      language: 'tr',
     };
     
     const { error } = await supabase
