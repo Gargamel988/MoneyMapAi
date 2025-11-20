@@ -137,6 +137,7 @@ export const ExpenseEntry: React.FC = () => {
         queryClient.invalidateQueries({ queryKey: ["transactions"] });
         queryClient.invalidateQueries({ queryKey: ["allTables"] });
         queryClient.invalidateQueries({ queryKey: ["transactions"] });
+        queryClient.invalidateQueries({ queryKey: ["getallData"] });
       } catch (error) {
         console.error('Query invalidation error:', error);
       }

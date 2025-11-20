@@ -10,7 +10,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { ColorSelectionModal } from "../../components/categories/colorpalette";
 import { showWarningToast } from "../../constanst/toast";
@@ -39,6 +39,7 @@ export default function ModalCategory({
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
+  const [searchIcon, setSearchIcon] = useState("");
 
   const { control, handleSubmit, reset, formState, watch } =
     useForm<CategoryFormData>({
@@ -78,9 +79,6 @@ export default function ModalCategory({
       }
     }
   }, [visible, edit, categoryData, reset]);
-
-
-
 
   const categoryIcons = [
     "home",
@@ -123,7 +121,6 @@ export default function ModalCategory({
     "film",
     "image",
     "video",
-    "music",
     "mic",
     "speaker",
     "radio",
@@ -143,22 +140,109 @@ export default function ModalCategory({
     "external-link",
     "bookmark",
     "tag",
-  ];
+  ] as const;
+
+  const normalizeText = (text: string) =>
+    (text || "")
+      .toLowerCase()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/ş/g, "s")
+      .replace(/ğ/g, "g")
+      .replace(/ı/g, "i")
+      .replace(/ç/g, "c")
+      .replace(/ö/g, "o")
+      .replace(/ü/g, "u")
+      .replace(/â/g, "a")
+      .trim();
+
+  const iconKeywords: Record<string, string[]> = {
+    home: ["home", "ev", "house"],
+    "shopping-cart": ["shopping cart", "alışveriş", "market"],
+    coffee: ["coffee", "kahve", "caf"],
+    book: ["book", "kitap"],
+    heart: ["heart", "kalp", "favori"],
+    star: ["star", "yıldız"],
+    music: ["music", "müzik", "şarkı"],
+    camera: ["camera", "kamera", "foto"],
+    gift: ["gift", "hediye"],
+    phone: ["phone", "telefon", "arama"],
+    mail: ["mail", "posta", "email"],
+    users: ["users", "kullanıcı", "insan"],
+    briefcase: ["briefcase", "iş", "çanta"],
+    "credit-card": ["credit", "kart", "kredi"],
+    "dollar-sign": ["dollar", "para", "usd"],
+    "trending-up": ["trend", "artış", "gelir"],
+    "trending-down": ["trend", "düşüş", "gider"],
+    "pie-chart": ["chart", "grafik", "pasta"],
+    "bar-chart": ["chart", "grafik", "bar"],
+    "shopping-bag": ["bag", "alışveriş", "poşet"],
+    truck: ["truck", "kamyon", "kargo"],
+    "map-pin": ["map", "adres", "konum"],
+    clock: ["clock", "saat", "time"],
+    calendar: ["calendar", "takvim"],
+    umbrella: ["umbrella", "şemsiye"],
+    sun: ["sun", "güneş"],
+    moon: ["moon", "ay"],
+    cloud: ["cloud", "bulut"],
+    zap: ["zap", "şimşek"],
+    battery: ["battery", "pil", "enerji"],
+    wifi: ["wifi", "internet"],
+    bluetooth: ["bluetooth"],
+    headphones: ["headphones", "kulaklık"],
+    monitor: ["monitor", "ekran"],
+    smartphone: ["smartphone", "telefon"],
+    tablet: ["tablet"],
+    tv: ["tv", "televizyon"],
+    film: ["film", "sinema"],
+    image: ["image", "resim", "foto"],
+    video: ["video"],
+    mic: ["mic", "mikrofon"],
+    speaker: ["speaker", "hoparlör"],
+    radio: ["radio", "radyo"],
+    tool: ["tool", "alet"],
+    scissors: ["scissors", "makas"],
+    "pen-tool": ["pen", "kalem", "pen-tool", "kalem-kırıcı"],
+    edit: ["edit", "düzenle"],
+    "trash-2": ["trash", "çöp", "sil"],
+    archive: ["archive", "arşiv"],
+    folder: ["folder", "klasör"],
+    file: ["file", "dosya"],
+    save: ["save", "kaydet"],
+    download: ["download", "indir"],
+    upload: ["upload", "yükle"],
+    share: ["share", "paylaş"],
+    link: ["link", "bağlantı"],
+    "external-link": ["dış bağlantı", "external link"],
+    bookmark: ["bookmark", "yer imi"],
+    tag: ["tag", "etiket"],
+  };
+
+  const normalizedSearchQuery = normalizeText(searchIcon);
+  const filteredIcons = categoryIcons.filter((icon) => {
+    if (!normalizedSearchQuery) return true;
+    const keywords = iconKeywords[icon] || [icon];
+    return keywords.some((keyword) =>
+      normalizeText(keyword).includes(normalizedSearchQuery)
+    );
+  });
 
   const onSubmit = (data: CategoryFormData) => {
-    
     if (edit === true) {
       const categoryId = categoryData?.id;
-  
+
       if (!categoryId) {
-        showWarningToast(t("modalCategory.error.title"), t("modalCategory.error.noId"));
+        showWarningToast(
+          t("modalCategory.error.title"),
+          t("modalCategory.error.noId")
+        );
         return;
       }
-  
-        updateCategoryMutation.mutate({
-          id: categoryId,
-          updates: data as Partial<Category>,
-        });
+
+      updateCategoryMutation.mutate({
+        id: categoryId,
+        updates: data as Partial<Category>,
+      });
       onClose();
     } else {
       addCategoryMutation.mutate(data as Category);
@@ -166,7 +250,10 @@ export default function ModalCategory({
     }
   };
 
-  const IconItem: React.FC<{ item: string; onChange: (val: string) => void }> = ({ item, onChange }) => (
+  const IconItem: React.FC<{
+    item: string;
+    onChange: (val: string) => void;
+  }> = ({ item, onChange }) => (
     <TouchableOpacity
       onPress={() => {
         onChange(item);
@@ -178,7 +265,7 @@ export default function ModalCategory({
         justifyContent: "center",
         width: wp(16),
         height: hp(8),
-        margin: dimensions.sm /2,
+        margin: dimensions.sm / 2,
         borderRadius: dimensions.borderRadiusLG,
         borderWidth: 1,
         borderColor: selectedIcon === item ? theme.primary : theme.border,
@@ -210,7 +297,7 @@ export default function ModalCategory({
         <View
           style={{
             flexDirection: "column",
-            padding:32,
+            padding: 32,
             borderRadius: dimensions.borderRadiusXL,
             paddingTop: isTablet ? dimensions.xl : 64,
           }}
@@ -240,7 +327,9 @@ export default function ModalCategory({
                   color: theme.inputtitle,
                 }}
               >
-                {edit ? t("modalCategory.title.edit") : t("modalCategory.title.new")}
+                {edit
+                  ? t("modalCategory.title.edit")
+                  : t("modalCategory.title.new")}
               </Text>
               <TouchableOpacity
                 onPress={onClose}
@@ -292,29 +381,20 @@ export default function ModalCategory({
                         paddingHorizontal: dimensions.md,
                         paddingVertical: dimensions.md,
                         backgroundColor:
-                          value === "gelir"
-                            ? theme.success
-                            : theme.input,
+                          value === "gelir" ? theme.success : theme.input,
                         borderColor:
-                          value === "gelir"
-                            ? theme.success
-                            : theme.border,
+                          value === "gelir" ? theme.success : theme.border,
                       }}
                     >
                       <Feather
                         name="trending-up"
                         size={dimensions.iconSM}
-                        color={
-                          value === "gelir" ? "#fff" : theme.inputtitle
-                        }
+                        color={value === "gelir" ? "#fff" : theme.inputtitle}
                       />
                       <Text
                         style={{
                           fontWeight: "600",
-                          color:
-                            value === "gelir"
-                              ? "#fff"
-                              : theme.inputtitle,
+                          color: value === "gelir" ? "#fff" : theme.inputtitle,
                           fontSize: dimensions.fontMD,
                         }}
                       >
@@ -336,29 +416,20 @@ export default function ModalCategory({
                         paddingHorizontal: dimensions.md,
                         paddingVertical: dimensions.md,
                         backgroundColor:
-                          value === "gider"
-                            ? theme.error
-                            : theme.input,
+                          value === "gider" ? theme.error : theme.input,
                         borderColor:
-                          value === "gider"
-                            ? theme.error
-                            : theme.border,
+                          value === "gider" ? theme.error : theme.border,
                       }}
                     >
                       <Feather
                         name="trending-down"
                         size={dimensions.iconSM}
-                        color={
-                          value === "gider" ? "#fff" : theme.inputtitle
-                        }
+                        color={value === "gider" ? "#fff" : theme.inputtitle}
                       />
                       <Text
                         style={{
                           fontWeight: "600",
-                          color:
-                            value === "gider"
-                              ? "#fff"
-                              : theme.inputtitle,
+                          color: value === "gider" ? "#fff" : theme.inputtitle,
                           fontSize: dimensions.fontMD,
                         }}
                       >
@@ -476,7 +547,9 @@ export default function ModalCategory({
                     color: theme.inputtitle,
                   }}
                 >
-                  {selectedColor ? t("modalCategory.colorChange") : t("modalCategory.colorSelect")}
+                  {selectedColor
+                    ? t("modalCategory.colorChange")
+                    : t("modalCategory.colorSelect")}
                 </Text>
                 <Feather
                   name="chevron-right"
@@ -548,7 +621,9 @@ export default function ModalCategory({
                     color: theme.inputtitle,
                   }}
                 >
-                  {selectedIcon ? t("modalCategory.iconChange") : t("modalCategory.iconSelect")}
+                  {selectedIcon
+                    ? t("modalCategory.iconChange")
+                    : t("modalCategory.iconSelect")}
                 </Text>
                 <Feather
                   name="chevron-right"
@@ -647,50 +722,99 @@ export default function ModalCategory({
                   alignItems: "center",
                 }}
               >
-              
-                  <View
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    width: "100%",
+                    justifyContent: "space-between",
+                    paddingHorizontal: dimensions.md,
+                    paddingVertical: dimensions.md,
+                  }}
+                >
+                  <Text
                     style={{
-                      flexDirection: "row",
-                      alignItems: "center",
-                      width: "100%",
-                      justifyContent: "space-between",
-                      paddingHorizontal: dimensions.md,
-                      paddingVertical: dimensions.md,
+                      fontSize: dimensions.fontXL,
+                      fontWeight: "bold",
+                      color: theme.inputtitle,
                     }}
                   >
-                    <Text
-                      style={{
-                        fontSize: dimensions.fontXL,
-                        fontWeight: "bold",
-                        color: theme.inputtitle,
-                      }}
-                    >
-                      {t("modalCategory.iconModalTitle")}
-                    </Text>
+                    {t("modalCategory.iconModalTitle")}
+                  </Text>
+                  <TouchableOpacity
+                    onPress={() => setIconModalVisible(false)}
+                    activeOpacity={0.8}
+                    style={{ padding: dimensions.sm }}
+                  >
+                    <Feather
+                      name="x"
+                      size={dimensions.iconLG}
+                      color={theme.inputtitle}
+                    />
+                  </TouchableOpacity>
+                </View>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Feather
+                    name="search"
+                    size={dimensions.iconMD}
+                    color={theme.inputtitle}
+                    style={{ position: "absolute", left: wp(8), zIndex: 1000 }}
+                  />
+                  <TextInput
+                    value={searchIcon}
+                    onChangeText={setSearchIcon}
+                    placeholder={t("modalCategory.iconPlaceholder")}
+                    placeholderTextColor={theme.inputplaceholder}
+                    style={{
+                      flex: 1,
+                      borderRadius: 99,
+                      borderWidth: 1,
+                      paddingHorizontal: wp(12),
+                      paddingVertical: dimensions.md,
+                      backgroundColor: theme.input,
+                      borderColor: theme.border,
+                      color: theme.inputtitle,
+                      marginVertical: dimensions.sm,
+                      marginHorizontal: dimensions.md,
+                    }}
+                  />
+                  {searchIcon.length > 0 && (
                     <TouchableOpacity
-                      onPress={() => setIconModalVisible(false)}
                       activeOpacity={0.8}
-                      style={{ padding: dimensions.sm }}
+                      onPress={() => setSearchIcon("")}
+                      style={{
+                        position: "absolute",
+                        zIndex: 1000,
+                        right: wp(8),
+                        padding: dimensions.sm,
+                      }}
                     >
                       <Feather
                         name="x"
-                        size={dimensions.iconLG}
+                        size={dimensions.iconMD}
                         color={theme.inputtitle}
                       />
                     </TouchableOpacity>
-                  </View>
-
-                  <FlatList
-                    data={categoryIcons}
-                    renderItem={({ item }) => (
-                      <IconItem item={item} onChange={onChange} />
-                    )}
-                    keyExtractor={(item) => item}
-                    numColumns={5}
-                    showsVerticalScrollIndicator={false}
-                    contentContainerStyle={{ paddingBottom: dimensions.md }}
-                  />
+                  )}
                 </View>
+
+                <FlatList
+                  data={filteredIcons}
+                  renderItem={({ item }) => (
+                    <IconItem item={item} onChange={onChange} />
+                  )}
+                  keyExtractor={(item) => item}
+                  numColumns={5}
+                  showsVerticalScrollIndicator={false}
+                  contentContainerStyle={{ paddingBottom: dimensions.md }}
+                />
+              </View>
             </Modal>
           )}
         />

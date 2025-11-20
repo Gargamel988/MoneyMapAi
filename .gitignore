@@ -43,8 +43,10 @@ app-example
 /android
 
 .vercel
-<<<<<<< HEAD
+
 ServiceAccountSplitEase.json
 .npmrc
-=======
->>>>>>> 2742bcc (ilk yükleme)
+
+@gargamel123__my-ai-app-keystore-credentials.md
+@gargamel123__my-ai-app-keystore.jks
+eski-keystore-kullanma-rehberi.md

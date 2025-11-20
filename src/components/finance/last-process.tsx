@@ -100,35 +100,10 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                   borderWidth: 1,
                   borderColor: theme.lastprocesborder,
                   marginBottom: 10,
-                  flexDirection: "row",
-                  justifyContent: "space-between",
                   paddingVertical: dimensions.sm,
                   paddingHorizontal: dimensions.md,
                 }}
               >
-            {/* Sol kısım: ikon + kategori */}
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
-              }}
-            >
-              <View
-                style={{
-                  backgroundColor: item.categories.color,
-                  padding: dimensions.iconSM - 2,
-                  borderRadius: dimensions.borderRadiusLG,
-                }}
-              >
-                <Feather
-                  name={item.categories.icon as any}
-                  size={dimensions.iconMD}
-                  color={theme.white}
-                />
-              </View>
-
-            
                 <View
                   style={{
                     flexDirection: "row",
@@ -136,19 +111,35 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                     gap: 10,
                   }}
                 >
-                
-
+                  {/* Icon */}
                   <View
                     style={{
-                      flexDirection: "column",
-                      alignItems: "flex-start",
+                      backgroundColor: item.categories.color,
+                      padding: dimensions.iconSM - 2,
+                      borderRadius: dimensions.borderRadiusLG,
+                      flexShrink: 0,
+                    }}
+                  >
+                    <Feather
+                      name={item.categories.icon as any}
+                      size={dimensions.iconMD}
+                      color={theme.white}
+                    />
+                  </View>
+
+                  {/* Orta kısım: kategori bilgileri */}
+                  <View
+                    style={{
+                      flex: 1,
+                      minWidth: 0,
+                      marginRight: dimensions.xs,
                     }}
                   >
                     <View
                       style={{
                         flexDirection: "row",
                         alignItems: "center",
-                        gap: 10,
+                        gap: 8,
                         marginBottom: 2,
                       }}
                     >
@@ -157,7 +148,11 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                           fontSize: dimensions.fontLG,
                           fontWeight: "500",
                           color: theme.text,
+                          flexShrink: 1,
+                          minWidth: 0,
                         }}
+                        numberOfLines={1}
+                        ellipsizeMode="tail"
                       >
                         {item.categories.name}
                       </Text>
@@ -168,6 +163,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                           paddingVertical: 2,
                           borderRadius: 99,
                           backgroundColor: theme.lastprocessbackground,
+                          flexShrink: 0,
                         }}
                       >
                         <Text
@@ -175,45 +171,48 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                             color: theme.textSecondary,
                             fontSize: dimensions.fontSM,
                           }}
+                          numberOfLines={1}
                         >
                           {typeLabel}
                         </Text>
                       </View>
                     </View>
 
-
                     <Text
                       style={{
                         color: theme.textSecondary,
                         fontSize: dimensions.fontSM,
                       }}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
                     >
                       {formatDayMonth(item.date)} • {formatTime(item.time)}
                     </Text>
                   </View>
-                </View>
 
-                <View
-                  style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginLeft: 8,
-                  }}
-                >
-                  <Text
+                  {/* Sağ kısım: tutar */}
+                  <View
                     style={{
-                      color: isIncome ? theme.success : theme.error,
-                      fontSize: dimensions.fontLG,
-                      fontWeight: "500",
+                      flexShrink: 0,
+                      alignItems: "flex-end",
                     }}
                   >
-                    {isIncome ? "+" : "-"}
-                    {formatTotal(Math.abs(item.total_amount), currency)}
-                  </Text>
+                    <Text
+                      style={{
+                        color: isIncome ? theme.success : theme.error,
+                        fontSize: dimensions.fontLG,
+                        fontWeight: "500",
+                      }}
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      minimumFontScale={0.75}
+                    >
+                      {isIncome ? "+" : "-"}
+                      {formatTotal(Math.abs(item.total_amount), currency)}
+                    </Text>
+                  </View>
                 </View>
-            </View>
-
-            </TouchableOpacity>
+              </TouchableOpacity>
           );
         }}
       />

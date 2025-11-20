@@ -10,7 +10,7 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { showErrorToast, showSuccessToast } from "../../constanst/toast";
@@ -29,10 +29,7 @@ import ModalCategory from "../categories/modal-category";
 const incomeApi = (t: (key: string) => string) => ({
   createIncome: async (incomeData: IncomeFormData) => {
     const user = await getUser();
-    if (!user || !user.id)
-      throw new Error(
-        t("income.error.session")
-      );
+    if (!user || !user.id) throw new Error(t("income.error.session"));
     const data = await transactionsApi.addTransaction({
       user_id: user.id,
       category_id: incomeData.category_id,
@@ -54,12 +51,11 @@ export const IncomeEntry = () => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
-
-  
+  const [displayValue, setDisplayValue] = useState("");
   const queryClient = useQueryClient();
   const { user, isLoading: authLoading } = useAuth();
   const [showAddForm, setShowAddForm] = useState(false);
-  
+
   const incomeApiInstance = incomeApi(t);
   const { control, handleSubmit, reset, formState } = useForm<IncomeFormData>({
     resolver: zodResolver(incomeSchema),
@@ -75,26 +71,22 @@ export const IncomeEntry = () => {
   const [isDateOpen, setIsDateOpen] = useState(false);
   const [isTimeOpen, setIsTimeOpen] = useState(false);
 
-const [ income_categoriesQuery, currencyQuery] =useQueries({
-  queries: [
-    {
-      queryKey: ["income_categories"],
-      queryFn: incomeApiInstance.getIncomeCategories,
-    },
-    {
-      queryKey: ["currency"],
-      queryFn: getCurrency,
-    },
-  ],
-});
+  const [income_categoriesQuery, currencyQuery] = useQueries({
+    queries: [
+      {
+        queryKey: ["income_categories"],
+        queryFn: incomeApiInstance.getIncomeCategories,
+      },
+      {
+        queryKey: ["currency"],
+        queryFn: getCurrency,
+      },
+    ],
+  });
 
-
-
-  const currency = currencyQuery?.data?.currency || "TRY"; 
+  const currency = currencyQuery?.data?.currency || "TRY";
   const incomeCategories = income_categoriesQuery?.data;
   const categoriesLoading = income_categoriesQuery?.isLoading;
-
-  
 
   const createIncomeMutation = useMutation({
     mutationFn: incomeApiInstance.createIncome,
@@ -102,10 +94,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
       showSuccessToast(
         t("income.success.title"),
         t("income.success.message", {
-          amount: formatTotal(
-            data?.data.total_amount,
-            currency
-          ),
+          amount: formatTotal(data?.data.total_amount, currency),
         })
       );
       reset({
@@ -115,12 +104,15 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
         time: new Date().toLocaleTimeString(),
         description: "",
       });
-      queryClient.invalidateQueries({ queryKey: ["transactionsByLastprocess"] });
+      queryClient.invalidateQueries({
+        queryKey: ["transactionsByLastprocess"],
+      });
       queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
       queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
       queryClient.invalidateQueries({ queryKey: ["piechartData"] });
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+      queryClient.invalidateQueries({ queryKey: ["getallData"] });
     },
     onError: (error) => {
       showErrorToast(t("income.error.title"), error.message);
@@ -146,10 +138,6 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
     );
   }
 
-
-
-
-
   return (
     <View
       style={{
@@ -159,7 +147,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
         borderRadius: dimensions.borderRadiusXL,
         borderColor: theme.border,
         backgroundColor: theme.incomebackground,
-        shadowColor:"black",
+        shadowColor: "black",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 8,
@@ -310,7 +298,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
                             color:
                               value === category.id.toString()
                                 ? theme.white
-                                : theme.textTertiary
+                                : theme.textTertiary,
                           }}
                         >
                           {category.name}
@@ -348,7 +336,7 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
           >
             {t("income.amount")}
           </Text>
-          <View >
+          <View>
             <Text
               style={{
                 position: "absolute",
@@ -380,11 +368,17 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               render={({ field: { onChange, value } }) => (
                 <TextInput
                   keyboardType="decimal-pad"
-                  value={value ? String(value) : ""}
                   onChangeText={(text) => {
-                    const numValue = Number(text.replace(/,/g, ".")) || 0;
+                    const digitsOnly = text.replace(/\D/g, "");
+                    const formattedValue = digitsOnly
+                      ? Number(digitsOnly).toLocaleString("tr-TR")
+                      : "";
+                  
+                    setDisplayValue(formattedValue);      // TextInput value’si
+                    const numValue = digitsOnly ? Number(digitsOnly) : 0;  // Form state’de saklanacak ham sayı
                     onChange(numValue);
                   }}
+                  value={displayValue}
                   placeholder="0.00"
                   placeholderTextColor={theme.textTertiary}
                   editable={!createIncomeMutation.isPending}
@@ -404,7 +398,11 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
           </View>
           {formState.errors.total_amount && (
             <Text
-              style={{ color: theme.error, fontSize: dimensions.fontSM, marginTop: dimensions.sm }}
+              style={{
+                color: theme.error,
+                fontSize: dimensions.fontSM,
+                marginTop: dimensions.sm,
+              }}
             >
               {formState.errors.total_amount.message}
             </Text>
@@ -469,136 +467,147 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
 
         {/* Tarih ve Saat Kartı */}
         <View
+          style={{
+            padding: dimensions.md,
+            borderRadius: dimensions.borderRadiusXL,
+            borderWidth: 1,
+            borderColor: theme.border,
+            backgroundColor: theme.incomebackground,
+          }}
+        >
+          <Text
             style={{
-              padding: dimensions.md,
-              borderRadius: dimensions.borderRadiusXL,
-              borderWidth: 1,
-              borderColor: theme.border,
-              backgroundColor: theme.incomebackground,
+              fontWeight: "semibold",
+              fontSize: dimensions.fontMD,
+              color: theme.textSecondary,
             }}
           >
+            {t("income.dateTime")}
+          </Text>
+          <View
+            style={{
+              marginTop: 8,
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <Controller
+              control={control}
+              name="date"
+              render={({ field: { value, onChange } }) => (
+                <>
+                  <TouchableOpacity
+                    onPress={() => setIsDateOpen(true)}
+                    disabled={createIncomeMutation.isPending}
+                    activeOpacity={1}
+                    style={{
+                      width: "50%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderColor: theme.border,
+                      backgroundColor: theme.input,
+                      borderRadius: dimensions.borderRadiusLG,
+                      padding: 12,
+                    }}
+                  >
+                    <Feather
+                      name="calendar"
+                      size={dimensions.iconSM}
+                      color={theme.textTertiary}
+                    />
+                    <Text
+                      style={{
+                        color: theme.textTertiary,
+                        marginLeft: 8,
+                        fontSize: dimensions.fontSM,
+                      }}
+                    >
+                      {formatDate(value)}
+                    </Text>
+                  </TouchableOpacity>
+                  <DateTimePickerModal
+                    isVisible={isDateOpen}
+                    mode="date"
+                    date={value}
+                    onConfirm={(d) => {
+                      onChange(d);
+                      setIsDateOpen(false);
+                    }}
+                    onCancel={() => setIsDateOpen(false)}
+                  />
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              name="date"
+              render={({ field: { value, onChange } }) => (
+                <>
+                  <TouchableOpacity
+                    onPress={() => setIsTimeOpen(true)}
+                    disabled={createIncomeMutation.isPending}
+                    activeOpacity={1}
+                    style={{
+                      width: "50%",
+                      flexDirection: "row",
+                      alignItems: "center",
+                      justifyContent: "flex-start",
+                      borderColor: theme.border,
+                      backgroundColor: theme.input,
+                      borderRadius: dimensions.borderRadiusLG,
+                      padding: 12,
+                    }}
+                  >
+                    <Feather
+                      name="clock"
+                      size={dimensions.iconSM}
+                      color={theme.textTertiary}
+                    />
+                    <Text
+                      style={{
+                        color: theme.textTertiary,
+                        marginLeft: 8,
+                        fontSize: dimensions.fontSM,
+                      }}
+                    >
+                      {formatTime(value.toTimeString())}
+                    </Text>
+                  </TouchableOpacity>
+                  <DateTimePickerModal
+                    isVisible={isTimeOpen}
+                    mode="time"
+                    date={value}
+                    onConfirm={(d) => {
+                      onChange(d);
+                      setIsTimeOpen(false);
+                    }}
+                    onCancel={() => setIsTimeOpen(false)}
+                  />
+                </>
+              )}
+            />
+          </View>
+          <View
+            style={{ marginTop: 8, flexDirection: "row", alignItems: "center" }}
+          >
+            <Feather
+              name="info"
+              size={dimensions.iconSM}
+              color={theme.textQuaternary}
+            />
             <Text
               style={{
-                fontWeight: "semibold",
-                fontSize: dimensions.fontMD,
-                color: theme.textSecondary,
-
+                marginLeft: 8,
+                fontSize: dimensions.fontXS,
+                color: theme.textQuaternary,
               }}
             >
-              {t("income.dateTime")}
+              {t("income.dateTimeInfo")}
             </Text>
-            <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center", gap: 8 }}>
-              <Controller
-                control={control}
-                name="date"
-                render={({ field: { value, onChange } }) => (
-                  <>
-                    <TouchableOpacity
-                      onPress={() => setIsDateOpen(true)}
-                      disabled={createIncomeMutation.isPending}
-                      activeOpacity={1}
-                      style={{ 
-                        width: "50%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        borderColor: theme.border,
-                        backgroundColor: theme.input,
-                        borderRadius: dimensions.borderRadiusLG,
-                        padding: 12,
-                      }}
-                    >
-                      <Feather
-                        name="calendar"
-                        size={dimensions.iconSM}
-                        color={theme.textTertiary}
-                      />
-                      <Text
-                        style={{
-                          color: theme.textTertiary,
-                          marginLeft: 8,
-                          fontSize: dimensions.fontSM,
-                        }}
-                      >
-                        {formatDate(value)}
-                      </Text>
-                    </TouchableOpacity>
-                    <DateTimePickerModal
-                      isVisible={isDateOpen}
-                      mode="date"
-                      date={value}
-                      onConfirm={(d) => {
-                        onChange(d);
-                        setIsDateOpen(false);
-                      }}
-                      onCancel={() => setIsDateOpen(false)}
-                    />
-                  </>
-                )}
-              />
-              <Controller
-                control={control}
-                name="date"
-                render={({ field: { value, onChange } }) => (
-                  <>
-                    <TouchableOpacity
-                      onPress={() => setIsTimeOpen(true)}
-                      disabled={createIncomeMutation.isPending}
-                      
-                      activeOpacity={1}
-                      style={{
-                        width: "50%",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        borderColor: theme.border,
-                        backgroundColor: theme.input,
-                        borderRadius: dimensions.borderRadiusLG,
-                        padding: 12,
-                      }}
-                    >
-                      <Feather
-                        name="clock"
-                        size={dimensions.iconSM}
-                        color={theme.textTertiary}
-                      />
-                      <Text
-                        style={{
-                          color: theme.textTertiary,
-                          marginLeft: 8,
-                          fontSize: dimensions.fontSM,
-                        }}
-                      >
-                        {formatTime(value.toTimeString())}
-                      </Text>
-                    </TouchableOpacity>
-                    <DateTimePickerModal
-                      isVisible={isTimeOpen}
-                      mode="time"
-                      date={value}
-                      onConfirm={(d) => {
-                        onChange(d);
-                        setIsTimeOpen(false);
-                      }}
-                      onCancel={() => setIsTimeOpen(false)}
-                    />
-                  </>
-                )}
-              />
-            </View>
-            <View style={{ marginTop: 8, flexDirection: "row", alignItems: "center" }}>
-              <Feather
-                name="info"
-                size={dimensions.iconSM}
-                color={theme.textQuaternary} 
-              />
-              <Text
-                style={{ marginLeft: 8, fontSize: dimensions.fontXS, color: theme.textQuaternary }}
-              >
-                {t("income.dateTimeInfo")}
-              </Text>
-            </View>
           </View>
+        </View>
 
         {/* Hata Mesajı */}
         {Object.keys(formState.errors).length > 0 && (
@@ -646,7 +655,9 @@ const [ income_categoriesQuery, currencyQuery] =useQueries({
               color: theme.white,
             }}
           >
-            {createIncomeMutation.isPending ? t("income.adding") : t("income.submit")}
+            {createIncomeMutation.isPending
+              ? t("income.adding")
+              : t("income.submit")}
           </Text>
         </TouchableOpacity>
       </View>

@@ -621,7 +621,7 @@
 	"ai.systemPrompt.items.quantityNote": "kalemlerde adete DİKKAT EDENİZ bazı fişlerde adet ürün adının üstünde yazılır.",
 	"ai.systemPrompt.items.shortName": "kalemlerde ürün adı uzun ise kısa yazın.",
 	"ai.systemPrompt.total.format": "ÖNEMLİ: Toplam tutarı şu formatta yazın:\n💰 Toplam: [tutar] TL\nÖrnek: 💰 Toplam: 567.57 TL",
-	"ai.systemPrompt.headers": "Başlıkları EMOJİ ile belirtin (kalın yapmayın):\n- 🏪 Mağaza/Restoran\n- 📅 Tarih / ⏰ Saat\n- 💰 Toplam: [tutar] TL\n- 🏷️ Kategori: [kategori adını buraya yaz]\n- 🧾 Kalemler (her satırda madde madde)\n- 🧠 Özet (tek cümle)",
+	"ai.systemPrompt.headers": "Başlıkları EMOJİ ile belirtin (kalın yapmayın):\n- 🏪 Mağaza/Restoran\n- 📅 Tarih / ⏰ Saat\n- tarih formatını kullanın (DD.MM.YYYY) örn: 20.11.2025\n- saat formatını kullanın (HH:MM) örn: 14:30\n- 💰 Toplam: [tutar] TL\n- 🏷️ Kategori: [kategori adını buraya yaz]\n- 🧾 Kalemler (her satırda madde madde)\n- 🧠 Özet (tek cümle)",
 	"ai.systemPrompt.items.format": "Kalemleri madde madde yazın ve her satırı eksiksiz yazın ve bir emojili işaretle başlatın (örn. ✅):\n- Ürün Adı x Adet — Fiyat TL",
 	"ai.systemPrompt.categories": "Kategori önerisi için şu kategorilerden birini seç: Market, Ulaşım, Faturalar, Kira, Eğlence, Sağlık, Giyim, Yemek, Eğitim, Diğer",
 	"ai.systemPrompt.notReceipt": "Fiş , makbuz veya fatura değilse, kısa bir gerekçe yazın ve doğru görsel için yönlendirin. Görsel yoksa kullanıcıdan görsel göndermesini isteyin.",
@@ -644,5 +644,7 @@
 	"categories.default.expense.food": "Yemek",
 	"categories.default.expense.education": "Eğitim",
 	"categories.default.expense.other": "Diğer",
-	"history.delete.success": "İşlem başarıyla silindi"
+	"history.delete.success": "İşlem başarıyla silindi",
+	"modalCategory.iconPlaceholder": "Simge ara...",
+	"modalCategory.iconNotFound": "Simge bulunamadı"
 }

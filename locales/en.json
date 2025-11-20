@@ -621,7 +621,7 @@
    "ai.systemPrompt.items.quantityNote": "PAY ATTENTION to the quantity in the items, in some receipts the quantity is written above the product name.",
    "ai.systemPrompt.items.shortName": "If the product name is long in the items, write it short.",
    "ai.systemPrompt.total.format": "IMPORTANT: Write the total amount in the following format:\n💰 Total: [amount] TL\nExample: 💰 Total: 567.57 TL",
-   "ai.systemPrompt.headers": "Indicate headers with EMOJI (do not bold):\n- 🏪 Store/Restaurant\n- 📅 Date / ⏰ Time\n- 💰 Total: [amount] TL\n- 🏷️ Category: [write category name here]\n- 🧾 Items (item by item on each line)\n- 🧠 Summary (one sentence)",
+   "ai.systemPrompt.headers": "Indicate headers with EMOJI (do not bold):\n- 🏪 Store/Restaurant\n- 📅 Date / ⏰ Time\n- use the date format (DD.MM.YYYY) example: 20.11.2025\n- use the time format (HH:MM) example: 14:30\n- 💰 Total: [amount] TL\n- 🏷️ Category: [write category name here]\n- 🧾 Items (item by item on each line)\n- 🧠 Summary (one sentence)",
    "ai.systemPrompt.items.format": "Write the items item by item and write each line completely and start with an emoji mark (e.g. ✅):\n- Product Name x Quantity — Price TL",
    "ai.systemPrompt.categories": "For category suggestion, choose one of these categories: Market, Transportation, Bills, Rent, Entertainment, Health, Clothing, Food, Education, Other",
    "ai.systemPrompt.notReceipt": "If it is not a receipt, invoice or invoice, write a brief justification and direct to the correct image. If there is no image, ask the user to send an image.",
@@ -644,5 +644,7 @@
    "categories.default.expense.food": "Food",
    "categories.default.expense.education": "Education",
    "categories.default.expense.other": "Other",
-   "history.delete.success": "Transaction deleted successfully"
+   "history.delete.success": "Transaction deleted successfully",
+   "modalCategory.iconPlaceholder": "Search icon...",
+   "modalCategory.iconNotFound": "No icon found"
 }

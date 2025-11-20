@@ -32,6 +32,42 @@ export default function Pascalcase({
     useResponsive();
   const { theme } = useTheme();
 
+  const formatYAxisLabel = React.useCallback((rawValue: string) => {
+    const numericValue = Number(rawValue);
+    if (!Number.isFinite(numericValue)) {
+      return "0";
+    }
+
+    const absValue = Math.abs(numericValue);
+    const abbreviate = (
+      value: number,
+      divisor: number,
+      suffix: string
+    ): string => {
+      const scaled = value / divisor;
+      const formatted =
+        Math.abs(scaled) >= 10
+          ? scaled.toFixed(0)
+          : scaled.toFixed(1).replace(/\.0$/, "");
+      return `${formatted}${suffix}`;
+    };
+
+    if (absValue >= 1_000_000_000) {
+      return abbreviate(numericValue, 1_000_000_000, "B");
+    }
+    if (absValue >= 1_000_000) {
+      return abbreviate(numericValue, 1_000_000, "M");
+    }
+    if (absValue >= 1_000) {
+      return abbreviate(numericValue, 1_000, "K");
+    }
+
+    return new Intl.NumberFormat("tr-TR", {
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 0,
+    }).format(numericValue);
+  }, []);
+
   const chartConfig = {
     backgroundGradientFrom: "transparent",
     backgroundGradientFromOpacity: 0,
@@ -51,6 +87,8 @@ export default function Pascalcase({
   const currentYear = new Date().getFullYear();
   const lastYear = currentYear - 1;
 
+  
+
   const safeData = Array.isArray(data) ? data : [];
 
   const currentYearTransactions = safeData.filter((item: Transaction) => {
@@ -67,15 +105,15 @@ export default function Pascalcase({
     if (!item.date) return false;
     try {
       const itemYear = new Date(item.date).getFullYear();
-      return itemYear === lastYear;
+      return itemYear === lastYear ;
     } catch {
       return false;
     }
   });
 
+
   const getMonthlyData = (transactions: Transaction[], type: "gelir" | "gider") => {
     const monthlyData = new Array(12).fill(0);
-
     if (!Array.isArray(transactions)) return monthlyData;
 
     transactions
@@ -119,26 +157,39 @@ export default function Pascalcase({
     labels: monthLabels,
     datasets: [
       {
-        data: currentYearIncome.map((amount) => (amount || 0) / 1000),
+        data: currentYearIncome.map((amount) => (amount || 0) ),
         label: t("pascalCase.currentYearIncome", { year: currentYear }),
+        formatYLabel: (value: number) => {
+          return value;
+        },
+
         color: (opacity = 1) => `rgba(110, 231, 183, ${opacity})`,
         strokeWidth: moderateScale(3),
       },
       {
-        data: lastYearIncome.map((amount) => (amount || 0) / 1000),
+        data: lastYearIncome.map((amount) => (amount || 0) ),
         label: t("pascalCase.lastYearIncome", { year: lastYear }),
+        formatYLabel: (value: number) => {
+          return formatTotal(value, currency);
+        },
         color: (opacity = 1) => `rgba(108, 144, 195, ${opacity})`,
         strokeWidth: moderateScale(2),
       },
       {
-        data: currentYearExpense.map((amount) => (amount || 0) / 1000),
+        data: currentYearExpense.map((amount) => (amount || 0) ),
         label: t("pascalCase.currentYearExpense", { year: currentYear }),
+        formatYLabel: (value: number) => {
+          return formatTotal(value, currency);
+        },
         color: (opacity = 1) => `rgba(239, 68, 68, ${opacity})`,
         strokeWidth: moderateScale(3),
       },
       {
-        data: lastYearExpense.map((amount) => (amount || 0) / 1000),
+        data: lastYearExpense.map((amount) => (amount || 0) ),
         label: t("pascalCase.lastYearExpense", { year: lastYear }),
+        formatYLabel: (value: number) => {
+          return formatTotal(value, currency);
+        },
         color: (opacity = 1) => `rgba(249, 220, 92, ${opacity})`,
         strokeWidth: moderateScale(2),
       },
@@ -161,7 +212,6 @@ export default function Pascalcase({
     (sum, amount) => sum + (amount || 0),
     0
   );
-
   const hasData = safeData.length > 0;
 
   // Yıllık büyüme oranı hesaplama
@@ -327,9 +377,10 @@ export default function Pascalcase({
           
 
               <LineChart
-                data={chartData as any}
+                data={chartData }
                 width={isTablet ? wp(84) : wp(87)}
                 height={isTablet ? moderateScale(280) : moderateScale(250)}
+                formatYLabel={formatYAxisLabel}
                 yAxisLabel={
                   currency === "TRY"
                     ? "₺"
@@ -345,7 +396,7 @@ export default function Pascalcase({
                     ? "¥"
                     : ""
                 }
-                yAxisSuffix="k"
+                yAxisSuffix=""
                 yAxisInterval={1}
                 chartConfig={chartConfig as any}
                 bezier
@@ -354,13 +405,13 @@ export default function Pascalcase({
                   borderRadius: dimensions.borderRadiusLG,
                   paddingRight: isTablet
                     ? moderateScale(50)
-                    : moderateScale(40),
+                    : moderateScale(43.5),
                 }}
                 withInnerLines={true}
-                withOuterLines={false}
+                withOuterLines={true}
                 withHorizontalLabels={true}
                 withVerticalLabels={true}
-                segments={4}
+                segments={5}
               />
 
               {/* Legend - Açıklama */}

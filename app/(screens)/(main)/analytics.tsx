@@ -59,6 +59,10 @@ export default function Analytics() {
     queryKey: ["transactions", key],
     queryFn: fn,
   });
+  const {data: dataAllTables} = useQuery({
+    queryKey: ["allTables"],
+    queryFn: () => transactionsApi.getallTables(),
+  });
 
   const data = Array.isArray(dataTransactions) ? dataTransactions : [];
   const piechartData = data.filter(
@@ -242,7 +246,7 @@ export default function Analytics() {
           {/* Gelir-Gider Karşılaştırması */}
 
           <Pascalcase
-            data={dataTransactions || []}
+            data={ dataAllTables || []}
             isLoading={isLoading}
             error={error as Error}
             currency={currency || "TRY"}

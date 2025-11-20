@@ -185,7 +185,7 @@ export default function Home() {
         return (
           <IncomeAnalytics
             transactionsData={yearsincome.data as TransactionList}
-          
+            currency={currency}
           />
         );
       case 'lastprocess':

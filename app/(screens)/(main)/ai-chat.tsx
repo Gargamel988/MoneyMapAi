@@ -322,6 +322,8 @@ export default function Aichat() {
       }
 
       setIsSaving(true);
+      console.log("[AI-CHAT] handleConfirmSave: raw assistant text:", assistantMessageText);
+
       const {
         total,
         title,
@@ -330,6 +332,15 @@ export default function Aichat() {
         suggestedCategory,
         items,
       } = parseAssistantText(assistantMessageText);
+
+      console.log("[AI-CHAT] parsed result:", {
+        total,
+        title,
+        date,
+        parsedTime,
+        suggestedCategory,
+        itemsCount: items?.length,
+      });
 
       const { data: categories } = await getUserexpenseCategories();
 
@@ -404,8 +415,12 @@ export default function Aichat() {
         description: title || t("aiChat.defaultDescription"),
       };
 
+      console.log("[AI-CHAT] payload to be sent:", payload);
+
       const transactionData = await transactionsApi.addTransaction(payload);
       const transactionId = transactionData?.data?.id;
+
+      console.log("[AI-CHAT] transaction response:", transactionData);
 
       if (transactionId && items && Array.isArray(items) && items.length > 0) {
         const rows = items.map((it) => ({
@@ -427,8 +442,7 @@ export default function Aichat() {
       queryClient.invalidateQueries({ queryKey: ["getallTables"] });
       queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
       queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
-      
-      // Chart ve analytics query'leri
+      queryClient.invalidateQueries({ queryKey: ["getallData"] });
       queryClient.invalidateQueries({ queryKey: ["piechartData"] });
       
       
@@ -437,6 +451,7 @@ export default function Aichat() {
         t("aiChat.toast.saveErrorTitle"),
         e?.message || t("aiChat.toast.saveErrorMessage")
       );
+      console.log("e", e);
     } finally {
       setIsSaving(false);
     }

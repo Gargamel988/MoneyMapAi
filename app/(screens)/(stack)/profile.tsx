@@ -573,6 +573,7 @@ export default function ProfilePage() {
               fontWeight: "bold",
               color: theme.text,
               marginBottom: hp(0.5),
+              textAlign: "center",
             }}
           >
             {profileData?.data?.name } {profileData?.data?.username }
@@ -581,6 +582,7 @@ export default function ProfilePage() {
             style={{
               fontSize: dimensions.fontSM * 1.1,
               color: theme.textSecondary,
+              textAlign: "center",
             }}
           >
             {profileData?.data?.user_id ? profileData?.data?.user_id : "User ID"}
