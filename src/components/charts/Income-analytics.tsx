@@ -138,6 +138,7 @@ export default function IncomeAnalytics({
     formatYLabel: formatYAxisLabel,
     fillShadowGradientOpacity: 1,
     fillShadowGradient: theme.incomecolor,
+    
     propsForLabels: {
       fontSize: moderateScale(12),
       fontWeight: "600",

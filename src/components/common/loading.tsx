@@ -43,16 +43,15 @@ export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({
 };
 
 export const LoadingScreen = () => {
-  const { theme } = useTheme();
-  
+  const { t } = useTranslation();
   return (
     <View style={{ 
       flex: 1, 
       alignItems: 'center', 
       justifyContent: 'center', 
-      backgroundColor: theme.headerbackground 
+      backgroundColor: 'transparent'
     }}>
-      <GreenLoadingComponent />
+      <GreenLoadingComponent size='large' text={t("common.loading")} />
     </View>
   );
 };

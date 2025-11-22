@@ -1,8 +1,8 @@
 // src/contexts/ThemeContext.tsx
 import { useQuery } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { ActivityIndicator, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, View } from 'react-native';
 import { Theme, themes } from '../constanst/themes';
 import { getTheme, updateTheme } from '../lib/profil';
 
@@ -61,33 +61,20 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     theme,
   }));
 
-  // Tema yüklenene kadar loading ekranı göster
   if (isLoadingTheme || !isInitialized) {
-    // Inline loading screen - theme'e bağımlı değil
     return (
       <View
         style={{
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#4A7FA7', // Sabit renk kullan
+          backgroundColor: theme.name === 'system' ? '' : "red",
         }}
       >
-        <ActivityIndicator size="large" color="#6366f1" />
-        <Text
-          style={{
-            marginTop: 16,
-            fontSize: 16,
-            color: '#1F2937',
-            fontWeight: '500',
-          }}
-        >
-          {t('common.loading')}
-        </Text>
+        <ActivityIndicator size="large" color={theme.name === 'system' ? 'white' : "red"} />
       </View>
     );
-  }
-
+  } else {
   return (
     <ThemeContext.Provider
       value={{
@@ -104,6 +91,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     </ThemeContext.Provider>
   );
 };
+}
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);

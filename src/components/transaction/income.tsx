@@ -374,8 +374,8 @@ export const IncomeEntry = () => {
                       ? Number(digitsOnly).toLocaleString("tr-TR")
                       : "";
                   
-                    setDisplayValue(formattedValue);      // TextInput value’si
-                    const numValue = digitsOnly ? Number(digitsOnly) : 0;  // Form state’de saklanacak ham sayı
+                    setDisplayValue(formattedValue);
+                    const numValue = digitsOnly ? Number(digitsOnly) : 0;  
                     onChange(numValue);
                   }}
                   value={displayValue}

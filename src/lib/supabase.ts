@@ -14,11 +14,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
 
 
 
-
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Supabase environment variables are missing!');
-}
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage:Platform.OS === 'web' ? undefined : AsyncStorage,

@@ -1,4 +1,3 @@
-import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { router } from "expo-router";
 import React from "react";
@@ -49,20 +48,14 @@ const Header = () => {
     >
       {/* Logo/Icon */}
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
-        <View
+        <Image
           style={{
-            width: wp(10),
+            width: wp(15),
             height: hp(5),
-            borderRadius: 12,
-            backgroundColor: theme.inputbackground,
-            justifyContent: "center",
-            alignItems: "center",
-            borderWidth: 1,
-            borderColor: "rgba(255, 255, 255, 0.2)",
           }}
-        >
-          <Ionicons name="water" size={hp(3)} color={theme.white} />
-        </View>
+          source={require("../../../assets/logo.png")}
+          resizeMode="cover"
+        />
         <Text
           style={{
             fontSize: dimensions.fontTitle,

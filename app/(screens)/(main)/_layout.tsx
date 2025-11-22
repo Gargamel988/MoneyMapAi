@@ -1,5 +1,7 @@
+import { supabase } from "@/src/lib/supabase";
 import { Ionicons } from "@expo/vector-icons";
-import { Tabs } from "expo-router";
+import { router, Tabs } from "expo-router";
+import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { View } from "react-native";
 import { useTheme } from "../../../src/contexts/theme";
@@ -9,6 +11,12 @@ export default function TabLayout() {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) =>
+      data.session?.user || router.replace("/(screens)/(auth)/login")
+    );
+  }, []);
 
   return (
       <Tabs

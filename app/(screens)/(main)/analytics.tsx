@@ -60,7 +60,7 @@ export default function Analytics() {
     queryFn: fn,
   });
   const {data: dataAllTables} = useQuery({
-    queryKey: ["allTables"],
+    queryKey: ["getallData"],
     queryFn: () => transactionsApi.getallTables(),
   });
 
