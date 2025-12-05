@@ -5,14 +5,14 @@ import { useTranslation } from "react-i18next";
 
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
+import { useTheme } from "../src/contexts/theme";
+import { useResponsive } from "../src/hooks/useRespons";
 
-const FinanceAppScreen = () => {
+const WelcomeScreen = () => {
   const [fontsLoaded, error] = useFonts({
-    lucy: require("../../../assets/font/lucy.otf"),
-    sans: require("../../../assets/font/sansitalic.ttf"),
-    display: require("../../../assets/font/display.otf"),
+    lucy: require("../assets/font/lucy.otf"),
+    sans: require("../assets/font/sansitalic.ttf"),
+    display: require("../assets/font/display.otf"),
   });
   const { hp, wp, dimensions } = useResponsive();
   const { theme } = useTheme();
@@ -60,7 +60,7 @@ const FinanceAppScreen = () => {
           }}
         >
           <Image
-            source={require("../../../assets/welcome.png")}
+            source={require("../assets/welcome.png")}
             resizeMode="cover"
             style={{
               height: hp(25),
@@ -201,4 +201,4 @@ const FinanceAppScreen = () => {
   );
 };
 
-export default FinanceAppScreen;
+export default WelcomeScreen;

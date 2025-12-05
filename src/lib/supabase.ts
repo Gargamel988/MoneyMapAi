@@ -12,8 +12,6 @@ if (!supabaseUrl || !supabaseAnonKey) {
   console.error('EXPO_PUBLIC_SUPABASE_ANON_KEY:', !!supabaseAnonKey);
 }
 
-
-
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   auth: {
     storage:Platform.OS === 'web' ? undefined : AsyncStorage,

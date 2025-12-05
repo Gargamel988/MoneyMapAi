@@ -1,7 +1,6 @@
 // src/contexts/ThemeContext.tsx
 import { useQuery } from '@tanstack/react-query';
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, View } from 'react-native';
 import { Theme, themes } from '../constanst/themes';
 import { getTheme, updateTheme } from '../lib/profil';
@@ -19,7 +18,6 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | null>(null);
 
 export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
-  const { t } = useTranslation();
   const [themeMode, setThemeMode] = useState<string>('system');
   const [isInitialized, setIsInitialized] = useState(false);
 
@@ -33,7 +31,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
       setThemeMode(savedTheme.theme as string);
       setIsInitialized(true);
     } else if (!isLoadingTheme) {
-      // Tema yoksa default olarak system kullan
       setIsInitialized(true);
     }
   }, [savedTheme, isLoadingTheme]);
@@ -42,11 +39,12 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     await updateTheme(mode);
   };
 
-  const getActiveTheme = (): Theme => {
-    if (themeMode === 'system') {
+  const getActiveTheme = (mode?: string): Theme => {
+    const currentMode = mode || themeMode;
+    if (currentMode === 'system') {
       return themes.system;
     }
-    return themes[themeMode as keyof typeof themes] || themes.system;
+    return themes[currentMode as keyof typeof themes] || themes.system;
   };
 
   const handleSetThemeMode = (mode: string) => {
@@ -61,20 +59,40 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     theme,
   }));
 
+  const getThemeBackgroundColor = (themeName: string): string => {
+    const themeColors: Record<string, string> = {
+      system: "#4A7FA7",
+      serene: "#4a4b6d",
+      elegant: "#b792a5",
+      nature: "#023D54",
+      forest: "#0F2A1D",
+      deepsea: "#0B272A",
+      warmearth: "#352223",
+      midnight: "#241B1D",
+    };
+    return themeColors[themeName] || themeColors.system;
+  };
+
   if (isLoadingTheme || !isInitialized) {
+    // savedTheme varsa onu kullan, yoksa themeMode'u kullan
+    const loadingThemeMode = savedTheme?.theme as string || themeMode;
+    const loadingTheme = getActiveTheme(loadingThemeMode);
+    const backgroundColor = getThemeBackgroundColor(loadingThemeMode);
+    
     return (
       <View
         style={{
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: theme.name === 'system' ? '' : "red",
+          backgroundColor: backgroundColor,
         }}
       >
-        <ActivityIndicator size="large" color={theme.name === 'system' ? 'white' : "red"} />
+        <ActivityIndicator size="large" color={loadingTheme.primary} />
       </View>
     );
-  } else {
+  }
+
   return (
     <ThemeContext.Provider
       value={{
@@ -91,7 +109,6 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
     </ThemeContext.Provider>
   );
 };
-}
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);

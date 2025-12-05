@@ -25,11 +25,13 @@ function AppContent() {
     queryKey: ["language"],
     queryFn: () => getLanguage(),
   });
+
   useEffect(() => {
     if (language) {
       i18n.changeLanguage(language.language || "tr");
     }
   }, [language]);
+
 
   return (
     <LinearGradient

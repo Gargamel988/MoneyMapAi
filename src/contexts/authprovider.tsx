@@ -16,7 +16,7 @@ export default function AuthProvider({
   
   const loadSession = async () => {
     if (hasInitializedRef.current) {
-      return; // Prevent multiple calls
+      return;
     }
     hasInitializedRef.current = true;
     setHasInitialized(true);
@@ -24,13 +24,12 @@ export default function AuthProvider({
     const { data } = await supabase.auth.getSession();
     const session = data.session;
 
-    // Set loading to false FIRST, before navigation
     setLoading(false);
 
-    // Check current route to avoid unnecessary redirects
     const currentRoute = segments.join("/");
     const isOnAuthRoute = currentRoute.includes("(auth)");
     const isOnMainRoute = currentRoute.includes("(main)");
+    const isOnRoot = currentRoute === "" || currentRoute === "index";
 
     if (session?.user) {
       if (!isOnMainRoute) {
@@ -38,8 +37,8 @@ export default function AuthProvider({
       } else {
       }
     } else {
-      if (!isOnAuthRoute) {
-        router.replace("/(screens)/(auth)/login");
+      if (!isOnAuthRoute && !isOnRoot) {
+        router.replace("/");
       } else {
       }
     }
@@ -57,16 +56,14 @@ export default function AuthProvider({
     
     const { data: listener } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        // Only handle auth changes after initial session
         if (event === "INITIAL_SESSION") {
           return;
         }
 
-        // router.replace is idempotent, so we can call it even if already on the route
         if (session?.user) {
           router.replace("/(screens)/(main)/home");
         } else {
-          router.replace("/(screens)/(auth)/login");
+          router.replace("/");
         }
       }
     );
