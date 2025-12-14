@@ -34,7 +34,7 @@ export default function Aichat() {
   const isFocused = useIsFocused();
   const { t, i18n } = useTranslation();
   
-  const currentLanguage = (i18n.language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
+  const currentLanguage = (i18n.language || 'tr').split('-')[0];
   
   const { messages, error, status, stop, append ,setMessages} = useChat({
     fetch: expoFetch as unknown as typeof globalThis.fetch,
@@ -48,6 +48,7 @@ export default function Aichat() {
     if (!isFocused) {
       setMessages([]);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
 

@@ -2,7 +2,7 @@
   "expo": {
     "name": "MoneyMapAi",
     "slug": "my-ai-app",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "owner": "gargamel9288",
     "orientation": "portrait",
     "icon": "./assets/ic_launcher_foreground.png",
@@ -13,7 +13,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 11,
+      "versionCode": 15,
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
         "foregroundImage": "./assets/ic_launcher_foreground.png",

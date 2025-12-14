@@ -1,4 +1,3 @@
-
 import i18next from "@/services/i18next";
 import { google } from "@ai-sdk/google";
 import { streamText } from "ai";
@@ -8,10 +7,8 @@ export async function POST(request: Request) {
   try {
     const body = await request.text();
     const { messages, language } = JSON.parse(body);
-    // Kullanıcının dilini request'ten al, yoksa varsayılan olarak 'tr' kullan
-    const userLanguage = (language || 'tr').split('-')[0]; // 'tr-TR' -> 'tr'
+    const userLanguage = (language || 'tr').split('-')[0];
     
-    // Kullanıcının diline göre translation fonksiyonu oluştur
     const t = i18next.getFixedT(userLanguage);
 
     if (!messages || !Array.isArray(messages)) {
@@ -50,7 +47,6 @@ export async function POST(request: Request) {
       return msg;
     });
     
-    // Kullanıcının diline göre system prompt oluştur
     const languageName = t(`ai.languageNames.${userLanguage}`, { defaultValue: userLanguage });
     const systemPrompt = `${t('ai.systemPrompt.intro')}
 ${t('ai.systemPrompt.imageCheck')}
@@ -73,23 +69,24 @@ ${t('ai.systemPrompt.categories')}
 ${t('ai.systemPrompt.notReceipt')}`;
 
     const result = streamText({
-      model: google("gemini-2.0-flash"),
+      model: google("gemini-2.5-flash"),
       system: systemPrompt,
       messages: normalizedMessages,
+      maxSteps: 1, // Tool call'ları devre dışı bırak
     });
 
+    // useChat hook'u Vercel AI SDK'nın data stream formatını bekliyor
+    // toTextStreamResponse() yerine toDataStreamResponse() kullanmalıyız
     return result.toDataStreamResponse();
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }
 }
 
-// GET endpoint for testing
 export async function GET() {
   return Response.json({ message: "Chat API endpoint is working" });
 }
 
-// OPTIONS method for CORS
 export async function OPTIONS() {
   return new Response(null, {
     status: 200,
