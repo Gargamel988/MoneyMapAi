@@ -2,7 +2,7 @@
   "expo": {
     "name": "MoneyMapAi",
     "slug": "my-ai-app",
-    "version": "1.0.8",
+    "version": "1.0.9",
     "owner": "gargamel9288",
     "orientation": "portrait",
     "icon": "./assets/ic_launcher_foreground.png",
@@ -13,7 +13,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 15,
+      "versionCode": 18,
       "adaptiveIcon": {
         "backgroundColor": "#ffffff",
         "foregroundImage": "./assets/ic_launcher_foreground.png",
@@ -53,6 +53,7 @@
       "reactCompiler": true
     },
     "extra": {
+      "geminiApiKey": "AIzaSyDubQYftrr-4F-YkSQEhFI24i6RMUKjZgY",
       "router": {
         "origin": "https://gargamel123-my-ai-app.expo.app"
       },

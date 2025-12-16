@@ -1,15 +1,29 @@
 import i18next from "@/services/i18next";
+import { objectScheme } from "@/src/schemas/objectScheme";
 import { google } from "@ai-sdk/google";
-import { streamText } from "ai";
+import { streamObject } from "ai";
 
 // Expo Router API route handler
 export async function POST(request: Request) {
   try {
-    const body = await request.text();
-    const { messages, language } = JSON.parse(body);
-    const userLanguage = (language || 'tr').split('-')[0];
-    
-    const t = i18next.getFixedT(userLanguage);
+    const bodyText = await request.text();
+
+    const parsedBody = JSON.parse(bodyText || "{}");
+    const messages =
+      parsedBody.messages ??
+      (parsedBody.input && Array.isArray(parsedBody.input.messages)
+        ? parsedBody.input.messages
+        : undefined);
+    const language =
+      parsedBody.language ??
+      (parsedBody.input && parsedBody.input.language
+        ? parsedBody.input.language
+        : undefined);
+
+    const userLanguage = (language || "tr").split("-")[0];
+
+    const t = i18next.getFixedT(userLanguage); 
+  
 
     if (!messages || !Array.isArray(messages)) {
       return Response.json(
@@ -18,7 +32,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const normalizedMessages = messages.map((msg: any) => {
+    const normalizedMessages = messages.map((msg: any, index: number) => {
       if (typeof msg.content === "string") {
         return { role: msg.role, content: msg.content };
       }
@@ -29,7 +43,9 @@ export async function POST(request: Request) {
           .filter((p) => p.type === "text")
           .map((p) => p.text)
           .join("\n");
-        const imageParts = parts.filter((p) => p.type === "file" && p.url);
+        const imageParts = parts.filter(
+          (p) => p.type === "file" && p.url
+        );
 
         const contentArray: any[] = [];
         if (textParts) {
@@ -44,10 +60,13 @@ export async function POST(request: Request) {
           content: contentArray.length > 0 ? contentArray : "Empty message",
         };
       }
+
       return msg;
     });
-    
-    const languageName = t(`ai.languageNames.${userLanguage}`, { defaultValue: userLanguage });
+
+    const languageName = t(`ai.languageNames.${userLanguage}`, {
+      defaultValue: userLanguage,
+    });
     const systemPrompt = `${t('ai.systemPrompt.intro')}
 ${t('ai.systemPrompt.imageCheck')}
 ${t('ai.systemPrompt.language')}
@@ -68,16 +87,22 @@ ${t('ai.systemPrompt.categories')}
 
 ${t('ai.systemPrompt.notReceipt')}`;
 
-    const result = streamText({
+    const result = streamObject({
       model: google("gemini-2.5-flash"),
       system: systemPrompt,
       messages: normalizedMessages,
-      maxSteps: 1, // Tool call'ları devre dışı bırak
+      schema: objectScheme,
     });
 
-    // useChat hook'u Vercel AI SDK'nın data stream formatını bekliyor
-    // toTextStreamResponse() yerine toDataStreamResponse() kullanmalıyız
-    return result.toDataStreamResponse();
+    try {
+      return result.toTextStreamResponse();
+    } catch (err: any) {
+      const message = err?.message || "";
+      if (message.includes("Controller is already closed") || message.includes("Premature close")) {
+        return Response.json({ error: "client aborted" }, { status: 499 });
+      }
+      throw err;
+    }
   } catch (error: any) {
     return Response.json({ error: error.message }, { status: 500 });
   }

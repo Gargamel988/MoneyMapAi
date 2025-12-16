@@ -1,4 +1,4 @@
-import { useChat } from "@ai-sdk/react";
+import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 import * as ImagePicker from "expo-image-picker";
@@ -10,6 +10,7 @@ import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useRespons";
 import { supabase } from "../../../src/lib/supabase";
 
+import { formatTotal } from "@/src/utils/total";
 import { useIsFocused } from "@react-navigation/native";
 import {
   ActivityIndicator,
@@ -18,39 +19,66 @@ import {
   ScrollView,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { getUserexpenseCategories } from "../../../src/lib/category";
 import { transactionsApi } from "../../../src/lib/transactions";
+import { objectScheme } from "../../../src/schemas/objectScheme";
 import { generateAPIUrl } from "../../../src/utils/utils";
 
 export default function Aichat() {
   const queryClient = useQueryClient();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [analysisMessage, setAnalysisMessage] = useState<string | null>(null);
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
   const isFocused = useIsFocused();
   const { t, i18n } = useTranslation();
-  
   const currentLanguage = (i18n.language || 'tr').split('-')[0];
   
-  const { messages, error, status, stop, append ,setMessages} = useChat({
-    fetch: expoFetch as unknown as typeof globalThis.fetch,
+  const { object, error, submit, clear, stop, isLoading } = useObject({
     api: generateAPIUrl("/api/chat"),
-    body: {
-      language: currentLanguage,
-    },
-  
+    fetch: expoFetch as unknown as typeof globalThis.fetch,
+    schema: objectScheme,
   });
+  const status = isLoading ? "submitted" : "idle";
+  const wasLoadingRef = useRef(false);
+  console.log(analysisMessage)
+
+
+  useEffect(() => {
+    if (wasLoadingRef.current && !isLoading) {
+      if (!object && selectedImage) {
+        setAnalysisMessage(t("aiChat.notReceipt"));
+      } else {
+        setAnalysisMessage(null);
+      }
+    }
+    wasLoadingRef.current = isLoading;
+  }, [isLoading, object, selectedImage, t]);
+
   useEffect(() => {
     if (!isFocused) {
-      setMessages([]);
+      clear();
+      setSelectedImage(null);
+      setAnalysisMessage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
+  const handleStop = async () => {
+    try {
+      if (typeof stop === "function") {
+        await stop();
+        setAnalysisMessage(t("aiChat.stop.message"));
+      }
+    } catch (e) {
+      console.log("[AI-CHAT] stop error:", e);
+      Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.stop.error"));
+    }
+  };
 
   const pickImage = async () => {
     try {
@@ -67,12 +95,20 @@ export default function Aichat() {
       if (!result.canceled && result.assets?.[0]?.base64) {
         const b64 = result.assets[0].base64 as string;
         const dataUrl = `data:image/jpeg;base64,${b64}`;
-        await append({
-          role: "user",
-          content: [
-            { type: "text", text: t("aiChat.message.photoSent") },
-            { type: "file", url: dataUrl, mediaType: "image/jpeg" },
+        setAnalysisMessage(null);
+        clear();
+        setSelectedImage(dataUrl);
+        submit({
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: t("aiChat.message.photoSent") },
+                { type: "file", url: dataUrl, mediaType: "image/jpeg" },
+              ],
+            },
           ],
+          language: currentLanguage,
         } as any);
       }
     } catch {
@@ -82,8 +118,7 @@ export default function Aichat() {
 
   const pickFromGallery = async () => {
     try {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         Alert.alert(t("aiChat.gallery.permissionRequired"));
         return;
@@ -96,12 +131,20 @@ export default function Aichat() {
       if (!result.canceled && result.assets?.[0]?.base64) {
         const b64 = result.assets[0].base64 as string;
         const dataUrl = `data:image/jpeg;base64,${b64}`;
-        await append({
-          role: "user",
-          content: [
-            { type: "text", text: t("aiChat.message.photoSent") },
-            { type: "file", url: dataUrl, mediaType: "image/jpeg" },
+        setAnalysisMessage(null);
+        clear();
+        setSelectedImage(dataUrl);
+        submit({
+          messages: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: t("aiChat.message.photoSent") },
+                { type: "file", url: dataUrl, mediaType: "image/jpeg" },
+              ],
+            },
           ],
+          language: currentLanguage,
         } as any);
       }
     } catch {
@@ -114,234 +157,17 @@ export default function Aichat() {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 50);
     return () => clearTimeout(timeout);
-  }, [messages, status]);
+  }, [object]);
 
-  const parseItems = (text: string) => {
-    const kalemlerIndex = text.indexOf("🧾");
-    const section = kalemlerIndex >= 0 ? text.slice(kalemlerIndex) : text;
-    const lines = section.split(/\n/);
-    const itemLines = lines.filter((l) => /^(\s*[•✅🛍️\-])/u.test(l.trim()));
-    const items: { name: string; price: number; quantity: number }[] = [];
-    for (const raw of itemLines) {
-      const line = raw.trim().replace(/^[•✅🛍️\-]+\s*/u, "");
-      const qtyMatch = line.match(/\bx\s*(\d+(?:[\.,]\d+)?)\b/i);
-      const quantity = qtyMatch
-        ? Number(String(qtyMatch[1]).replace(",", "."))
-        : 1;
-      const priceMatch = line.match(
-        /([0-9]+[\.,][0-9]{2}|[0-9]+)\s*(TL|₺)?\s*$/i
-      );
-      let price = 0;
-      if (priceMatch?.[1]) {
-        const priceStr = String(priceMatch[1]);
-        if (priceStr.includes(",")) {
-          price = Number(priceStr.replace(",", "."));
-        } else {
-          price = Number(priceStr);
-        }
-      }
-      let name = line
-        .replace(/\s*—\s*([0-9]+[\.,][0-9]{2}|[0-9]+)\s*(TL|₺)?\s*$/i, "")
-        .replace(/\bx\s*\d+(?:[\.,]\d+)?\b/i, "")
-        .trim()
-        .replace(/[^\w\sçğıöşüÇĞIİÖŞÜ]/g, "")
-        .trim();
-      if (!name) name = t("aiChat.defaultItemName");
-      items.push({
-        name,
-        price: isFinite(price) ? price : 0,
-        quantity: isFinite(quantity) ? quantity : 1,
-      });
-    }
-    return items;
-  };
-
-  const parseAssistantText = (text: string) => {
-    if (!text || typeof text !== "string") {
-      return {
-        total: undefined,
-        title: undefined,
-        date: undefined,
-        time: undefined,
-        suggestedCategory: undefined,
-        items: [],
-      };
-    }
-
-    
-    const totalMatch = text.match(/(?:💰|💸|💵|💰)\s*(?:Toplam|Total|TOPLAM|TOTAL):\s*([\d.,]+)/i);
-    
-    const patterns = [
-      /(?:💰|💸|💵)\s*(?:Toplam|Total|TOPLAM|TOTAL)[:\s]*([\d.,]+)/i,
-      /(?:Toplam|Total|TOPLAM|TOTAL)[:\s]*([\d.,]+)\s*(?:TL|₺|türk lirası)/i,
-      /(?:Fatura Tutarı|Tutar|Amount)[:\s]*([\d.,]+)\s*(?:TL|₺|türk lirası)/i,
-      /(?:Toplam|Total)[:\s]*([\d.,]+)/i,
-      /([\d.,]+)\s*(?:TL|₺|türk lirası)\s*(?:toplam|total)/i,
-      /(?:TOTAL|TOPLAM)[:\s]*([\d.,]+)/i,
-      /(?:Tutar|Amount)[:\s]*([\d.,]+)/i
-    ];
-
-    let total: number | undefined;
-    let matchedValue: string | undefined;
-    
-    // Önce ana pattern'i dene
-    if (totalMatch?.[1]) {
-      matchedValue = totalMatch[1];
-    } else {
-      // Tüm pattern'leri sırayla dene
-      for (const pattern of patterns) {
-        const match = text.match(pattern);
-        if (match?.[1]) {
-          matchedValue = match[1];
-          break;
-        }
-      }
-    }
-    
-    if (matchedValue) {
-      // Türkçe sayı formatını düzelt (1.072,00 → 1072.00)
-      let totalRaw = String(matchedValue);
-      
-      // Eğer nokta binlik ayırıcı ise (1.072,00 formatı)
-      if (totalRaw.includes('.') && totalRaw.includes(',')) {
-        // Noktayı kaldır, virgülü nokta yap
-        totalRaw = totalRaw.replace(/\./g, '').replace(',', '.');
-      } else if (totalRaw.includes(',')) {
-        // Sadece virgül varsa nokta yap
-        totalRaw = totalRaw.replace(',', '.');
-      }
-      
-      total = Number(totalRaw);
-      if (!isFinite(total)) total = undefined;
-    }
-    
-    // Eğer total bulunamadıysa, items'dan hesapla (son çare)
-    if (!total) {
-      const items = parseItems(text);
-      
-      // Items'da fiyat formatı sorunlu olabilir, dikkatli hesapla
-      const calculatedTotal = items.reduce((sum, item) => {
-        const itemTotal = item.price * item.quantity;
-        return sum + itemTotal;
-      }, 0);
-      
-      
-      // Items'dan hesaplama güvenilir değil, sadece çok küçük değerlerde kullan
-      if (calculatedTotal > 0 && calculatedTotal < 100) {
-        total = calculatedTotal;
-      } else {
-        // Total undefined kalacak, kullanıcı manuel girebilir
-      }
-    }
-    
-    let normalizedDate: string | undefined;
-    const dateTokenMatch = text.match(
-      /\b(\d{1,2})[\.\/-](\d{1,2})[\.\/-](\d{2,4})\b/
-    );
-    if (dateTokenMatch?.[1] && dateTokenMatch[2] && dateTokenMatch[3]) {
-      try {
-        const d = String(dateTokenMatch[1]).padStart(2, "0");
-        const m = String(dateTokenMatch[2]).padStart(2, "0");
-        let y = String(dateTokenMatch[3]);
-        if (y.length === 2) y = `20${y}`;
-        normalizedDate = `${y}-${m}-${d}`;
-      } catch {
-        normalizedDate = undefined;
-      }
-    }
-
-    const timeMatch = text.match(/\b(\d{1,2}:\d{2})\b/);
-    const normalizedTime = timeMatch?.[1];
-
-    let title: string | undefined;
-    const titleMatch = text.match(/🏪\s*([^\n]+)/);
-    if (titleMatch?.[1]) {
-      title = titleMatch[1]
-        .trim()
-        .replace(/[^\w\sçğıöşüÇĞIİÖŞÜ]/g, "")
-        .trim();
-      if (!title) title = undefined;
-    }
-
-    let suggestedCategory: string | undefined;
-
-    const categoryMatch1 = text.match(/🏷️\s*Kategori:\s*([^\n]+)/);
-    if (categoryMatch1?.[1]) {
-      suggestedCategory = categoryMatch1[1]
-        .trim()
-        .replace(/[^\w\sçğıöşüÇĞIİÖŞÜ]/g, "")
-        .trim();
-    }
-
-    if (!suggestedCategory) {
-      const categoryMatch2 = text.match(/🏷️\s*([^\n]+)/);
-      if (categoryMatch2?.[1]) {
-        suggestedCategory = categoryMatch2[1]
-          .trim()
-          .replace(/[^\w\sçğıöşüÇĞIİÖŞÜ]/g, "")
-          .trim();
-      }
-    }
-
-    if (!suggestedCategory) {
-      const categoryNames = [
-        "Market",
-        "Ulaşım",
-        "Faturalar",
-        "Kira",
-        "Eğlence",
-        "Sağlık",
-        "Giyim",
-        "Yemek",
-        "Eğitim",
-        "Diğer",
-      ];
-      for (const name of categoryNames) {
-        if (text.includes(name)) {
-          suggestedCategory = name;
-          break;
-        }
-      }
-    }
-
-    const items = parseItems(text);
-    return {
-      total,
-      title,
-      date: normalizedDate,
-      time: normalizedTime,
-      suggestedCategory,
-      items,
-    };
-  };
-
-  const handleConfirmSave = async (assistantMessageText: string) => {
+  const handleConfirmSave = async () => {
     try {
-      if (!assistantMessageText || typeof assistantMessageText !== "string") {
+      if (!object) {
         Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.alert.invalidMessage"));
         return;
       }
 
       setIsSaving(true);
-      console.log("[AI-CHAT] handleConfirmSave: raw assistant text:", assistantMessageText);
-
-      const {
-        total,
-        title,
-        date,
-        time: parsedTime,
-        suggestedCategory,
-        items,
-      } = parseAssistantText(assistantMessageText);
-
-      console.log("[AI-CHAT] parsed result:", {
-        total,
-        title,
-        date,
-        parsedTime,
-        suggestedCategory,
-        itemsCount: items?.length,
-      });
+      console.log("[AI-CHAT] handleConfirmSave: parsed object:", object);
 
       const { data: categories } = await getUserexpenseCategories();
 
@@ -350,20 +176,19 @@ export default function Aichat() {
         return;
       }
 
+      // Find matching category
       let selectedCategory = null;
 
-      if (suggestedCategory) {
+      if (object.category) {
         selectedCategory = categories.find(
-          (c: any) => c?.name?.toLowerCase() === suggestedCategory.toLowerCase()
+          (c: any) => c?.name?.toLowerCase() === object.category?.toLowerCase()
         );
 
         if (!selectedCategory) {
           selectedCategory = categories.find(
             (c: any) =>
-              c?.name
-                ?.toLowerCase()
-                .includes(suggestedCategory.toLowerCase()) ||
-              suggestedCategory.toLowerCase().includes(c?.name?.toLowerCase())
+              c?.name?.toLowerCase().includes(object.category?.toLowerCase() || "") ||
+              object.category?.toLowerCase().includes(c?.name?.toLowerCase())
           );
         }
 
@@ -380,11 +205,9 @@ export default function Aichat() {
             faturalar: ["faturalar", "bills", "elektrik", "su", "internet"],
           };
 
-          const suggestedLower = suggestedCategory.toLowerCase();
-          for (const [categoryName, keywords] of Object.entries(
-            categoryMappings
-          )) {
-            if (keywords.some((keyword) => suggestedLower.includes(keyword))) {
+          const categoryLower = object.category.toLowerCase();
+          for (const [categoryName, keywords] of Object.entries(categoryMappings)) {
+            if (keywords.some((keyword) => categoryLower.includes(keyword))) {
               selectedCategory = categories.find(
                 (c: any) => c?.name?.toLowerCase() === categoryName
               );
@@ -395,8 +218,7 @@ export default function Aichat() {
       }
 
       if (!selectedCategory) {
-        selectedCategory =
-          categories.find((c: any) => c?.name === "Diğer") || categories[0];
+        selectedCategory = categories.find((c: any) => c?.name === "Diğer") || categories[0];
       }
 
       if (!selectedCategory) {
@@ -405,15 +227,32 @@ export default function Aichat() {
       }
 
       const now = new Date();
-      const time = parsedTime || now.toTimeString().slice(0, 5);
+      const time = object.time || now.toTimeString().slice(0, 5);
+
+      // Normalize date to YYYY-MM-DD to avoid DB errors
+      const normalizeDate = (value?: string) => {
+        if (!value) return null;
+        // Accept dd.MM.yyyy or dd/MM/yyyy
+        const match = value.match(/^(\d{2})[./-](\d{2})[./-](\d{4})$/);
+        if (match) {
+          const [, dd, mm, yyyy] = match;
+          return `${yyyy}-${mm}-${dd}`;
+        }
+        // Already ISO-like
+        if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+        return null;
+      };
+
+      const parsedDate = normalizeDate(object.date);
+      const date = parsedDate || now.toISOString().split("T")[0];
 
       const payload: any = {
         category_id: String(selectedCategory?.id || ""),
-        total_amount: isFinite(total as number) ? total : 0,
+        total_amount: object.total || 0,
         type: "gider",
-        date: date || now.toISOString().split("T")[0],
+        date,
         time,
-        description: title || t("aiChat.defaultDescription"),
+        description: object.description || object.title || t("aiChat.defaultDescription"),
       };
 
       console.log("[AI-CHAT] payload to be sent:", payload);
@@ -423,19 +262,19 @@ export default function Aichat() {
 
       console.log("[AI-CHAT] transaction response:", transactionData);
 
-      if (transactionId && items && Array.isArray(items) && items.length > 0) {
-        const rows = items.map((it) => ({
+      if (transactionId && object.products && Array.isArray(object.products) && object.products.length > 0) {
+        const rows = object.products.map((it) => ({
           transaction_id: transactionId,
-          item_name: it?.name || t("aiChat.defaultItemName"),
-          unit_price: isFinite(it?.price) ? it.price : 0,
-          quantity: isFinite(it?.quantity) ? it.quantity : 1,
+          item_name: it?.itemName || t("aiChat.defaultItemName"),
+          unit_price: it?.price || 0,
+          quantity: it?.quantity || 1,
         }));
         await supabase.from("expense_items").insert(rows);
       }
 
       showSuccessToast(t("aiChat.toast.saveSuccessTitle"), t("aiChat.toast.saveSuccessMessage"));
       
-      // Tüm transaction ile ilgili query'leri invalidate et
+      // Invalidate all transaction queries
       queryClient.invalidateQueries({ queryKey: ["transactions"] });
       queryClient.invalidateQueries({ queryKey: ["transactionsByLastprocess"] });
       queryClient.invalidateQueries({ queryKey: ["getTransactionsByTwoWeeksAgo"] });
@@ -446,13 +285,12 @@ export default function Aichat() {
       queryClient.invalidateQueries({ queryKey: ["getallData"] });
       queryClient.invalidateQueries({ queryKey: ["piechartData"] });
       
-      
     } catch (e: any) {
       showErrorToast(
         t("aiChat.toast.saveErrorTitle"),
         e?.message || t("aiChat.toast.saveErrorMessage")
       );
-      console.log("e", e);
+      console.log("Error saving:", e);
     } finally {
       setIsSaving(false);
     }
@@ -460,20 +298,139 @@ export default function Aichat() {
 
   if (error) {
     return (
-      <SafeAreaView
+      <View
         style={{
           flex: 1,
           justifyContent: "center",
           alignItems: "center",
-          backgroundColor: "#1A3D63",
+          backgroundColor: theme.headerbackground,
         }}
       >
-        <Text style={{ color: "#EF4444", fontSize: 16, fontWeight: "600" }}>
+        <Text style={{ color: theme.error, fontSize: 16, fontWeight: "600" }}>
           {t("aiChat.alert.errorTitle")}: {error?.message || t("aiChat.error.unknown")}
         </Text>
-      </SafeAreaView>
+      </View>
     );
   }
+
+  // Display object data in a more structured way
+  const displayObject = object && (
+    <View
+      style={{
+        backgroundColor: "rgba(255, 255, 255, 0.98)",
+        borderRadius: dimensions.borderRadiusXL,
+        padding: dimensions.lg,
+        marginVertical: dimensions.sm,
+        shadowColor: theme.shadow,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: dimensions.sm,
+        elevation: 4,
+        borderWidth: 1,
+        borderColor: "rgba(0,0,0,0.04)",
+      }}
+    >
+      <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
+        <Ionicons name="sparkles-outline" size={dimensions.iconMD} color={theme.buttonprimary} />
+        <Text
+          style={{
+            fontWeight: "700",
+            fontSize: dimensions.fontSM,
+            color: theme.textSecondary,
+            textTransform: "uppercase",
+            letterSpacing: 0.5,
+          }}
+        >
+          {t("aiChat.message.assistantLabel")}
+        </Text>
+      </View>
+
+      {object.title && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
+          <Ionicons name="storefront-outline" size={dimensions.iconMD} color={theme.textSenary} />
+          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.textSenary }}>
+            {object.title}
+          </Text>
+        </View>
+      )}
+
+      {object.category && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
+          <Ionicons name="pricetag-outline" size={dimensions.iconSM} color={theme.textSenary} />
+          <Text style={{ fontSize: dimensions.fontMD, color: theme.textSenary }}>
+            {t("aiChat.label.category")}: {object.category}
+          </Text>
+        </View>
+      )}
+
+      {object.date && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
+          <Ionicons name="calendar-outline" size={dimensions.iconSM} color={theme.textSenary} />
+          <Text style={{ fontSize: dimensions.fontMD, color: theme.textSenary }}>
+            {t("aiChat.label.date")}: {object.date} {object.time && `• ${object.time}`}
+          </Text>
+        </View>
+      )}
+
+      {object.products && object.products.length > 0 && (
+        <View style={{ marginTop: dimensions.xs }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
+            <Ionicons name="list-outline" size={dimensions.iconSM} color={theme.textSenary} />
+            <Text style={{ fontSize: dimensions.fontMD, fontWeight: "600", color: theme.textSenary }}>
+              {t("aiChat.label.items")}:
+            </Text>
+          </View>
+          {object.products.map((item, idx) => (
+            <Text key={idx} style={{ fontSize: dimensions.fontSM, color: theme.textSenary, marginLeft: wp(2) }}>
+              • {item?.itemName} - {item?.quantity}x { formatTotal(item?.price || 0)} 
+            </Text>
+          ))}
+        </View>
+      )}
+
+      {object.total !== undefined && (
+        <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginTop: dimensions.xs }}>
+          <Ionicons name="cash-outline" size={dimensions.iconMD} color={theme.textSenary} />
+          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.textSenary }}>
+            {t("aiChat.label.total")}: {object.total.toFixed(2)} TL
+          </Text>
+        </View>
+      )}
+
+      <View style={{ flexDirection: "row", gap: dimensions.xs, marginTop: dimensions.md }}>
+        <TouchableOpacity
+          onPress={handleConfirmSave}
+          style={{
+            backgroundColor: theme.buttonprimary,
+            paddingVertical: dimensions.md,
+            paddingHorizontal: dimensions.md,
+            borderRadius: dimensions.borderRadiusLG,
+            opacity: isSaving ? 0.6 : 1,
+            flexDirection: "row",
+            alignItems: "center",
+            gap: dimensions.xs,
+            shadowColor: "#000",
+            shadowOffset: { width: 0, height: dimensions.xs },
+            shadowOpacity: 0.2,
+            shadowRadius: dimensions.xs,
+            elevation: 3,
+          }}
+          disabled={isSaving}
+        >
+          <Ionicons name="checkmark-circle" size={dimensions.iconMD} color={theme.white} />
+          <Text
+            style={{
+              color: theme.text,
+              fontWeight: "700",
+              fontSize: dimensions.fontMD,
+            }}
+          >
+            {isSaving ? t("aiChat.save.loading") : t("aiChat.save.button")}
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
 
   return (
     <View style={{ flex: 1 }}>
@@ -514,7 +471,7 @@ export default function Aichat() {
         {/* Messages */}
         <ScrollView
           ref={scrollViewRef}
-          style={{ flex: 1 }}
+          style={{ flex: 1, backgroundColor: theme.headerbackground }}
           contentContainerStyle={{
             paddingHorizontal: dimensions.md,
             paddingVertical: dimensions.md,
@@ -524,7 +481,58 @@ export default function Aichat() {
             scrollViewRef.current?.scrollToEnd({ animated: true })
           }
         >
-          {messages.length === 0 ? (
+          {selectedImage && (
+            <View
+              style={{
+                marginBottom: dimensions.md,
+                alignItems: "center",
+              }}
+            >
+              <Image
+                source={{ uri: selectedImage }}
+                style={{
+                  width: wp(80),
+                  height: wp(80) * 0.75,
+                  borderRadius: dimensions.borderRadiusLG,
+                  borderWidth: 2,
+                  borderColor: "rgba(255, 255, 255, 0.2)",
+                }}
+                resizeMode="contain"
+              />
+              <Text
+                style={{
+                  marginTop: dimensions.xs,
+                  color: theme.textSecondary,
+                  fontSize: dimensions.fontSM,
+                }}
+              >
+                {t("aiChat.selectedImage")}
+              </Text>
+            </View>
+          )}
+
+          {analysisMessage && (
+            <View
+              style={{
+                marginBottom: dimensions.md,
+                padding: dimensions.md,
+                borderRadius: dimensions.borderRadiusLG,
+                backgroundColor: "rgba(255, 59, 48, 0.1)",
+                borderWidth: 1,
+                borderColor: "rgba(255, 59, 48, 0.25)",
+                flexDirection: "row",
+                alignItems: "center",
+                gap: dimensions.xs,
+              }}
+            >
+              <Ionicons name="alert-circle-outline" size={dimensions.iconMD} color={theme.error} />
+              <Text style={{ color: theme.error, fontSize: dimensions.fontSM, flex: 1 }}>
+                {analysisMessage}
+              </Text>
+            </View>
+          )}
+
+          {!object && !selectedImage ? (
             <View
               style={{
                 flex: 1,
@@ -546,7 +554,7 @@ export default function Aichat() {
                 <Ionicons name="camera-outline" size={72} color={theme.defaultIconColor} />
                 <Text
                   style={{
-                    fontSize: dimensions.fontLG*1.1,
+                    fontSize: dimensions.fontLG * 1.1,
                     color: theme.textPrimary,
                     marginTop: dimensions.md,
                     textAlign: "center",
@@ -565,164 +573,11 @@ export default function Aichat() {
                   }}
                 >
                   {t("aiChat.emptyState.description")}
-
                 </Text>
               </View>
             </View>
           ) : (
-            messages?.map((m, msgIndex) => (
-              <View
-                key={m?.id || msgIndex}
-                style={{
-                  marginVertical: dimensions.xs,
-                  alignSelf: m?.role === "user" ? "flex-end" : "flex-start",
-                  maxWidth: "85%",
-                }}
-              >
-                <View
-                  style={{
-                    backgroundColor:
-                      m?.role === "user"
-                        ? theme.primary
-                        : "rgba(255, 255, 255, 0.95)",
-                    borderRadius: dimensions.borderRadiusXL,
-                    padding: dimensions.md,
-                    shadowColor: theme.shadow,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.15,
-                    shadowRadius: dimensions.xs,
-                    elevation: 3,
-                    borderWidth: 1,
-                    borderColor: m?.role === "user" ? theme.border : "transparent",
-                  }}
-                >
-                  <Text
-                    style={{
-                      fontWeight: "700",
-                      fontSize: dimensions.fontSM,
-                      color: m?.role === "user" ? theme.textPrimary : theme.textSecondary,
-                      marginBottom: dimensions.xs,
-                      textTransform: "uppercase",
-                      letterSpacing: 0.5,
-                    }}
-                  >
-                    {m?.role === "user"
-                      ? t("aiChat.message.userLabel")
-                      : t("aiChat.message.assistantLabel")}
-                  </Text>
-
-                  {typeof m.content === "string" ? (
-                    <Text
-                      style={{
-                        fontSize: dimensions.fontMD,
-                        lineHeight: dimensions.lg,
-                        color: m?.role === "user" ? theme.text : theme.textSenary,
-                      }}
-                    >
-                      {m.content}
-                    </Text>
-                  ) : Array.isArray(m.content) ? (
-                    (m.content as any[]).map((part: any, i: number) => {
-                      if (!part) return null;
-                      switch (part?.type) {
-                        case "text":
-                          return (
-                            <Text
-                              key={`${m?.id}-${i}`}
-                              style={{
-                                fontSize: dimensions.fontMD,
-                                lineHeight: dimensions.lg,
-                                color:
-                                  m?.role === "user" ? theme.text : theme.textSenary,
-                              }}
-                            >
-                              {part?.text || ""}
-                            </Text>
-                          );
-                        case "file":
-                        case "image":
-                          return part?.url ? (
-                            <Image
-                              key={`${m?.id}-${i}`}
-                              source={{ uri: part.url }}
-                              style={{
-                                width: wp(50),
-                                height: wp(50),
-                                borderRadius: dimensions.borderRadiusLG,
-                                marginTop: dimensions.xs,
-                                borderWidth: 2,
-                                borderColor: theme.border,
-                              }}
-                              resizeMode="cover"
-                            />
-                          ) : null;
-                        default:
-                          return null;
-                      }
-                    })
-                  ) : null}
-
-                  {m?.role === "assistant" &&
-                    msgIndex === messages.length - 1 && (
-                      <View
-                        style={{
-                          flexDirection: "row",
-                          gap: dimensions.xs,
-                          marginTop: 14,
-                        }}
-                      >
-                        <TouchableOpacity
-                          onPress={() => {
-                            let text = "";
-                            if (typeof m.content === "string") {
-                              text = m.content;
-                            } else if (Array.isArray(m.content)) {
-                              text = (m.content as any[])
-                                .filter((p: any) => p?.type === "text")
-                                .map((p: any) => p?.text)
-                                .join("\n");
-                            }
-                            if (text) {
-                              handleConfirmSave(text);
-                            }
-                          }}
-                          style={{
-                            backgroundColor: theme.buttonprimary,
-                            paddingVertical: dimensions.md,
-                            paddingHorizontal: dimensions.md,
-                            borderRadius: dimensions.borderRadiusLG,
-                            opacity: isSaving ? 0.6 : 1,
-                            flexDirection: "row",
-                            alignItems: "center",
-                            gap: dimensions.xs,
-                            shadowColor: "#000",
-                            shadowOffset: { width: 0, height: dimensions.xs },
-                            shadowOpacity: 0.2,
-                            shadowRadius: dimensions.xs,
-                            elevation: 3,
-                          }}
-                          disabled={isSaving}
-                        >
-                          <Ionicons
-                            name="checkmark-circle"
-                            size={dimensions.iconMD}
-                            color={theme.white}
-                          />
-                          <Text
-                            style={{
-                              color: theme.text,
-                              fontWeight: "700",
-                              fontSize: dimensions.fontMD,
-                            }}
-                          >
-                            {isSaving ? t("aiChat.save.loading") : t("aiChat.save.button")}
-                          </Text>
-                        </TouchableOpacity>
-                      </View>
-                    )}
-                </View>
-              </View>
-            ))
+            displayObject
           )}
 
           {status === "submitted" && (
@@ -841,7 +696,7 @@ export default function Aichat() {
 
           {status === "submitted" && (
             <TouchableOpacity
-              onPress={stop}
+              onPress={handleStop}
               style={{
                 backgroundColor: theme.error,
                 paddingVertical: dimensions.md,
