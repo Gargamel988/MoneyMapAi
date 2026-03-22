@@ -3,8 +3,8 @@ import { router } from "expo-router";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
-import { Transaction, TransactionList } from "../../types/transactıonstype";
+import { useResponsive } from "../../hooks/useResponsive";
+import { Transaction, TransactionList } from "../../types/transactionTypes";
 import { formatTime } from "../../utils/date";
 import { formatTotal } from "../../utils/total";
 

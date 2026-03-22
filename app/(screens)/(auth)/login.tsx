@@ -15,7 +15,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import GoogleSignIn from "../../../src/components/googleauth";
 import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
+import { useResponsive } from "../../../src/hooks/useResponsive";
 import { useAuthsignupMutation } from "../../../src/lib/authmutation";
 import { LoginFormData, LoginSchema } from "../../../src/schemas/LoginSchema";
 
@@ -350,3 +350,4 @@ export default function Login() {
     </SafeAreaView>
   );
 }
+

@@ -3,10 +3,10 @@ import { router } from "expo-router";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
-import { getProfil } from "../../../src/lib/profil";
+import { getProfile } from "../../../src/lib/profile";
 import { avatar } from "../../../src/utils/avatar";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 
 const Header = () => {
   const { t } = useTranslation();
@@ -14,7 +14,7 @@ const Header = () => {
   const { dimensions, isTablet, wp, hp } = useResponsive();
   const { data: user } = useQuery({
     queryKey: ["profil"],
-    queryFn: () => getProfil(),
+    queryFn: () => getProfile(),
   });
   const avatarUrl = user?.data?.avatar_url;
   const name =  user?.data?.name;

@@ -1,12 +1,12 @@
-import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { Transaction, TransactionList } from "@/src/types/transactionTypes";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 import { formatTotal } from "../../utils/total";
 import { ErrorFallback, NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";
-import InfoCard from "../ui/ınfo-card";
+import InfoCard from "../ui/info-card";
 
 type TopFiveExpensesProps = {
   data: TransactionList;

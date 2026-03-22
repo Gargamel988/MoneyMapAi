@@ -1,7 +1,7 @@
 
 import { t } from "i18next";
 import { z } from "zod";
-import { wp } from "../hooks/useRespons";
+import { wp } from "../hooks/useResponsive";
 
 
 // Özel validasyon fonksiyonları

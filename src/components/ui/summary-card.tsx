@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 import { formatTotal } from "../../utils/total";
 
 interface SummaryCardProps {

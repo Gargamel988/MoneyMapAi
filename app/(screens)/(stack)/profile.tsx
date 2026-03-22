@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -18,10 +19,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ModalCurrency } from "../../../src/components/setting/modal-currency";
 import ModalLanguage from "../../../src/components/setting/modal-language";
 import { ProfileCard } from "../../../src/components/ui/profile-card";
-import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
+import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
-import { hp, useResponsive, wp } from "../../../src/hooks/useRespons";
-import { getProfil, updateAvatar, updatecurrency, updatename, updateusername } from "../../../src/lib/profil";
+import { hp, useResponsive, wp } from "../../../src/hooks/useResponsive";
+import { getProfile, updateAvatar, updateCurrency, updateName, updateUsername } from "../../../src/lib/profile";
 import { avatar } from "../../../src/utils/avatar";
 
 // Form types
@@ -51,8 +52,8 @@ export default function ProfilePage() {
     },
   });
   const { data: profileData } = useQuery({
-    queryKey: ["profile"],
-    queryFn: () => getProfil(),
+    queryKey: QUERY_KEYS.user.profile(),
+    queryFn: () => getProfile(),
   });
   const createdAt = new Date(profileData?.data?.created_at).toLocaleDateString(
     i18n.language === "tr" ? "tr-TR" : "en-US",
@@ -61,15 +62,15 @@ export default function ProfilePage() {
 
   const mutation = useMutation({
     mutationFn: async (currency: string) => {
-      const data = await updatecurrency(currency);
+      const data = await updateCurrency(currency);
       if (!data) {
         throw new Error(t("profile.currency.updateError"));
       }
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currency"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.currency() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
       showSuccessToast(t("common.success"), t("profile.currency.updateSuccess"));
       setShowModal("currency");
     },
@@ -80,14 +81,14 @@ export default function ProfilePage() {
   });
   const mutationname = useMutation({
     mutationFn: async (name: string) => {
-      const data = await updatename(name);
+      const data = await updateName(name);
       if (!data) {
         throw new Error(t("profile.name.updateError"));
       }
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
       showSuccessToast(t("common.success"), t("profile.name.updateSuccess"));
       setShowModal(null);
       nameForm.reset();
@@ -105,8 +106,7 @@ export default function ProfilePage() {
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
-      queryClient.invalidateQueries({ queryKey: ["profil"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
       showSuccessToast(t("common.success"), t("profile.avatar.updateSuccess"));
       setShowModal(null);
     },
@@ -116,14 +116,14 @@ export default function ProfilePage() {
   });
   const mutationusername = useMutation({
     mutationFn: async (username: string) => {
-      const data = await updateusername(username);
+      const data = await updateUsername(username);
       if (!data) {
         throw new Error(t("profile.username.updateError"));
       }
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
       showSuccessToast(t("common.success"), t("profile.username.updateSuccess"));
       setShowModal(null);
       usernameForm.reset();
@@ -357,14 +357,14 @@ export default function ProfilePage() {
   const getAvatarSource = () => {
     if (!profileData?.data?.avatar_url) return null;
     
-    // Eğer avatar_url bir sayı ise (1-10 arası)
+    // EÄŸer avatar_url bir sayÄ± ise (1-10 arasÄ±)
     const avatarId = Number(profileData.data.avatar_url);
     if (!isNaN(avatarId) && avatarId >= 1 && avatarId <= 10) {
       const avatarItem = avatar.find(item => item.id === avatarId);
       return avatarItem ? avatarItem.image : null;
     }
     
-    // Değilse URL olarak kullan
+    // DeÄŸilse URL olarak kullan
     return { uri: profileData.data.avatar_url };
   };
   const modalavatar = () => {
@@ -659,3 +659,4 @@ export default function ProfilePage() {
     </SafeAreaView>
   );
 }
+

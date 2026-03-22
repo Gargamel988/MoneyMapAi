@@ -56,6 +56,10 @@ export interface Theme {
   modalbackground: string;
   bordersecondary: string;
   processcardbackground: string;
+  cardGlass: string;
+  cardBorder: string;
+  warning: string;
+  background: string;
 }
 
 export const themes: Record<string, Theme> = {
@@ -113,10 +117,14 @@ export const themes: Record<string, Theme> = {
     gradientColors: ["#4A7FA7", "#1A3D63", "#2A3F54"],
     profilecardbackground: "#EFF6FF",
     profilecardiconcolor: "#3B82F6",
-    inputbackground: "#2C5F8D",
+    inputbackground: "#E8F4FC",
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#f8f8f8",
+    cardGlass: "rgba(255, 255, 255, 0.1)",
+    cardBorder: "rgba(255, 255, 255, 0.15)",
+    warning: "#FBBF24",
+    background: "#1A3D63",
   },
   serene: {
     name: "serene",
@@ -176,6 +184,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#f8f8f8",
+    cardGlass: "rgba(255, 255, 255, 0.12)",
+    cardBorder: "rgba(255, 255, 255, 0.2)",
+    warning: "#FBBF24",
+    background: "#212138",
   },
   elegant: {
     name: "elegant",
@@ -235,6 +247,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#f8f8f8",
+    cardGlass: "rgba(255, 255, 255, 0.15)",
+    cardBorder: "rgba(255, 255, 255, 0.25)",
+    warning: "#FBBF24",
+    background: "#394348",
   },
   nature: {
     name: "nature",
@@ -294,6 +310,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#94DEA5",
+    cardGlass: "rgba(255, 255, 255, 0.1)",
+    cardBorder: "rgba(255, 255, 255, 0.2)",
+    warning: "#FBBF24",
+    background: "#023D54",
   },
   forest: {
     name: "forest",
@@ -353,6 +373,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#AEC3B0",
+    cardGlass: "rgba(239, 238, 228, 0.15)",
+    cardBorder: "rgba(255, 255, 255, 0.2)",
+    warning: "#FBBF24",
+    background: "#0F2A1D",
   },
   deepsea: {
     name: "deepsea",
@@ -412,6 +436,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#7B9C92",
+    cardGlass: "rgba(255, 255, 255, 0.08)",
+    cardBorder: "rgba(255, 255, 255, 0.18)",
+    warning: "#FBBF24",
+    background: "#0B272A",
   },
   warmearth: {
     name: "warmearth",
@@ -471,6 +499,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#B48460",
+    cardGlass: "rgba(255, 255, 255, 0.12)",
+    cardBorder: "rgba(255, 255, 255, 0.22)",
+    warning: "#FBBF24",
+    background: "#352223",
   },
   midnight: {
     name: "midnight",
@@ -530,5 +562,10 @@ export const themes: Record<string, Theme> = {
     imputplaceholderprimary: "rgba(255, 255, 255, 0.6)",
     modalbackground: "rgba(0, 0, 0, 0.5)",
     processcardbackground: "#A3A8B7",
+    cardGlass: "rgba(255, 255, 255, 0.05)",
+    cardBorder: "rgba(255, 255, 255, 0.15)",
+    warning: "#FBBF24",
+    background: "#241B1D",
   },
 };
+

@@ -14,8 +14,8 @@ import { GreenLoadingComponent } from "../../../src/components/common/loading";
 import {
   useCategories,
 } from "../../../src/hooks/useCategories";
-import { useResponsive } from "../../../src/hooks/useRespons";
-import { Category } from "../../../src/types/transactıonstype";
+import { useResponsive } from "../../../src/hooks/useResponsive";
+import { Category } from "../../../src/types/transactionTypes";
 
 
 
@@ -23,7 +23,7 @@ type SortType = "name-asc" | "name-desc" | "date-newest" | "date-oldest";
 
 const CategoryManagement = () => {
   const { t } = useTranslation();
-  const { dimensions,  wp } = useResponsive();
+  const { dimensions, wp } = useResponsive();
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -100,8 +100,8 @@ const CategoryManagement = () => {
   return (
     <SafeAreaView style={{ flex: 1, paddingHorizontal: wp(6) }}>
       {/* ---------- HEADER / STATS ---------- */}
-     <SearchFilterBar
-     onAdd={() => setShowAddForm(true)}
+      <SearchFilterBar
+        onAdd={() => setShowAddForm(true)}
         allCount={categories.length}
         incomeCount={categories.filter((category) => category.type === "gelir").length}
         expenseCount={categories.filter((category) => category.type === "gider").length}
@@ -149,4 +149,5 @@ const CategoryManagement = () => {
 };
 
 export default CategoryManagement;
+
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { useTheme } from '../../contexts/theme';
-import { useResponsive } from '../../hooks/useRespons';
+import { useResponsive } from '../../hooks/useResponsive';
 
 type GreenLoadingComponentProps = {
   text?: string;

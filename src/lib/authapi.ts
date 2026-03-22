@@ -1,6 +1,6 @@
 import { Alert } from 'react-native';
 import i18next from '../../services/i18next';
-import { showErrorToast, showSuccessToast } from '../constanst/toast';
+import { showErrorToast, showSuccessToast } from '../constants/toast';
 import { SignInWithEmailProps, SignUpWithEmailProps } from '../types/authtype';
 import { getErrorMessage } from '../utils/authutils';
 import { supabase } from './supabase';

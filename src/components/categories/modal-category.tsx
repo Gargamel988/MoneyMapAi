@@ -13,15 +13,15 @@ import {
   View,
 } from "react-native";
 import { ColorSelectionModal } from "../../components/categories/colorpalette";
-import { showWarningToast } from "../../constanst/toast";
+import { showWarningToast } from "../../constants/toast";
 import { useTheme } from "../../contexts/theme";
 import { useCategories } from "../../hooks/useCategories";
-import { hp, useResponsive, wp } from "../../hooks/useRespons";
+import { hp, useResponsive, wp } from "../../hooks/useResponsive";
 import {
   CategoryFormData,
   categorySchema,
 } from "../../schemas/categorySchemas";
-import { Category } from "../../types/transactıonstype";
+import { Category } from "../../types/transactionTypes";
 
 type ModalCategoryProps = {
   visible: boolean;

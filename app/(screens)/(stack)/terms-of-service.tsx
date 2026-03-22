@@ -2,14 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../src/contexts/theme';
-import { useResponsive } from '../../../src/hooks/useRespons';
+import { useResponsive } from '../../../src/hooks/useResponsive';
 
 export default function TermsOfService() {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
 
-  const openMail = (mail: string) => Linking.openURL(`mailto:${mail}`).catch(() => {});
+  const openMail = (mail: string) => Linking.openURL(`mailto:${mail}`).catch(() => { });
 
   return (
     <ScrollView
@@ -88,10 +88,10 @@ export default function TermsOfService() {
           {t("termsOfService.license.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.download")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.tracking")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.receipts")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.license.reports")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.license.download")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.license.tracking")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.license.receipts")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.license.reports")}</Text>
         </View>
 
         <View
@@ -117,11 +117,11 @@ export default function TermsOfService() {
           {t("termsOfService.responsibilities.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.accuracy")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.security")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.backup")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.legal")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.responsibilities.camera")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.responsibilities.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.responsibilities.security")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.responsibilities.backup")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.responsibilities.legal")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.responsibilities.camera")}</Text>
         </View>
 
         {/* AI and Data Processing */}
@@ -132,10 +132,10 @@ export default function TermsOfService() {
           {t("termsOfService.ai.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.ocr")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.categorization")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.accuracy")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.ai.learning")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.ai.ocr")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.ai.categorization")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.ai.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.ai.learning")}</Text>
         </View>
 
         <View
@@ -161,11 +161,11 @@ export default function TermsOfService() {
           {t("termsOfService.dataOwnership.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.photos")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.records")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.export")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.delete")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.dataOwnership.marketing")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.dataOwnership.photos")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.dataOwnership.records")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.dataOwnership.export")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.dataOwnership.delete")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.dataOwnership.marketing")}</Text>
         </View>
 
         {/* Service Availability */}
@@ -176,10 +176,10 @@ export default function TermsOfService() {
           {t("termsOfService.availability.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.maintenance")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.technical")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.internet")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.availability.thirdParty")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.availability.maintenance")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.availability.technical")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.availability.internet")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.availability.thirdParty")}</Text>
         </View>
 
         {/* Disclaimers */}
@@ -190,11 +190,11 @@ export default function TermsOfService() {
           {t("termsOfService.disclaimer.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.advice")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.accuracy")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.dataLoss")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.thirdParty")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.disclaimer.compatibility")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.disclaimer.advice")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.disclaimer.accuracy")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.disclaimer.dataLoss")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.disclaimer.thirdParty")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.disclaimer.compatibility")}</Text>
         </View>
 
         {/* Limitation of Liability */}
@@ -205,11 +205,11 @@ export default function TermsOfService() {
           {t("termsOfService.liability.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.financial")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.errors")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.dataLoss")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.thirdParty")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.liability.connection")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.liability.financial")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.liability.errors")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.liability.dataLoss")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.liability.thirdParty")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.liability.connection")}</Text>
         </View>
 
         {/* Age Restrictions */}
@@ -228,10 +228,10 @@ export default function TermsOfService() {
           {t("termsOfService.updates.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.update")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.features")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.terms")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.updates.stop")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.updates.update")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.updates.features")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.updates.terms")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.updates.stop")}</Text>
         </View>
 
         {/* Termination */}
@@ -242,10 +242,10 @@ export default function TermsOfService() {
           {t("termsOfService.termination.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.violation")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.illegal")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.harm")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("termsOfService.termination.fake")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.termination.violation")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.termination.illegal")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.termination.harm")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("termsOfService.termination.fake")}</Text>
         </View>
 
         {/* Governing Law */}

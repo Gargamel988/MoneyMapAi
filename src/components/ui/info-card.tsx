@@ -1,5 +1,5 @@
 import { useTheme } from '@/src/contexts/theme';
-import { hp, wp } from '@/src/hooks/useRespons';
+import { hp, wp } from '@/src/hooks/useResponsive';
 import React from 'react';
 import { Text, View } from 'react-native';
 

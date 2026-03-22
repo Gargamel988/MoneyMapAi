@@ -1,7 +1,7 @@
-import { Dimensions, PixelRatio } from 'react-native';
+import { Dimensions, PixelRatio } from "react-native";
 
 // Ekran boyutları
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 // Breakpoints
 export const BREAKPOINTS = {
@@ -13,8 +13,10 @@ export const BREAKPOINTS = {
 
 // Device türleri
 export const isSmallDevice = SCREEN_WIDTH < BREAKPOINTS.small;
-export const isMediumDevice = SCREEN_WIDTH >= BREAKPOINTS.small && SCREEN_WIDTH < BREAKPOINTS.medium;
-export const isLargeDevice = SCREEN_WIDTH >= BREAKPOINTS.medium && SCREEN_WIDTH < BREAKPOINTS.large;
+export const isMediumDevice =
+  SCREEN_WIDTH >= BREAKPOINTS.small && SCREEN_WIDTH < BREAKPOINTS.medium;
+export const isLargeDevice =
+  SCREEN_WIDTH >= BREAKPOINTS.medium && SCREEN_WIDTH < BREAKPOINTS.large;
 export const isExtraLargeDevice = SCREEN_WIDTH >= BREAKPOINTS.large;
 
 // Tablet kontrolü
@@ -24,7 +26,8 @@ export const isPhone = SCREEN_WIDTH < 768;
 // Responsive scaling fonksiyonları
 export const scale = (size: number) => (SCREEN_WIDTH / 320) * size;
 export const verticalScale = (size: number) => (SCREEN_HEIGHT / 568) * size;
-export const moderateScale = (size: number, factor = 0.5) => size + (scale(size) - size) * factor;
+export const moderateScale = (size: number, factor = 0.5) =>
+  size + (scale(size) - size) * factor;
 
 // Pixel ratio bazlı scaling
 export const scaleFont = (size: number) => size * PixelRatio.getFontScale();
@@ -39,7 +42,7 @@ export const RESPONSIVE_DIMENSIONS = {
   lg: moderateScale(24),
   xl: moderateScale(32),
   xxl: moderateScale(48),
-  
+
   // Font sizes
   fontXS: moderateScale(10),
   fontSM: moderateScale(12),
@@ -49,17 +52,17 @@ export const RESPONSIVE_DIMENSIONS = {
   fontXXL: moderateScale(20),
   fontTitle: moderateScale(24),
   fontLarge: moderateScale(32),
-  
+
   // Border radius
   borderRadius: moderateScale(8),
   borderRadiusLG: moderateScale(12),
   borderRadiusXL: moderateScale(16),
-  
+
   // Heights
   buttonHeight: verticalScale(48),
   inputHeight: verticalScale(44),
   headerHeight: verticalScale(60),
-  
+
   // Icon sizes
   iconXS: moderateScale(12),
   iconSM: moderateScale(16),

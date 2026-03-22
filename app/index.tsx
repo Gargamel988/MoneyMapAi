@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "../src/contexts/theme";
-import { useResponsive } from "../src/hooks/useRespons";
+import { useResponsive } from "../src/hooks/useResponsive";
 
 const WelcomeScreen = () => {
   const [fontsLoaded, error] = useFonts({
@@ -26,19 +26,19 @@ const WelcomeScreen = () => {
     {
       id: 1,
       title:
-        "Yapay zekâ ile fotoğraf çekin, verinizi akıllı analizle geleceğe taşıyın",
+        "Yapay zekÃ¢ ile fotoÄŸraf Ã§ekin, verinizi akÄ±llÄ± analizle geleceÄŸe taÅŸÄ±yÄ±n",
     },
     {
       id: 2,
-      title: "Kapsamlı analiz, net sonuçlar",
+      title: "KapsamlÄ± analiz, net sonuÃ§lar",
     },
     {
       id: 3,
-      title: "Tercihinize göre: Elle ekleme seçeneğiyle tam kontrol sizde.",
+      title: "Tercihinize gÃ¶re: Elle ekleme seÃ§eneÄŸiyle tam kontrol sizde.",
     },
     {
       id: 4,
-      title: "Her kullanıcıya özel, esnek ve kişiselleştirilebilir yapı",
+      title: "Her kullanÄ±cÄ±ya Ã¶zel, esnek ve kiÅŸiselleÅŸtirilebilir yapÄ±",
     },
   ];
 
@@ -192,8 +192,8 @@ const WelcomeScreen = () => {
                 {t("login.button")}
               </Text>
             </TouchableOpacity>
-          
-             
+
+
           </View>
         </View>
       </View>
@@ -202,3 +202,4 @@ const WelcomeScreen = () => {
 };
 
 export default WelcomeScreen;
+

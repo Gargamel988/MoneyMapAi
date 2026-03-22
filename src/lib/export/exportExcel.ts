@@ -2,8 +2,8 @@ import * as FileSystem from 'expo-file-system/legacy';
 import * as Sharing from 'expo-sharing';
 import XLSX from 'xlsx-js-style';
 import i18next from '../../../services/i18next';
-import { showErrorToast, showSuccessToast } from "../../constanst/toast";
-import { Transaction, TransactionList } from "../../types/transactıonstype";
+import { showErrorToast, showSuccessToast } from "../../constants/toast";
+import { Transaction, TransactionList } from "../../types/transactionTypes";
 import { formatTotal } from "../../utils/total";
 
 export const exportToExcel = async (

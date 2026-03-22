@@ -1,5 +1,5 @@
-import { useResponsive } from "@/src/hooks/useRespons";
-import { ExpenseItem, Transaction } from "@/src/types/transactıonstype";
+import { useResponsive } from "@/src/hooks/useResponsive";
+import { ExpenseItem, Transaction } from "@/src/types/transactionTypes";
 import { formatTotal } from "@/src/utils/total";
 import { Feather } from "@expo/vector-icons";
 import React from "react";

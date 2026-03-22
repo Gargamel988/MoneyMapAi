@@ -1,5 +1,5 @@
 import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
+import { useResponsive } from "@/src/hooks/useResponsive";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import React from "react";

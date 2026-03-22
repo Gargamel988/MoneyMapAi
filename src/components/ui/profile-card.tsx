@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
-import { hp, useResponsive, wp } from "../../hooks/useRespons";
+import { hp, useResponsive, wp } from "../../hooks/useResponsive";
 
 export function ProfileCard({
   icon,

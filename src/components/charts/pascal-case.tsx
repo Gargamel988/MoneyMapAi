@@ -1,10 +1,11 @@
-import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { APP_CONFIG } from "@/src/constants/config";
+import { Transaction, TransactionList } from "@/src/types/transactionTypes";
 import React from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, Text, View } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 import { formatTotal } from "../../utils/total";
 import { ErrorFallback, NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";
@@ -381,21 +382,7 @@ export default function Pascalcase({
                 width={isTablet ? wp(84) : wp(87)}
                 height={isTablet ? moderateScale(280) : moderateScale(250)}
                 formatYLabel={formatYAxisLabel}
-                yAxisLabel={
-                  currency === "TRY"
-                    ? "₺"
-                    : currency === "USD"
-                    ? "$"
-                    : currency === "EUR"
-                    ? "€"
-                    : currency === "GBP"
-                    ? "£"
-                    : currency === "JPY"
-                    ? "¥"
-                    : currency === "CNY"
-                    ? "¥"
-                    : ""
-                }
+                yAxisLabel={APP_CONFIG.currencies[currency as keyof typeof APP_CONFIG.currencies]?.symbol || ""}
                 yAxisSuffix=""
                 yAxisInterval={1}
                 chartConfig={chartConfig as any}

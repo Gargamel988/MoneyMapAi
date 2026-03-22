@@ -50,7 +50,7 @@ export const insertDefaultIncomeCategories = async (user: User) => {
   }
 };
 
-export const getUserexpenseCategories = async () => {
+export const getUserExpenseCategories = async () => {
   const user = await getUser();
 
   // User ID kontrolü
@@ -76,7 +76,7 @@ export const getUserexpenseCategories = async () => {
 
   return { data: categories, error };
 };
-export const getUserincomeCategories = async () => {
+export const getUserIncomeCategories = async () => {
   const user = await getUser();
 
   // User ID kontrolü
@@ -109,7 +109,7 @@ export const getUserincomeCategories = async () => {
 
   return { data: categories, error };
 };
-export const getUserallCategories = async () => {
+export const getUserAllCategories = async () => {
   const user = await getUser();
 
   // User ID kontrolü
@@ -125,7 +125,7 @@ export const getUserallCategories = async () => {
   return { data: categories, error };
 };
 
-// Dil değiştiğinde varsayılan kategorileri güncelle
+// Update default categories when language changes
 export const updateDefaultCategoriesByLanguage = async (newLanguage: string) => {
   try {
     const user = await getUser();

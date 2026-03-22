@@ -2,10 +2,10 @@
   "expo": {
     "name": "MoneyMapAi",
     "slug": "my-ai-app",
-    "version": "1.0.9",
+    "version": "1.0.11",
     "owner": "gargamel9288",
     "orientation": "portrait",
-    "icon": "./assets/ic_launcher_foreground.png",
+    "icon": "./assets/logo-new.png",
     "scheme": "moneymapai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -13,11 +13,10 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 18,
+      "versionCode": 28,
       "adaptiveIcon": {
-        "backgroundColor": "#ffffff",
-        "foregroundImage": "./assets/ic_launcher_foreground.png",
-        "monochromeImage": "./assets/ic_launcher_foreground.png"
+        "backgroundColor": "#1A3D63",
+        "foregroundImage": "./assets/logo-new.png"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false,
@@ -31,34 +30,57 @@
       [
         "expo-router",
         {
-          "origin": "https://gargamel123-my-ai-app.expo.app"
+          "origin": "https://my-ai-app-0cc81e.expo.app"
         }
       ],
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash-screen.jpg",
-          "resizeMode": "cover",
-          "backgroundColor": "#4A7FA7",
+          "image": "./assets/splash-new.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#1A3D63",
           "dark": {
-            "backgroundColor": "#1A3D63"
+            "backgroundColor": "#0B272A"
+          }
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
           }
         }
       ],
       "expo-font",
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-1444133443338193~5195913201",
+          "iosAppId": "ca-app-pub-1444133443338193~5195913201",
+          "delayAppMeasurementInit": true
+        }
+      ]
     ],
+
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
     },
     "extra": {
       "router": {
-        "origin": "https://gargamel123-my-ai-app.expo.app"
+        "origin": "https://my-ai-app-0cc81e.expo.app"
       },
       "eas": {
         "projectId": "b27596fd-e322-4e34-881f-1deee5e441af"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/b27596fd-e322-4e34-881f-1deee5e441af"
     }
   }
 }

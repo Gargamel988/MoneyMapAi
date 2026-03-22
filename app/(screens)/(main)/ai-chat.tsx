@@ -1,13 +1,23 @@
 import { experimental_useObject as useObject } from "@ai-sdk/react";
 import { Ionicons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
+import * as Haptics from "expo-haptics";
 import * as ImagePicker from "expo-image-picker";
 import { fetch as expoFetch } from "expo/fetch";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
+import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
+import { useResponsive } from "../../../src/hooks/useResponsive";
+
+import {
+  AdEventType,
+  InterstitialAd,
+  RewardedAd,
+  RewardedAdEventType,
+  TestIds,
+} from "react-native-google-mobile-ads";
 import { supabase } from "../../../src/lib/supabase";
 
 import { formatTotal } from "@/src/utils/total";
@@ -15,18 +25,29 @@ import { useIsFocused } from "@react-navigation/native";
 import {
   ActivityIndicator,
   Alert,
-  Image,
   ScrollView,
   Text,
   TouchableOpacity,
   View
 } from "react-native";
-import { getUserexpenseCategories } from "../../../src/lib/category";
+import { ReceiptOverlay } from "../../../src/components/camera/receipt-overlay";
+import { getUserExpenseCategories } from "../../../src/lib/category";
 import { transactionsApi } from "../../../src/lib/transactions";
 import { objectScheme } from "../../../src/schemas/objectScheme";
 import { generateAPIUrl } from "../../../src/utils/utils";
 
-export default function Aichat() {
+const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : (process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID || "ca-app-pub-1444133443338193/4724740534");
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+
+const interstitial = InterstitialAd.createForAdRequest(interstitialAdUnitId, {
+  keywords: ["finance", "savings", "money"],
+});
+
+const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
+  keywords: ["finance", "savings", "money"],
+});
+
+export default function AiChatScreen() {
   const queryClient = useQueryClient();
   const scrollViewRef = useRef<ScrollView | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -37,15 +58,16 @@ export default function Aichat() {
   const isFocused = useIsFocused();
   const { t, i18n } = useTranslation();
   const currentLanguage = (i18n.language || 'tr').split('-')[0];
-  
+
+  const apiUrl = generateAPIUrl("/api/chat");
+
   const { object, error, submit, clear, stop, isLoading } = useObject({
-    api: generateAPIUrl("/api/chat"),
+    api: apiUrl,
     fetch: expoFetch as unknown as typeof globalThis.fetch,
     schema: objectScheme,
   });
   const status = isLoading ? "submitted" : "idle";
   const wasLoadingRef = useRef(false);
-  console.log(analysisMessage)
 
 
   useEffect(() => {
@@ -59,6 +81,7 @@ export default function Aichat() {
     wasLoadingRef.current = isLoading;
   }, [isLoading, object, selectedImage, t]);
 
+
   useEffect(() => {
     if (!isFocused) {
       clear();
@@ -68,16 +91,55 @@ export default function Aichat() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  const handleStop = async () => {
-    try {
-      if (typeof stop === "function") {
-        await stop();
-        setAnalysisMessage(t("aiChat.stop.message"));
-      }
-    } catch (e) {
-      console.log("[AI-CHAT] stop error:", e);
-      Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.stop.error"));
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      console.log("Interstitial ad loaded");
+    });
+
+    interstitial.load();
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      console.log("Rewarded ad loaded");
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      reward => {
+        console.log("User earned reward: ", reward);
+      },
+    );
+
+    rewarded.load();
+
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
+
+  const startAnalysis = (payload: any) => {
+    if (rewarded.loaded) {
+      rewarded.show().then(() => {
+        submit(payload);
+        rewarded.load(); // Reload for next time
+      });
+    } else {
+      // If ad not loaded, allow analysis anyway but try to load for next time
+      submit(payload);
+      rewarded.load();
     }
+  };
+
+  const handleStop = () => {
+    if (typeof stop === "function") {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      stop();
+      setAnalysisMessage(t("aiChat.stop.message"));
+    }
+
   };
 
   const pickImage = async () => {
@@ -89,8 +151,9 @@ export default function Aichat() {
       }
       const result = await ImagePicker.launchCameraAsync({
         base64: true,
-        quality: 0.8,
+        quality: 0.5,
         aspect: [4, 3],
+        exif: false,
       });
       if (!result.canceled && result.assets?.[0]?.base64) {
         const b64 = result.assets[0].base64 as string;
@@ -98,7 +161,7 @@ export default function Aichat() {
         setAnalysisMessage(null);
         clear();
         setSelectedImage(dataUrl);
-        submit({
+        startAnalysis({
           messages: [
             {
               role: "user",
@@ -125,8 +188,9 @@ export default function Aichat() {
       }
       const result = await ImagePicker.launchImageLibraryAsync({
         base64: true,
-        quality: 0.8,
+        quality: 0.5,
         aspect: [4, 3],
+        exif: false,
       });
       if (!result.canceled && result.assets?.[0]?.base64) {
         const b64 = result.assets[0].base64 as string;
@@ -134,7 +198,7 @@ export default function Aichat() {
         setAnalysisMessage(null);
         clear();
         setSelectedImage(dataUrl);
-        submit({
+        startAnalysis({
           messages: [
             {
               role: "user",
@@ -161,15 +225,15 @@ export default function Aichat() {
 
   const handleConfirmSave = async () => {
     try {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
       if (!object) {
         Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.alert.invalidMessage"));
         return;
       }
 
       setIsSaving(true);
-      console.log("[AI-CHAT] handleConfirmSave: parsed object:", object);
 
-      const { data: categories } = await getUserexpenseCategories();
+      const { data: categories } = await getUserExpenseCategories();
 
       if (!categories || !Array.isArray(categories)) {
         Alert.alert(t("aiChat.alert.errorTitle"), t("aiChat.alert.categoriesLoadError"));
@@ -218,7 +282,7 @@ export default function Aichat() {
       }
 
       if (!selectedCategory) {
-        selectedCategory = categories.find((c: any) => c?.name === "Diğer") || categories[0];
+        selectedCategory = categories.find((c: any) => c?.name === "DiÄŸer") || categories[0];
       }
 
       if (!selectedCategory) {
@@ -255,12 +319,8 @@ export default function Aichat() {
         description: object.description || object.title || t("aiChat.defaultDescription"),
       };
 
-      console.log("[AI-CHAT] payload to be sent:", payload);
-
       const transactionData = await transactionsApi.addTransaction(payload);
       const transactionId = transactionData?.data?.id;
-
-      console.log("[AI-CHAT] transaction response:", transactionData);
 
       if (transactionId && object.products && Array.isArray(object.products) && object.products.length > 0) {
         const rows = object.products.map((it) => ({
@@ -273,24 +333,20 @@ export default function Aichat() {
       }
 
       showSuccessToast(t("aiChat.toast.saveSuccessTitle"), t("aiChat.toast.saveSuccessMessage"));
-      
+
+      // Show interstitial ad if loaded
+      if (interstitial.loaded) {
+        interstitial.show();
+      }
+
       // Invalidate all transaction queries
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["transactionsByLastprocess"] });
-      queryClient.invalidateQueries({ queryKey: ["getTransactionsByTwoWeeksAgo"] });
-      queryClient.invalidateQueries({ queryKey: ["getTransactionsByYear"] });
-      queryClient.invalidateQueries({ queryKey: ["getallTables"] });
-      queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
-      queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
-      queryClient.invalidateQueries({ queryKey: ["getallData"] });
-      queryClient.invalidateQueries({ queryKey: ["piechartData"] });
-      
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.transactions.all });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.categories.all });
     } catch (e: any) {
       showErrorToast(
         t("aiChat.toast.saveErrorTitle"),
         e?.message || t("aiChat.toast.saveErrorMessage")
       );
-      console.log("Error saving:", e);
     } finally {
       setIsSaving(false);
     }
@@ -313,7 +369,6 @@ export default function Aichat() {
     );
   }
 
-  // Display object data in a more structured way
   const displayObject = object && (
     <View
       style={{
@@ -382,7 +437,7 @@ export default function Aichat() {
           </View>
           {object.products.map((item, idx) => (
             <Text key={idx} style={{ fontSize: dimensions.fontSM, color: theme.textSenary, marginLeft: wp(2) }}>
-              • {item?.itemName} - {item?.quantity}x { formatTotal(item?.price || 0)} 
+              • {item?.itemName} - {item?.quantity}x {formatTotal(item?.price || 0)}
             </Text>
           ))}
         </View>
@@ -488,16 +543,11 @@ export default function Aichat() {
                 alignItems: "center",
               }}
             >
-              <Image
-                source={{ uri: selectedImage }}
-                style={{
-                  width: wp(80),
-                  height: wp(80) * 0.75,
-                  borderRadius: dimensions.borderRadiusLG,
-                  borderWidth: 2,
-                  borderColor: "rgba(255, 255, 255, 0.2)",
-                }}
-                resizeMode="contain"
+              <ReceiptOverlay
+                imageUri={selectedImage}
+                products={object?.products as any}
+                width={wp(80)}
+                height={wp(80) * 0.75}
               />
               <Text
                 style={{

@@ -1,7 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../contexts/theme';
-import { useResponsive } from '../../hooks/useRespons';
+import { useResponsive } from '../../hooks/useResponsive';
 type ItemRowProps = {
   iconName: string;
   title: string;

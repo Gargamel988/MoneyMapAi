@@ -7,7 +7,6 @@ import { streamObject } from "ai";
 export async function POST(request: Request) {
   try {
     const bodyText = await request.text();
-
     const parsedBody = JSON.parse(bodyText || "{}");
     const messages =
       parsedBody.messages ??
@@ -22,13 +21,12 @@ export async function POST(request: Request) {
 
     const userLanguage = (language || "tr").split("-")[0];
 
-    const t = i18next.getFixedT(userLanguage); 
-  
+    const t = i18next.getFixedT(userLanguage);
 
     if (!messages || !Array.isArray(messages)) {
       return Response.json(
         { error: "Messages must be an array" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,9 +41,7 @@ export async function POST(request: Request) {
           .filter((p) => p.type === "text")
           .map((p) => p.text)
           .join("\n");
-        const imageParts = parts.filter(
-          (p) => p.type === "file" && p.url
-        );
+        const imageParts = parts.filter((p) => p.type === "file" && p.url);
 
         const contentArray: any[] = [];
         if (textParts) {
@@ -67,38 +63,40 @@ export async function POST(request: Request) {
     const languageName = t(`ai.languageNames.${userLanguage}`, {
       defaultValue: userLanguage,
     });
-    const systemPrompt = `${t('ai.systemPrompt.intro')}
-${t('ai.systemPrompt.imageCheck')}
-${t('ai.systemPrompt.language')}
-${t('ai.systemPrompt.format')}
-${t('ai.systemPrompt.important', { language: languageName })}
-${t('ai.systemPrompt.items.multiple')}
-${t('ai.systemPrompt.items.quantity')}
-${t('ai.systemPrompt.items.quantityNote')}
-${t('ai.systemPrompt.items.shortName')}
+    // Optimized shorter system prompt for faster responses
+    const systemPrompt = `${t("ai.systemPrompt.intro")} ${t("ai.systemPrompt.imageCheck")}
 
-${t('ai.systemPrompt.total.format')}
+${t("ai.systemPrompt.important", { language: languageName })}
 
-${t('ai.systemPrompt.headers')}
+${t("ai.systemPrompt.format")}
 
-${t('ai.systemPrompt.items.format')}
+${t("ai.systemPrompt.headers")}
 
-${t('ai.systemPrompt.categories')}
+${t("ai.systemPrompt.items.format")} ${t("ai.systemPrompt.items.multiple")} ${t("ai.systemPrompt.items.quantity")} ${t("ai.systemPrompt.items.shortName")}
 
-${t('ai.systemPrompt.notReceipt')}`;
+${t("ai.systemPrompt.total.format")}
+
+${t("ai.systemPrompt.categories")}
+${t("ai.systemPrompt.boundingBox")}
+
+${t("ai.systemPrompt.notReceipt")}`;
 
     const result = streamObject({
       model: google("gemini-2.5-flash"),
       system: systemPrompt,
       messages: normalizedMessages,
       schema: objectScheme,
+      temperature: 0.3,
     });
 
     try {
       return result.toTextStreamResponse();
     } catch (err: any) {
       const message = err?.message || "";
-      if (message.includes("Controller is already closed") || message.includes("Premature close")) {
+      if (
+        message.includes("Controller is already closed") ||
+        message.includes("Premature close")
+      ) {
         return Response.json({ error: "client aborted" }, { status: 499 });
       }
       throw err;

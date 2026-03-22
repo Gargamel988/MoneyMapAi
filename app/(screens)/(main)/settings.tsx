@@ -14,12 +14,13 @@ import { GreenLoadingComponent } from "../../../src/components/common/loading";
 import { CardSection } from "../../../src/components/setting/card-section";
 import { ModalCurrency } from "../../../src/components/setting/modal-currency";
 import { ItemRow } from "../../../src/components/setting/setting-item";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { useAuth } from "../../../src/hooks/useAuth";
-import { useResponsive } from "../../../src/hooks/useRespons";
+import { useResponsive } from "../../../src/hooks/useResponsive";
 import { exportToCSV } from "../../../src/lib/export/exportCSV";
 import { exportToExcel } from "../../../src/lib/export/exportExcel";
 import { exportToPDF } from "../../../src/lib/export/exportPDF";
-import { getCurrency, getLanguage, updatecurrency } from "../../../src/lib/profil";
+import { getCurrency, getLanguage, updateCurrency } from "../../../src/lib/profile";
 import { transactionsApi } from "../../../src/lib/transactions";
 // @ts-ignore
 import { Feather } from "@expo/vector-icons";
@@ -27,14 +28,14 @@ import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import appConfig from "../../../app.json";
 import ModalLanguage from "../../../src/components/setting/modal-language";
-import { showErrorToast, showSuccessToast } from "../../../src/constanst/toast";
+import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const [showCurrencyModal, setShowCurrencyModal] = useState<boolean>(false);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
-const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
+  const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
 
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
@@ -46,27 +47,27 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["currency"],
+    queryKey: QUERY_KEYS.user.currency(),
     queryFn: getCurrency,
   });
 
   const {
     data: languageData,
   } = useQuery({
-    queryKey: ["language"],
+    queryKey: QUERY_KEYS.user.language(),
     queryFn: getLanguage,
   });
   const mutation = useMutation({
     mutationFn: async (currency: string) => {
-      const data = await updatecurrency(currency);
+      const data = await updateCurrency(currency);
       if (!data) {
         throw new Error(t("settings.currency.updateError"));
       }
       return data;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["currency"] });
-      queryClient.invalidateQueries({ queryKey: ["profile"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.currency() });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
 
       showSuccessToast(t("common.success"), t("settings.currency.updateSuccess"));
       setShowCurrencyModal(false);
@@ -154,27 +155,26 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
             title={t("settings.general.currency.title")}
             subtitle={t("settings.general.currency.subtitle")}
             onPress={() => setShowCurrencyModal(true)}
-            value={`${Currency} (${
-              Currency === "USD"
-                ? "$"
-                : Currency === "EUR"
+            value={`${Currency} (${Currency === "USD"
+              ? "$"
+              : Currency === "EUR"
                 ? "€"
                 : Currency === "TRY"
-                ? "₺"
-                : Currency === "GBP"
-                ? "£"
-                : Currency === "JPY"
-                ? "¥"
-                : Currency === "CNY"
-                ? "¥"
-                : Currency
-            })`}
+                  ? "₺"
+                  : Currency === "GBP"
+                    ? "£"
+                    : Currency === "JPY"
+                      ? "¥"
+                      : Currency === "CNY"
+                        ? "¥"
+                        : Currency
+              })`}
           />
           <ItemRow
             iconName="globe"
             title={t("settings.general.language.title")}
             subtitle={t("settings.general.language.subtitle")}
-            value={ languageData?.language ? languageData?.language.toUpperCase() : "TR"}
+            value={languageData?.language ? languageData?.language.toUpperCase() : "TR"}
             onPress={() => setShowLanguageModal(true)}
           />
           {showLanguageModal && (
@@ -193,6 +193,20 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
             onPress={() =>
               router.push("/(screens)/(stack)/categories" as never)
             }
+          />
+          <ItemRow
+            iconName="repeat"
+            title={t("settings.general.subscriptions.title")}
+            subtitle={t("settings.general.subscriptions.subtitle")}
+            showArrow
+            onPress={() => router.push("/(screens)/(stack)/subscriptions" as never)}
+          />
+          <ItemRow
+            iconName="target"
+            title={t("settings.general.goals.title", { defaultValue: 'Budget Goals' })}
+            subtitle={t("settings.general.goals.subtitle", { defaultValue: 'Set savings targets' })}
+            showArrow
+            onPress={() => router.push("/(screens)/(stack)/goals" as never)}
           />
         </CardSection>
 
@@ -222,7 +236,7 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
                       try {
                         await transactionsApi.deleteAllTransactions();
                         queryClient.invalidateQueries({
-                          queryKey: ["allTables"],
+                          queryKey: QUERY_KEYS.transactions.all,
                         });
                         showSuccessToast(
                           t("common.success"),
@@ -352,3 +366,4 @@ const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
     </SafeAreaView>
   );
 }
+

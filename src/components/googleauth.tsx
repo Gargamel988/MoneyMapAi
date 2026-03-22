@@ -5,11 +5,11 @@ import * as WebBrowser from "expo-web-browser";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Text, TouchableOpacity } from "react-native";
-import { showErrorToast, showSuccessToast } from "../constanst/toast";
+import { showErrorToast, showSuccessToast } from "../constants/toast";
 import { useTheme } from "../contexts/theme";
-import { useResponsive } from "../hooks/useRespons";
+import { useResponsive } from "../hooks/useResponsive";
 import { insertDefaultExpenseCategories, insertDefaultIncomeCategories } from "../lib/category";
-import { getProfil, insertProfil } from "../lib/profil";
+import { getProfile, insertProfile } from "../lib/profile";
 import { supabase } from "../lib/supabase";
 
 WebBrowser.maybeCompleteAuthSession();
@@ -68,7 +68,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
 
       if (result.type === "success" && result.url) {
         const url = new URL(result.url);
-        
+
         const code = url.searchParams.get("code");
         const access_token = url.searchParams.get("access_token");
         const refresh_token = url.searchParams.get("refresh_token");
@@ -86,24 +86,24 @@ const GoogleSignIn = ({ text }: { text: string }) => {
           }
 
           await handleProfileCreation(sessionData.session);
-        } 
+        }
         else if (code) {
           const { data: { session }, error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          
+
           if (exchangeError || !session) {
             showErrorToast(t('common.error'), t('auth.login.error.authFailed'));
             setLoading(false);
             return;
           }
-          
+
           await handleProfileCreation(session);
-        } 
+        }
         else {
           showErrorToast(t('common.error'), t('auth.login.error.authInfo'));
           setLoading(false);
         }
       }
-    } catch  {
+    } catch {
       showErrorToast(t('common.error'), t('auth.login.error.general'));
       setLoading(false);
     }
@@ -111,11 +111,11 @@ const GoogleSignIn = ({ text }: { text: string }) => {
 
   const handleProfileCreation = async (session: any) => {
     try {
-      const existingProfile = await getProfil();
+      const existingProfile = await getProfile();
 
       if (existingProfile.data === null) {
-        const insertResult = await insertProfil(session.user);
-        
+        const insertResult = await insertProfile(session.user);
+
         if (!insertResult || insertResult?.[0]?.error) {
           showErrorToast(t('common.error'), t('auth.profile.createFailed'));
           await supabase.auth.signOut();
@@ -128,7 +128,7 @@ const GoogleSignIn = ({ text }: { text: string }) => {
             insertDefaultExpenseCategories(session.user),
             insertDefaultIncomeCategories(session.user)
           ]);
-        } catch  {
+        } catch {
           showErrorToast(t('common.error'), t('auth.profile.createCategoriesFailed'));
         }
 
@@ -139,11 +139,11 @@ const GoogleSignIn = ({ text }: { text: string }) => {
 
       await queryClient.invalidateQueries({ queryKey: ["profil"] });
       await queryClient.invalidateQueries({ queryKey: ["theme"] });
-    
+
       router.replace('/(screens)/(main)/home');
       setLoading(false);
-      
-    } catch  {
+
+    } catch {
       showErrorToast(t('common.error'), t('auth.profile.error'));
       await supabase.auth.signOut();
     } finally {

@@ -1,9 +1,9 @@
+import { useTheme } from "@/src/contexts/theme";
 import * as QueryParams from "expo-auth-session/build/QueryParams";
 import { router } from "expo-router";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Linking, Text, TouchableOpacity, View } from "react-native";
-import { useTheme } from "../../../src/contexts/theme";
 import { supabase } from "../../../src/lib/supabase";
 
 export default function Emailcontrol() {

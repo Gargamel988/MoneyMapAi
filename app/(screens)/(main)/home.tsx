@@ -1,7 +1,9 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { BannerAd, BannerAdSize, TestIds, InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
 import Feather from "@expo/vector-icons/Feather";
 import { useQueries } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
@@ -11,11 +13,16 @@ import {
   View
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
-import { getCurrency } from "../../../src/lib/profil";
+import { useResponsive } from "../../../src/hooks/useResponsive";
+import { getCurrency } from "../../../src/lib/profile";
 import { transactionsApi } from "../../../src/lib/transactions";
-import { TransactionList } from "../../../src/types/transactıonstype";
+import { useAdvisor } from "../../../src/hooks/useAdvisor";
+import { useGoals } from "../../../src/hooks/useGoals";
+import { GoalCard } from "../../../src/components/finance/goal-card";
+import Animated, { FadeInDown, FadeInRight } from "react-native-reanimated";
+import { TransactionList } from "../../../src/types/transactionTypes";
 
 //components
 import IncomeAnalytics from "../../../src/components/charts/Income-analytics";
@@ -24,11 +31,28 @@ import Headers from "../../../src/components/common/header";
 import Lastprocess from "../../../src/components/finance/last-process";
 import WeeklySummary from "../../../src/components/finance/weekly-summary";
 
-export default function Home() {
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7817807734");
+const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : (process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID || "ca-app-pub-1444133443338193/4724740534");
+
+const interstitial = InterstitialAd.createForAdRequest(interstitialAdUnitId, {
+  keywords: ["finance", "savings", "money"],
+});
+
+export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState<boolean>(false);
   const { theme } = useTheme();
-  const { dimensions, hp, wp } = useResponsive();
+  const { dimensions, wp, hp } = useResponsive();
   const { t } = useTranslation();
+  const { data: advisorAdvice, isLoading: isAdvisorLoading } = useAdvisor();
+  const { goals, isLoading: isGoalsLoading } = useGoals();
+
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      console.log("Home Interstitial loaded");
+    });
+    interstitial.load();
+    return unsubscribe;
+  }, []);
 
   const [
     transactionsByLastprocess,
@@ -39,16 +63,16 @@ export default function Home() {
   ] = useQueries({
     queries: [
       {
-        queryKey: ["transactionsByLastprocess"],
-        queryFn: transactionsApi.getTransactionsByLastprocess,
+        queryKey: QUERY_KEYS.transactions.lastProcess(),
+        queryFn: transactionsApi.getRecentTransactions,
       },
-      { queryKey: ["currency"], queryFn: getCurrency },
+      { queryKey: QUERY_KEYS.user.currency(), queryFn: getCurrency },
       {
-        queryKey: ["twoweeksAgoData"],
+        queryKey: QUERY_KEYS.transactions.byPeriod("two-weeks"),
         queryFn: transactionsApi.getTransactionsByTwoWeeksAgo,
       },
-      { queryKey: ["yearsincome"], queryFn: transactionsApi.getTransactionsByLastSixMonths },
-      { queryKey: ["piechartData"], queryFn: transactionsApi.getTransactionsByDay },
+      { queryKey: QUERY_KEYS.transactions.byPeriod("six-months"), queryFn: transactionsApi.getTransactionsByLastSixMonths },
+      { queryKey: QUERY_KEYS.transactions.byPeriod("daily"), queryFn: transactionsApi.getTransactionsByDay },
     ],
   });
   const currency = currencydata.data?.currency;
@@ -96,110 +120,136 @@ export default function Home() {
 
   const sections = [
     { id: 'weekly', component: WeeklySummary },
-    { id: 'ai-promo-1', component: 'AIPromo1' },
+    { id: 'goals', component: 'Goals' },
+    { id: 'ai-advisor', component: 'AIAdvisor' },
     { id: 'pie', component: Piechart },
     { id: 'income', component: IncomeAnalytics },
     { id: 'lastprocess', component: Lastprocess },
   ];
 
-  const renderItem = ({ item }: { item: typeof sections[0] }) => {
-    switch (item.id) {
-      case 'ai-promo-1':
-        return (
-          <View
-            style={{
-              marginHorizontal: wp(4),
-              marginVertical: hp(1),
-              backgroundColor: 'rgba(99, 102, 241, 0.1)',
-              borderRadius: 12,
-              padding: hp(1.5),
-              borderWidth: 1,
-              borderColor: 'rgba(99, 102, 241, 0.2)',
-            }}
-          >
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 16, marginRight: 8 }}>💡</Text>
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    fontSize: 14,
-                    fontWeight: '600',
-                    color: theme.text,
-                    marginBottom: 2,
-                  }}
-                >
-                  {t("home.aiPromo.title")}
+  const renderItem = ({ item, index }: { item: typeof sections[0], index: number }) => {
+    const content = (() => {
+      switch (item.id) {
+        case 'goals':
+          return goals && goals.length > 0 ? (
+            <View style={{ paddingHorizontal: wp(4), marginVertical: hp(1) }}>
+              <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>
+                  {t('home.goals.title', { defaultValue: 'Budget Goals' })}
                 </Text>
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: theme.textSecondary,
-                  }}
-                >
-                  {t("home.aiPromo.description")}
-                </Text>
+                <TouchableOpacity onPress={() => router.push('/(screens)/(stack)/goals')}>
+                  <Text style={{ color: theme.primary, fontWeight: '600', fontSize: 12 }}>{t('common.viewAll')}</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity
-                onPress={() => router.push("/ai-chat")}
-                style={{
-                  backgroundColor: theme.primary,
-                  paddingHorizontal: 10,
-                  paddingVertical: 6,
-                  borderRadius: 6,
-                }}
-              >
-                <Text
+              <GoalCard goal={goals[0]} />
+            </View>
+          ) : null;
+        case 'ai-advisor':
+          return (
+            <View
+              style={{
+                marginHorizontal: wp(4),
+                marginVertical: hp(1),
+                backgroundColor: theme.cardGlass,
+                borderRadius: 16,
+                padding: hp(1.5),
+                borderWidth: 1,
+                borderColor: theme.cardBorder,
+              }}
+            >
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: wp(2) }}>
+                <MaterialCommunityIcons name="robot-happy-outline" size={dimensions.iconLG} color={theme.text} />
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      fontSize: 14,
+                      fontWeight: '700',
+                      color: theme.text,
+                      marginBottom: 2,
+                    }}
+                  >
+                    {t("home.advisorPromo.title")}
+                  </Text>
+                  <Text
+                    numberOfLines={2}
+                    style={{
+                      fontSize: 12,
+                      color: theme.textSecondary,
+                    }}
+                  >
+                    {isAdvisorLoading
+                      ? t("home.advisorPromo.loading")
+                      : (advisorAdvice?.summary || t("home.advisorPromo.description"))}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (interstitial.loaded) {
+                      interstitial.show().then(() => router.push("/(screens)/(stack)/ai-advisor"));
+                    } else {
+                      router.push("/(screens)/(stack)/ai-advisor");
+                    }
+                  }}
                   style={{
-                    color: 'white',
-                    fontSize: 11,
-                    fontWeight: '600',
+                    backgroundColor: theme.primary,
+                    paddingHorizontal: 12,
+                    paddingVertical: 8,
+                    borderRadius: 8,
                   }}
                 >
-                  {t("home.aiPromo.button")}
-                </Text>
-              </TouchableOpacity>
+                  <MaterialCommunityIcons name="chevron-right" size={20} color="white" />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
-        );
-    
-      case 'weekly':
-        return (
-          <WeeklySummary
-            data={twoweeksAgoData.data as TransactionList}
-            isLoading={twoweeksAgoData.isLoading as boolean}
-            error={twoweeksAgoData.error as Error}
-            currency={currency}
-          />
-        );
-      case 'pie':
-        return (
-          <Piechart
-            data={piechartData.data as TransactionList}
-            isLoading={piechartData.isLoading as boolean}
-            error={piechartData.error as Error}
-            currency={currency}
-            tabs="daily"
-          />
-        );
-      case 'income':
-        return (
-          <IncomeAnalytics
-            transactionsData={yearsincome.data as TransactionList}
-            currency={currency}
-          />
-        );
-      case 'lastprocess':
-        return (
-          <Lastprocess
-            data={transactionsByLastprocess.data?.transactions as TransactionList}
-            isLoading={transactionsByLastprocess.isLoading as boolean}
-            error={transactionsByLastprocess.error as Error}
-            currency={currency}
-          />
-        );
-      default:
-        return null;
-    }
+          );
+
+        case 'weekly':
+          return (
+            <WeeklySummary
+              data={twoweeksAgoData.data as TransactionList}
+              isLoading={twoweeksAgoData.isLoading as boolean}
+              error={twoweeksAgoData.error as Error}
+              currency={currency}
+            />
+          );
+        case 'pie':
+          return (
+            <Piechart
+              data={piechartData.data as TransactionList}
+              isLoading={piechartData.isLoading as boolean}
+              error={piechartData.error as Error}
+              currency={currency}
+              tabs="daily"
+            />
+          );
+        case 'income':
+          return (
+            <IncomeAnalytics
+              transactionsData={yearsincome.data as TransactionList}
+              currency={currency}
+            />
+          );
+        case 'lastprocess':
+          return (
+            <Lastprocess
+              data={transactionsByLastprocess.data?.transactions as TransactionList}
+              isLoading={transactionsByLastprocess.isLoading as boolean}
+              error={transactionsByLastprocess.error as Error}
+              currency={currency}
+            />
+          );
+        default:
+          return null;
+      }
+    })();
+
+    if (!content) return null;
+
+    return (
+      <Animated.View entering={FadeInDown.delay(index * 100).duration(600).springify()}>
+        {content}
+      </Animated.View>
+    );
   };
 
   return (
@@ -216,6 +266,15 @@ export default function Home() {
         }
       />
       {addTransaction()}
+      <View style={{ alignItems: "center", backgroundColor: "transparent", paddingBottom: hp(1) }}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 }

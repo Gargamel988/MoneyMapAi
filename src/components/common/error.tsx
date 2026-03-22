@@ -2,7 +2,7 @@ import Feather from "@expo/vector-icons/Feather";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 
 type NoDataErrorComponentProps = {
   title?: string;

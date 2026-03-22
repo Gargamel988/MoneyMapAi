@@ -1,14 +1,15 @@
+import { APP_CONFIG } from "@/src/constants/config";
 import React, { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { SummaryCard } from "../../components/ui/summary-card";
-import { hp, isTablet, moderateScale, wp } from "../../hooks/useRespons";
-import { Transaction, TransactionList } from "../../types/transactıonstype";
+import { hp, isTablet, moderateScale, wp } from "../../hooks/useResponsive";
+import { Transaction, TransactionList } from "../../types/transactionTypes";
 import { hexToRgba } from "../../utils/hextorgba";
 
 import { Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
 import { useTheme } from "../../../src/contexts/theme";
-import InfoCard from "../ui/ınfo-card";
+import InfoCard from "../ui/info-card";
 
 interface IncomeAnalyticsProps {
   transactionsData: TransactionList;
@@ -197,21 +198,7 @@ export default function IncomeAnalytics({
             labels,
             datasets: [{ data: monthlyTotals }],
           }}
-          yAxisLabel={
-            currency === "TRY"
-              ? "₺"
-              : currency === "USD"
-              ? "$"
-              : currency === "EUR"
-              ? "€"
-              : currency === "GBP"
-              ? "£"
-              : currency === "JPY"
-              ? "¥"
-              : currency === "CNY"
-              ? "¥"
-              : ""
-          }
+          yAxisLabel={APP_CONFIG.currencies[currency as keyof typeof APP_CONFIG.currencies]?.symbol || ""}
           yAxisSuffix=""
           width={isTablet ? wp(78) : wp(92)}
           height={isTablet ? hp(30) : hp(28)}

@@ -4,9 +4,9 @@ import { router } from "expo-router";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { Theme } from "../../../src/constanst/themes";
+import { Theme } from "../../../src/constants/themes";
 import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
+import { useResponsive } from "../../../src/hooks/useResponsive";
 
 export default function ThemeSelector() {
   const { theme, themeMode, setThemeMode, availableThemes } = useTheme();
@@ -44,7 +44,7 @@ export default function ThemeSelector() {
         onPress={() => handleThemeSelect(themeKey)}
         activeOpacity={0.8}
       >
-        {/* Tema Önizleme Kartı */}
+        {/* Tema Ã–nizleme KartÄ± */}
         <LinearGradient
           colors={themeData.gradientColors as [string, string, string]}
           start={{ x: 0, y: 0 }}
@@ -54,7 +54,7 @@ export default function ThemeSelector() {
             padding: dimensions.sm,
           }}
         >
-          {/* Mini Uygulama Önizlemesi */}
+          {/* Mini Uygulama Ã–nizlemesi */}
           <View
             style={{
               flex: 1,
@@ -149,7 +149,7 @@ export default function ThemeSelector() {
           </Text>
         </View>
 
-        {/* Seçim İndikatörü */}
+        {/* SeÃ§im Ä°ndikatÃ¶rÃ¼ */}
         {isSelected && (
           <View
             style={{
@@ -193,7 +193,7 @@ export default function ThemeSelector() {
       >
         <TouchableOpacity
           onPress={handleGoBack}
-        
+
           activeOpacity={0.7}
         >
           <Feather name="arrow-left" size={wp(8)} color={theme.text} />
@@ -258,7 +258,7 @@ export default function ThemeSelector() {
         <TouchableOpacity
           style={{
             height: hp(8),
-            borderRadius: dimensions.borderRadiusLG*2,
+            borderRadius: dimensions.borderRadiusLG * 2,
             justifyContent: "center",
             alignItems: "center",
             backgroundColor: theme.primary,
@@ -295,3 +295,4 @@ export default function ThemeSelector() {
     </LinearGradient>
   );
 }
+

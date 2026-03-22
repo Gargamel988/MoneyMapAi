@@ -4,8 +4,8 @@ import { Animated, Easing, Text, TouchableOpacity, View } from "react-native";
 import { PieChart } from "react-native-chart-kit";
 
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
-import { Transaction, TransactionList } from "../../types/transactıonstype";
+import { useResponsive } from "../../hooks/useResponsive";
+import { Transaction, TransactionList } from "../../types/transactionTypes";
 import { formatTotal } from "../../utils/total";
 import { NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";

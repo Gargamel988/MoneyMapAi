@@ -1,3 +1,5 @@
+import { APP_CONFIG, CurrencyCode } from "../constants/config";
+
 export const formatTotal = (total: number, currency?: string | { currency: string }) => {
 	const safeCode = (() => {
 	  let code = 'TRY';
@@ -18,19 +20,9 @@ export const formatTotal = (total: number, currency?: string | { currency: strin
 	  return /^[A-Z]{3}$/.test(code) ? code : 'TRY';
 	})();
   
-	// Para birimi sembolleri mapping
-	const currencySymbols: Record<string, string> = {
-	  'TRY': '₺',
-	  'USD': '$',
-	  'EUR': '€',
-	  'GBP': '£',
-	  'JPY': '¥',
-	  'CNY': '¥',
-	};
-  
 	const normalizedTotal = Number.isFinite(total) ? total : 0;
 	const absTotal = Math.abs(normalizedTotal);
-	const symbol = currencySymbols[safeCode] || safeCode;
+	const symbol = APP_CONFIG.currencies[safeCode as CurrencyCode]?.symbol || safeCode;
   
 	// 1 milyon ve üstünü harfli gösterim
 	const abbreviations = [

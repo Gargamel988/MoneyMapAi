@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 
 interface ColorFamily {
   name: string;

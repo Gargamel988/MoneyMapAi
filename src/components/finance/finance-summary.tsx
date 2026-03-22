@@ -1,10 +1,10 @@
 import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
-import { Transaction, TransactionList } from "@/src/types/transactıonstype";
+import { useResponsive } from "@/src/hooks/useResponsive";
+import { Transaction, TransactionList } from "@/src/types/transactionTypes";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { WeeklyCard } from "../ui/weekly-card";
-import InfoCard from "../ui/ınfo-card";
+import InfoCard from "../ui/info-card";
 
 interface FinanceSummaryProps {
   isLoading: boolean;

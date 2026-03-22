@@ -1,5 +1,5 @@
 import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
+import { useResponsive } from "@/src/hooks/useResponsive";
 import { formatTotal } from "@/src/utils/total";
 import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";

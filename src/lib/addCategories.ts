@@ -1,6 +1,6 @@
 import i18next from "../../services/i18next";
 import { supabase } from "../lib/supabase";
-import { Category } from "../types/transactıonstype";
+import { Category } from "../types/transactionTypes";
 import { getUser } from "./transactions";
 
 export const addCustomCategory = async (categoryData: Category) => {

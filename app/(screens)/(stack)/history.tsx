@@ -1,7 +1,7 @@
 import { GreenLoadingComponent } from "@/src/components/common/loading";
 import SearchFilterBar from "@/src/components/ui/search-filter-bar";
-import { showErrorToast, showSuccessToast } from "@/src/constanst/toast";
-import { ExpenseItem, Transaction } from "@/src/types/transactıonstype";
+import { showErrorToast, showSuccessToast } from "@/src/constants/toast";
+import { ExpenseItem, Transaction } from "@/src/types/transactionTypes";
 import { Feather } from "@expo/vector-icons";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -12,14 +12,15 @@ import {
   ErrorFallback,
   NoDataErrorComponent,
 } from "../../../src/components/common/error";
-import TransactionDetail from "../../../src/components/transaction/Transaction-detail";
+import TransactionDetail from "../../../src/components/transaction/TransactionDetail";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { useTheme } from "../../../src/contexts/theme";
 import {
   moderateScale,
   useResponsive,
   wp,
-} from "../../../src/hooks/useRespons";
-import { getCurrency } from "../../../src/lib/profil";
+} from "../../../src/hooks/useResponsive";
+import { getCurrency } from "../../../src/lib/profile";
 import { transactionsApi } from "../../../src/lib/transactions";
 import { formatDate, formatTime } from "../../../src/utils/date";
 import { formatTotal } from "../../../src/utils/total";
@@ -49,12 +50,12 @@ const TransactionHistory = () => {
   const [currencyQuery, allTablesQuery] = useQueries({
     queries: [
       {
-        queryKey: ["currency"],
+        queryKey: QUERY_KEYS.user.currency(),
         queryFn: getCurrency,
       },
       {
-        queryKey: ["allTables"],
-        queryFn: transactionsApi.getallTables,
+        queryKey: QUERY_KEYS.transactions.all,
+        queryFn: transactionsApi.getAllTransactions,
       },
     ],
   });
@@ -66,16 +67,7 @@ const TransactionHistory = () => {
   const mutateDeleteTransaction = useMutation({
     mutationFn: (transactionId: string) => transactionsApi.deleteTransaction(transactionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["allTables"] });
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
-      queryClient.invalidateQueries({ queryKey: ["transactionsByLastprocess"] });
-      queryClient.invalidateQueries({ queryKey: ["getTransactionsByTwoWeeksAgo"] });
-      queryClient.invalidateQueries({ queryKey: ["getTransactionsByYear"] });
-      queryClient.invalidateQueries({ queryKey: ["piechartData"] });
-      queryClient.invalidateQueries({ queryKey: ["getallTables"] });
-      queryClient.invalidateQueries({ queryKey: ["twoweeksAgoData"] });
-      queryClient.invalidateQueries({ queryKey: ["yearsincome"] });
-      queryClient.invalidateQueries({ queryKey: ["yearsexpense"] });
+      queryClient.invalidateQueries({ queryKey: QUERY_KEYS.transactions.all });
       showSuccessToast(t("common.success"), t("history.delete.success"));
     },
     onError: (error: Error) => {
@@ -88,54 +80,54 @@ const TransactionHistory = () => {
       {
         text: t("history.delete.confirm"),
         style: "destructive",
-        onPress:  () => {
+        onPress: () => {
           mutateDeleteTransaction.mutate(transaction?.id);
-          },
+        },
       },
     ]);
   };
-  // 1. Önce arama filtresini uygula
+  // 1. Ã–nce arama filtresini uygula
   const searchFilteredTransactions = Array.isArray(allTablesQuery.data)
     ? allTablesQuery.data.filter((transaction: Transaction) => {
-        if (!transaction) return false;
+      if (!transaction) return false;
 
-        // Eğer arama boşsa, tüm işlemleri göster
-        if (!searchQuery.trim()) return true;
+      // EÄŸer arama boÅŸsa, tÃ¼m iÅŸlemleri gÃ¶ster
+      if (!searchQuery.trim()) return true;
 
-        const searchLower = searchQuery.toLowerCase().trim();
+      const searchLower = searchQuery.toLowerCase().trim();
 
-        const matchesDescription =
-          transaction.description &&
-          transaction.description.toLowerCase().trim().includes(searchLower);
+      const matchesDescription =
+        transaction.description &&
+        transaction.description.toLowerCase().trim().includes(searchLower);
 
-        const matchesCategory =
-          transaction.categories?.name &&
-          transaction.categories.name
-            .toLowerCase()
-            .trim()
-            .includes(searchLower);
+      const matchesCategory =
+        transaction.categories?.name &&
+        transaction.categories.name
+          .toLowerCase()
+          .trim()
+          .includes(searchLower);
 
-        const matchesItems =
-          transaction.expense_items &&
-          transaction.expense_items.some(
-            (item: ExpenseItem) =>
-              item.item_name &&
-              item.item_name.toLowerCase().trim().includes(searchLower)
-          );
+      const matchesItems =
+        transaction.expense_items &&
+        transaction.expense_items.some(
+          (item: ExpenseItem) =>
+            item.item_name &&
+            item.item_name.toLowerCase().trim().includes(searchLower)
+        );
 
-        return matchesDescription || matchesCategory || matchesItems;
-      })
+      return matchesDescription || matchesCategory || matchesItems;
+    })
     : [];
 
-  // 2. Sonra tür filtresini uygula (gelir/gider/hepsi)
+  // 2. Sonra tÃ¼r filtresini uygula (gelir/gider/hepsi)
   const typeFilteredTransactions =
     filterType === "hepsi"
       ? searchFilteredTransactions
       : searchFilteredTransactions.filter(
-          (t: Transaction) => t.type === filterType
-        );
+        (t: Transaction) => t.type === filterType
+      );
 
-  // 3. Son olarak sıralama yap
+  // 3. Son olarak sÄ±ralama yap
   const getComparableDate = (t: Transaction) => {
     if (!t?.date) return 0;
 
@@ -171,7 +163,7 @@ const TransactionHistory = () => {
     }
   );
 
-  // Sayaç hesaplamaları için tüm işlemleri kullan (arama sonuçlarına göre)
+  // SayaÃ§ hesaplamalarÄ± iÃ§in tÃ¼m iÅŸlemleri kullan (arama sonuÃ§larÄ±na gÃ¶re)
   const gelirCount = searchFilteredTransactions.filter(
     (t: Transaction) => t.type === "gelir"
   ).length;
@@ -403,7 +395,7 @@ const TransactionHistory = () => {
         )}
       />
 
-      {/* İşlem Detay Modal */}
+      {/* Ä°ÅŸlem Detay Modal */}
       <TransactionDetail
         transaction={selectedTransaction as Transaction}
         onClose={() => setSelectedTransaction(null)}
@@ -413,3 +405,4 @@ const TransactionHistory = () => {
 };
 
 export default TransactionHistory;
+

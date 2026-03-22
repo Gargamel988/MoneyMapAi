@@ -1,9 +1,11 @@
 // src/contexts/ThemeContext.tsx
+import { Theme, themes } from '@/src/constants/themes';
+export type { Theme };
+import { QUERY_KEYS } from '@/src/constants/queryKeys';
+import { getTheme, updateTheme } from '@/src/lib/profile';
 import { useQuery } from '@tanstack/react-query';
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
-import { Theme, themes } from '../constanst/themes';
-import { getTheme, updateTheme } from '../lib/profil';
 
 interface ThemeContextType {
   theme: Theme;
@@ -22,7 +24,7 @@ export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   const { data: savedTheme, isLoading: isLoadingTheme } = useQuery({
-    queryKey: ['theme'],
+    queryKey: QUERY_KEYS.user.theme(),
     queryFn: getTheme,
   });
 

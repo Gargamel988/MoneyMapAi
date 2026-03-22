@@ -1,8 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
+import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 
 // lib
 import { exportToCSV } from "../../../src/lib/export/exportCSV";
@@ -12,20 +14,23 @@ import { transactionsApi } from "../../../src/lib/transactions";
 // components
 import Pascalcase from "../../../src/components/charts/pascal-case";
 import PieChart from "../../../src/components/charts/pie-chart";
-import FinanceSummary from "../../../src/components/finance/fınance-summary";
+import FinanceSummary from "../../../src/components/finance/finance-summary";
 import TopFiveExpenses from "../../../src/components/finance/top-five-expenses";
+import { MonthlyComparison } from "../../../src/components/finance/monthly-comparison";
 import { Select } from "../../../src/components/ui/select";
 import { useTheme } from "../../../src/contexts/theme";
-import { useResponsive } from "../../../src/hooks/useRespons";
-import { getCurrency } from "../../../src/lib/profil";
+import { useResponsive } from "../../../src/hooks/useResponsive";
+import { getCurrency } from "../../../src/lib/profile";
 import {
   Transaction,
   TransactionList,
-} from "../../../src/types/transactıonstype";
+} from "../../../src/types/transactionTypes";
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7817807734");
 
 type TabType = "daily" | "weekly" | "monthly" | "yearly";
 
-export default function Analytics() {
+export default function AnalyticsScreen() {
   const { t } = useTranslation();
   const [tab, setTab] = useState<TabType>("monthly");
   const [refreshing, setRefreshing] = useState<boolean>(false);
@@ -37,7 +42,7 @@ export default function Analytics() {
   const { hp, dimensions } = useResponsive();
 
   const { data: currencyQuery } = useQuery({
-    queryKey: ["currency"],
+    queryKey: QUERY_KEYS.user.currency(),
     queryFn: getCurrency,
   });
   const currency = currencyQuery?.currency;
@@ -56,12 +61,12 @@ export default function Analytics() {
     error,
     refetch,
   } = useQuery({
-    queryKey: ["transactions", key],
+    queryKey: QUERY_KEYS.transactions.byPeriod(key),
     queryFn: fn,
   });
-  const {data: dataAllTables} = useQuery({
-    queryKey: ["getallData"],
-    queryFn: () => transactionsApi.getallTables(),
+  const { data: dataAllTables } = useQuery({
+    queryKey: QUERY_KEYS.transactions.all,
+    queryFn: () => transactionsApi.getAllTransactions(),
   });
 
   const data = Array.isArray(dataTransactions) ? dataTransactions : [];
@@ -153,56 +158,56 @@ export default function Analytics() {
                 >
                   {t("analytics.selectFormat")}
                 </Text>
-              <Select
-                options={[
-                  { label: t("analytics.formats.excel"), value: "excel" },
-                  { label: t("analytics.formats.csv"), value: "csv" },
-                  { label: t("analytics.formats.pdf"), value: "pdf" },
-                ]}
-                placeholder={t("analytics.formatPlaceholder")}
-                onAlertMessage={(value) => {
-                  const formatLabel = t(`analytics.formats.${value}`);
-                  const periodLabel = t(`analytics.periods.${tab}`);
-                  Alert.alert(
-                    t("analytics.alert.title", { format: formatLabel }),
-                    t("analytics.alert.message", {
-                      period: periodLabel,
-                      format: formatLabel,
-                    }),
-                    [
-                      { text: t("analytics.alert.cancel"), style: "cancel" },
-                      {
-                        text: t("analytics.alert.create"),
-                        onPress: () => {
-                          if (value === "excel") {
-                            exportToExcel(
-                              dataTransactions as TransactionList,
-                              setLoading,
-                              tab
-                            );
-                          } else if (value === "csv") {
-                            exportToCSV(
-                              dataTransactions as TransactionList,
-                              setLoading,
-                              tab
-                            );
-                          } else if (value === "pdf") {
-                            exportToPDF(
-                              dataTransactions as TransactionList,
-                              setLoading,
-                              tab
-                            );
-                          }
+                <Select
+                  options={[
+                    { label: t("analytics.formats.excel"), value: "excel" },
+                    { label: t("analytics.formats.csv"), value: "csv" },
+                    { label: t("analytics.formats.pdf"), value: "pdf" },
+                  ]}
+                  placeholder={t("analytics.formatPlaceholder")}
+                  onAlertMessage={(value) => {
+                    const formatLabel = t(`analytics.formats.${value}`);
+                    const periodLabel = t(`analytics.periods.${tab}`);
+                    Alert.alert(
+                      t("analytics.alert.title", { format: formatLabel }),
+                      t("analytics.alert.message", {
+                        period: periodLabel,
+                        format: formatLabel,
+                      }),
+                      [
+                        { text: t("analytics.alert.cancel"), style: "cancel" },
+                        {
+                          text: t("analytics.alert.create"),
+                          onPress: () => {
+                            if (value === "excel") {
+                              exportToExcel(
+                                dataTransactions as TransactionList,
+                                setLoading,
+                                tab
+                              );
+                            } else if (value === "csv") {
+                              exportToCSV(
+                                dataTransactions as TransactionList,
+                                setLoading,
+                                tab
+                              );
+                            } else if (value === "pdf") {
+                              exportToPDF(
+                                dataTransactions as TransactionList,
+                                setLoading,
+                                tab
+                              );
+                            }
+                          },
                         },
-                      },
-                    ]
-                  );
-                }}
-                onValueChange={(value) =>
-                  setReportFormat(value as "excel" | "csv" | "pdf")
-                }
-                value={reportFormat}
-              />
+                      ]
+                    );
+                  }}
+                  onValueChange={(value) =>
+                    setReportFormat(value as "excel" | "csv" | "pdf")
+                  }
+                  value={reportFormat}
+                />
               </View>
 
             </View>
@@ -234,6 +239,13 @@ export default function Analytics() {
             tabs={tab as "daily" | "weekly" | "monthly" | "yearly"}
           />
 
+          {tab === "monthly" && (
+            <MonthlyComparison
+              data={dataAllTables || []}
+              currency={currency || "TRY"}
+            />
+          )}
+
           {/* Top 5 Harcamalar */}
 
           <TopFiveExpenses
@@ -243,16 +255,26 @@ export default function Analytics() {
             currency={currency}
           />
 
-          {/* Gelir-Gider Karşılaştırması */}
+          {/* Gelir-Gider KarÅŸÄ±laÅŸtÄ±rmasÄ± */}
 
           <Pascalcase
-            data={ dataAllTables || []}
+            data={dataAllTables || []}
             isLoading={isLoading}
             error={error as Error}
             currency={currency || "TRY"}
           />
+          <View style={{ alignItems: "center", marginVertical: hp(2) }}>
+            <BannerAd
+              unitId={adUnitId}
+              size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+              requestOptions={{
+                requestNonPersonalizedAdsOnly: true,
+              }}
+            />
+          </View>
         </SafeAreaView>
       </ScrollView>
     </View>
   );
 }
+

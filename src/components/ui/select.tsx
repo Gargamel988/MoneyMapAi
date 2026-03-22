@@ -1,5 +1,5 @@
 import { useTheme } from "@/src/contexts/theme";
-import { useResponsive } from "@/src/hooks/useRespons";
+import { useResponsive } from "@/src/hooks/useResponsive";
 import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
 import { FlatList, Modal, Text, TouchableOpacity, View } from "react-native";

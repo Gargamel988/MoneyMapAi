@@ -2,15 +2,15 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Linking, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { useTheme } from '../../../src/contexts/theme';
-import { useResponsive } from '../../../src/hooks/useRespons';
+import { useResponsive } from '../../../src/hooks/useResponsive';
 
 export default function PrivacyPolicy() {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, wp } = useResponsive();
 
-  const openUrl = (url: string) => Linking.openURL(url).catch(() => {});
-  const openMail = (mail: string) => Linking.openURL(`mailto:${mail}`).catch(() => {});
+  const openUrl = (url: string) => Linking.openURL(url).catch(() => { });
+  const openMail = (mail: string) => Linking.openURL(`mailto:${mail}`).catch(() => { });
 
   return (
     <ScrollView
@@ -90,10 +90,10 @@ export default function PrivacyPolicy() {
 
           <View style={{ gap: dimensions.xs, marginBottom: dimensions.md }}>
             <Text style={{ color: theme.textSenary }}>
-              • <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.receipt")}</Text>
+              â€¢ <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.receipt")}</Text>
             </Text>
             <Text style={{ color: theme.textSenary }}>
-              • <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.ai")}</Text>
+              â€¢ <Text style={{ fontWeight: '700' }}>{t("privacyPolicy.camera.ai")}</Text>
             </Text>
           </View>
 
@@ -101,13 +101,13 @@ export default function PrivacyPolicy() {
             {t("privacyPolicy.camera.privacy")}
           </Text>
           <View style={{ gap: dimensions.xs }}>
-            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point1")}</Text>
+            <Text style={{ color: theme.textSenary }}>âœ“ {t("privacyPolicy.camera.point1")}</Text>
             <Text style={{ color: theme.textSenary }}>
-              ✓ {t("privacyPolicy.camera.point2")}
+              âœ“ {t("privacyPolicy.camera.point2")}
             </Text>
-            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point3")}</Text>
-            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point4")}</Text>
-            <Text style={{ color: theme.textSenary }}>✓ {t("privacyPolicy.camera.point5")}</Text>
+            <Text style={{ color: theme.textSenary }}>âœ“ {t("privacyPolicy.camera.point3")}</Text>
+            <Text style={{ color: theme.textSenary }}>âœ“ {t("privacyPolicy.camera.point4")}</Text>
+            <Text style={{ color: theme.textSenary }}>âœ“ {t("privacyPolicy.camera.point5")}</Text>
           </View>
         </View>
 
@@ -121,15 +121,15 @@ export default function PrivacyPolicy() {
           {t("privacyPolicy.collection.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.ip")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.collection.ip")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • {t("privacyPolicy.collection.pages")}
+            â€¢ {t("privacyPolicy.collection.pages")}
           </Text>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.time")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.os")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.collection.photos")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.collection.time")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.collection.os")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.collection.photos")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • {t("privacyPolicy.collection.ai")}
+            â€¢ {t("privacyPolicy.collection.ai")}
           </Text>
         </View>
 
@@ -158,13 +158,13 @@ export default function PrivacyPolicy() {
           {t("privacyPolicy.ai.intro")}
         </Text>
         <View style={{ gap: dimensions.xs }}>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.ai.ocr")}</Text>
-          <Text style={{ color: theme.textSenary }}>• {t("privacyPolicy.ai.extract")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.ai.ocr")}</Text>
+          <Text style={{ color: theme.textSenary }}>â€¢ {t("privacyPolicy.ai.extract")}</Text>
           <Text style={{ color: theme.textSenary }}>
-            • {t("privacyPolicy.ai.delete")}
+            â€¢ {t("privacyPolicy.ai.delete")}
           </Text>
           <Text style={{ color: theme.textSenary }}>
-            • {t("privacyPolicy.ai.thirdParty")}
+            â€¢ {t("privacyPolicy.ai.thirdParty")}
           </Text>
         </View>
 

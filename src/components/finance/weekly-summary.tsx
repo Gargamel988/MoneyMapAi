@@ -1,11 +1,11 @@
 import { useTranslation } from 'react-i18next';
 import { Text, View } from 'react-native';
 import { useTheme } from '../../contexts/theme';
-import { useResponsive } from '../../hooks/useRespons';
-import { Transaction, TransactionList } from '../../types/transactıonstype';
+import { useResponsive } from '../../hooks/useResponsive';
+import { Transaction, TransactionList } from '../../types/transactionTypes';
 import { formatWeekRange } from '../../utils/date';
 import { WeeklyCard } from '../ui/weekly-card';
-import InfoCard from '../ui/ınfo-card';
+import InfoCard from '../ui/info-card';
 
 
 interface WeeklySummaryProps {

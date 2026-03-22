@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { Transaction } from '../types/transactıonstype';
+import { Transaction } from '../types/transactionTypes';
 
 export const getUser = async () => {
   try {
@@ -62,7 +62,7 @@ const transactionCache = new TransactionCache<Transaction[]>();
 
 
 export const transactionsApi = {
-  // günlük  transactionlarını getir
+  // Get transactions for the current day
   getTransactionsByDay: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error("User not found");
@@ -89,7 +89,7 @@ export const transactionsApi = {
     return data ?? [];
   },
   
-  // haftalık transactionları getir
+  // Get transactions from seven days ago until now
   getTransactionsBySevenDaysAgo: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -111,7 +111,7 @@ export const transactionsApi = {
     const result = data || [];
     return result;
   },
-  // son 2 haftanın transactionlarını getir
+  // Get transactions from two weeks ago until now
   getTransactionsByTwoWeeksAgo: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -133,7 +133,7 @@ export const transactionsApi = {
     if (error) throw new Error(error.message);
     return data || [];
   },
-  // aylık transactionları getir
+  // Get transactions for the current month
   getTransactionsByMonth: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -156,7 +156,7 @@ export const transactionsApi = {
     const result = data || [];
     return result;
   },
-  // son 6 ayın transactionlarını getir
+  // Get transactions for the last six months
   getTransactionsByLastSixMonths: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -186,7 +186,7 @@ export const transactionsApi = {
     if (error) throw new Error(error.message);
     return data || [];
   },
-  // yıllık transactionları getir
+  // Get transactions for the current year
   getTransactionsByYear: async () => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -208,8 +208,8 @@ export const transactionsApi = {
     const result = data || [];
     return result;
   },
-  // son işlenen transactionları getir
-  getTransactionsByLastprocess: async () => {
+  // Get recently processed transactions
+  getRecentTransactions: async () => {
     const user = await getUser();
     const { data: transactions, error: transactionsError } = await supabase
       .from('transactions')
@@ -225,8 +225,8 @@ export const transactionsApi = {
       transactions: transactions || [],
     };
   },
-  // tüm tabloları getir
-  getallTables: async () => {
+  // Get all transaction tables
+  getAllTransactions: async () => {
     const user = await getUser();
     const { data, error } = await supabase
       .from('transactions')
@@ -242,7 +242,7 @@ export const transactionsApi = {
     return data || [];
   },
 
-  // transaction sil
+  // Delete a transaction
   deleteTransaction: async (transactionId: any) => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -255,14 +255,14 @@ export const transactionsApi = {
 
     if (error) throw new Error(error.message);
 
-    // Cache'i güncelle (item sil)
+    // Update cache (remove item)
     if (transactionCache.isValid(user.id)) {
       const currentData = transactionCache.get() as any;
       const updatedData = currentData?.filter((t: any) => t.id !== transactionId) || [];
       transactionCache.set(updatedData, user.id);
     }
   },
-  // Yeni transaction eklendiğinde cache'i güncelle
+  // Add a new transaction and update cache
   addTransaction: async (transactionData: any) => {
     const user = await getUser();
     if (!user?.id) throw new Error('User not found');
@@ -276,11 +276,11 @@ export const transactionsApi = {
 
     if (!data) throw new Error('Transaction verisi alınamadı');
 
-    // Cache'i güncelle (yeni item ekle)
+    // Update cache (add new item)
     if (transactionCache.isValid(user.id)) {
       const currentData = transactionCache.get() as any;
       const updatedData = [...currentData, data] as any;
-      // Tarihe göre sırala
+      // Sort by date
       updatedData.sort((a: any, b: any) => new Date(a.date).getTime() - new Date(b.date).getTime());
       transactionCache.set(updatedData, user.id);
     }

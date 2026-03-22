@@ -1,18 +1,29 @@
+import { useResponsive } from "@/src/hooks/useResponsive";
+import Feather from "@expo/vector-icons/Feather";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Modal,
+  Platform,
+  Pressable,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { showErrorToast, showSuccessToast } from "../../constanst/toast";
+import { showErrorToast, showSuccessToast } from "../../constants/toast";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
 import { updateDefaultCategoriesByLanguage } from "../../lib/category";
-import { updateLanguage } from "../../lib/profil";
+import { updateLanguage } from "../../lib/profile";
+
+type LanguageCode = "tr" | "en";
+
+type LanguageOption = {
+  code: LanguageCode;
+  flag: string;
+  nativeName: string;
+};
 
 interface ModalLanguageProps {
   showLanguageModal: boolean;
@@ -20,9 +31,9 @@ interface ModalLanguageProps {
   language?: string | null;
 }
 
-const languageOptions = [
-  { code: "tr", flag: "🇹🇷" },
-  { code: "en", flag: "🇺🇸" },
+const languageOptions: LanguageOption[] = [
+  { code: "tr", flag: "🇹🇷", nativeName: "Türkçe" },
+  { code: "en", flag: "🇺🇸", nativeName: "English" },
 ];
 
 const ModalLanguage = ({
@@ -31,14 +42,14 @@ const ModalLanguage = ({
   language,
 }: ModalLanguageProps) => {
   const { theme } = useTheme();
-  const { dimensions } = useResponsive();
+  const { dimensions, hp, wp } = useResponsive();
   const { t, i18n } = useTranslation();
   const queryClient = useQueryClient();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const activeLanguage = (language || i18n.language || "tr").split("-")[0];
+  const activeLanguage = (language || i18n.language || "tr").split("-")[0] as LanguageCode;
 
-  const handleSelectLanguage = async (code: string) => {
+  const handleSelectLanguage = async (code: LanguageCode) => {
     if (isUpdating || code === activeLanguage) {
       if (code === activeLanguage) {
         setShowLanguageModal(false);
@@ -57,7 +68,6 @@ const ModalLanguage = ({
       // Kategorileri yeni dile göre güncelle
       const categoryUpdateResult = await updateDefaultCategoriesByLanguage(code);
       if (categoryUpdateResult.success) {
-        // Kategori query'lerini invalidate et
         await queryClient.invalidateQueries({ queryKey: ["categories"] });
         await queryClient.invalidateQueries({ queryKey: ["income_categories"] });
         await queryClient.invalidateQueries({ queryKey: ["expense_categories"] });
@@ -84,12 +94,126 @@ const ModalLanguage = ({
     }
   };
 
+  const LanguageItem = ({
+    option,
+    isSelected,
+  }: {
+    option: LanguageOption;
+    isSelected: boolean;
+  }) => (
+    <Pressable
+      onPress={() => handleSelectLanguage(option.code)}
+      disabled={isUpdating}
+      style={({ pressed }) => ({
+        marginBottom: dimensions.sm,
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        borderRadius: dimensions.borderRadiusLG,
+        padding: dimensions.md,
+        backgroundColor: isSelected
+          ? theme.primary
+          : pressed
+            ? `${theme.primary}15`
+            : theme.weeklycard,
+        borderWidth: isSelected ? 0 : 1,
+        borderColor: isSelected ? "transparent" : theme.bordersecondary,
+        opacity: isUpdating && !isSelected ? 0.5 : 1,
+        transform: [{ scale: pressed && !isUpdating ? 0.98 : 1 }],
+      })}
+    >
+      <View style={{ flex: 1, flexDirection: "row", alignItems: "center" }}>
+        {/* Flag Container */}
+        <View
+          style={{
+            marginRight: dimensions.md,
+            width: dimensions.iconXL + 8,
+            height: dimensions.iconXL + 8,
+            borderRadius: dimensions.borderRadiusLG,
+            backgroundColor: isSelected
+              ? "rgba(255, 255, 255, 0.2)"
+              : `${theme.primary}10`,
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Text style={{ fontSize: dimensions.fontXL + 4 }}>{option.flag}</Text>
+        </View>
+
+        {/* Language Info */}
+        <View style={{ flex: 1 }}>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+            <Text
+              style={{
+                fontSize: dimensions.fontMD,
+                fontWeight: "700",
+                color: isSelected ? "#fff" : theme.inputtitle,
+                letterSpacing: 0.3,
+              }}
+            >
+              {t(`languageModal.option.${option.code}`)}
+            </Text>
+            <View
+              style={{
+                paddingHorizontal: 8,
+                paddingVertical: 2,
+                borderRadius: 6,
+                backgroundColor: isSelected
+                  ? "rgba(255,255,255,0.2)"
+                  : `${theme.primary}15`,
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: dimensions.fontXS,
+                  fontWeight: "600",
+                  color: isSelected ? "#fff" : theme.primary,
+                  textTransform: "uppercase",
+                }}
+              >
+                {option.code}
+              </Text>
+            </View>
+          </View>
+          <Text
+            style={{
+              marginTop: 4,
+              fontSize: dimensions.fontSM,
+              color: isSelected ? "rgba(255, 255, 255, 0.8)" : theme.textTertiary,
+            }}
+          >
+            {option.nativeName} • {t(`languageModal.optionDesc.${option.code}`)}
+          </Text>
+        </View>
+      </View>
+
+      {/* Checkmark or Loading */}
+      {isUpdating && !isSelected ? (
+        <ActivityIndicator size="small" color={theme.primary} />
+      ) : isSelected ? (
+        <View
+          style={{
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: "rgba(255, 255, 255, 0.95)",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <Feather name="check" size={16} color={theme.primary} />
+        </View>
+      ) : null}
+    </Pressable>
+  );
+
   return (
     <Modal
-      animationType="fade"
+      animationType="slide"
       transparent
       visible={showLanguageModal}
       onRequestClose={() => setShowLanguageModal(false)}
+      statusBarTranslucent
     >
       <View
         style={{
@@ -98,6 +222,7 @@ const ModalLanguage = ({
           justifyContent: "flex-end",
         }}
       >
+        {/* Backdrop tap to close */}
         <TouchableOpacity
           activeOpacity={1}
           onPress={() => {
@@ -108,187 +233,118 @@ const ModalLanguage = ({
           style={{ flex: 1 }}
         />
 
+        {/* Modal Content */}
         <View
           style={{
             backgroundColor: theme.white,
-            borderTopLeftRadius: dimensions.borderRadiusXL,
-            borderTopRightRadius: dimensions.borderRadiusXL,
-            paddingHorizontal: dimensions.md,
-            paddingTop: dimensions.xl,
-            paddingBottom: dimensions.lg,
-            shadowColor: theme.shadow,
-            shadowOffset: { width: 0, height: -6 },
-            shadowOpacity: 0.2,
-            shadowRadius: 16,
-            elevation: 12,
+            borderTopLeftRadius: 24,
+            borderTopRightRadius: 24,
+            paddingHorizontal: wp(5),
+            paddingTop: dimensions.lg,
+            paddingBottom: hp(4),
+            ...Platform.select({
+              ios: {
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: -8 },
+                shadowOpacity: 0.15,
+                shadowRadius: 24,
+              },
+              android: {
+                elevation: 24,
+              },
+            }),
           }}
         >
-          <View style={{ alignItems: "center", marginBottom: dimensions.lg }}>
+          {/* Drag Handle */}
+          <View style={{ alignItems: "center", marginBottom: dimensions.md }}>
             <View
               style={{
-                height: 4,
-                width: 48,
-                borderRadius: dimensions.borderRadius,
-                backgroundColor: theme.border,
-                marginBottom: dimensions.lg,
+                width: 40,
+                height: 5,
+                borderRadius: 3,
+                backgroundColor: theme.bordersecondary,
               }}
             />
-            <View
-              style={{
-                width: "100%",
-                flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    fontSize: dimensions.fontXL,
-                    fontWeight: "700",
-                    color: theme.inputtitle,
-                  }}
-                >
-                  {t("languageModal.title")}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: dimensions.xs,
-                    fontSize: dimensions.fontSM,
-                    color: theme.textTertiary,
-                  }}
-                >
-                  {t("languageModal.subtitle")}
-                </Text>
-                <Text
-                  style={{
-                    marginTop: dimensions.xs,
-                    fontSize: dimensions.fontSM,
-                    color: theme.textSecondary,
-                  }}
-                >
-                  {t("languageModal.current", {
-                    language: t(`languageModal.option.${activeLanguage}`),
-                  })}
-                </Text>
-              </View>
-              <TouchableOpacity
-                onPress={() => setShowLanguageModal(false)}
-                accessibilityLabel={t("languageModal.close")}
+          </View>
+
+          {/* Header */}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+              marginBottom: dimensions.lg,
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <Text
                 style={{
-                  marginLeft: dimensions.md,
-                  height: dimensions.iconLG,
-                  width: dimensions.iconLG,
-                  alignItems: "center",
-                  justifyContent: "center",
-                  borderRadius: dimensions.borderRadiusLG,
-                  backgroundColor: theme.inputbackground,
+                  fontSize: dimensions.fontXL + 2,
+                  fontWeight: "800",
+                  color: theme.inputtitle,
+                  letterSpacing: -0.5,
                 }}
               >
-                <Text
-                  style={{
-                    color: theme.inputtitle,
-                    fontSize: dimensions.fontLG,
-                    fontWeight: "700",
-                  }}
-                >
-                  ×
+                {t("languageModal.title")}
+              </Text>
+              <Text
+                style={{
+                  marginTop: 6,
+                  fontSize: dimensions.fontSM,
+                  color: theme.textQuinary,
+                }}
+              >
+                {t("languageModal.subtitle")}
+              </Text>
+              <Text
+                style={{
+                  marginTop: 4,
+                  fontSize: dimensions.fontSM,
+                  color: theme.textQuinary,
+                }}
+              >
+                {t("languageModal.current", {
+                  language: "",
+                })}
+                <Text style={{ fontWeight: "600", color: theme.primary }}>
+                  {t(`languageModal.option.${activeLanguage}`)}
                 </Text>
-              </TouchableOpacity>
+              </Text>
             </View>
+
+            {/* Close Button */}
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => setShowLanguageModal(false)}
+              accessibilityLabel={t("languageModal.close")}
+              hitSlop={{ top: 12, bottom: 12, left: 12, right: 12 }}
+              disabled={isUpdating}
+              style={{
+                width: 36,
+                height: 36,
+                borderRadius: 18,
+                backgroundColor: theme.bordersecondary,
+                alignItems: "center",
+                justifyContent: "center",
+                opacity: isUpdating ? 0.5 : 1,
+              }}
+            >
+              <Feather name="x" size={18} color={theme.textQuinary} />
+            </TouchableOpacity>
           </View>
 
-          <View style={{ gap: dimensions.md }}>
-            {languageOptions.map((option) => {
-              const isSelected = activeLanguage === option.code;
-              return (
-                <TouchableOpacity
-                  key={option.code}
-                  activeOpacity={0.7}
-                  onPress={() => handleSelectLanguage(option.code)}
-                  disabled={isUpdating}
-                  style={{
-                    borderRadius: dimensions.borderRadiusXL,
-                    paddingVertical: dimensions.md,
-                    paddingHorizontal: dimensions.md,
-                    backgroundColor: isSelected
-                      ? theme.primary
-                      : theme.inputbackground,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                  }}
-                >
-                  <View style={{ flexDirection: "row", alignItems: "center" }}>
-                    <View
-                      style={{
-                        height: dimensions.iconXL,
-                        width: dimensions.iconXL,
-                        borderRadius: dimensions.borderRadiusLG,
-                        backgroundColor: isSelected
-                          ? "rgba(255,255,255,0.2)"
-                          : theme.white,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        marginRight: dimensions.md,
-                      }}
-                    >
-                      <Text style={{ fontSize: dimensions.fontXL }}>
-                        {option.flag}
-                      </Text>
-                    </View>
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        style={{
-                          fontSize: dimensions.fontMD,
-                          fontWeight: "600",
-                          color: isSelected ? theme.white : theme.inputtitle,
-                          marginBottom: dimensions.xs,
-                        }}
-                      >
-                        {t(`languageModal.option.${option.code}`)}
-                      </Text>
-                      <Text
-                        style={{
-                          fontSize: dimensions.fontSM,
-                          color: isSelected
-                            ? "rgba(255,255,255,0.85)"
-                            : theme.textTertiary,
-                        }}
-                      >
-                        {t(`languageModal.optionDesc.${option.code}`)}
-                      </Text>
-                    </View>
-                  </View>
-
-                  <View style={{ alignItems: "center", justifyContent: "center" }}>
-                    {isSelected ? (
-                      <View
-                        style={{
-                          height: dimensions.iconSM,
-                          width: dimensions.iconSM,
-                          borderRadius: dimensions.iconSM,
-                          backgroundColor: theme.white,
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color: theme.primary,
-                            fontWeight: "700",
-                          }}
-                        >
-                          ✓
-                        </Text>
-                      </View>
-                    ) : null}
-                  </View>
-                </TouchableOpacity>
-              );
-            })}
+          {/* Language Options */}
+          <View>
+            {languageOptions.map((option) => (
+              <LanguageItem
+                key={option.code}
+                option={option}
+                isSelected={activeLanguage === option.code}
+              />
+            ))}
           </View>
 
+          {/* Loading State */}
           {isUpdating && (
             <View
               style={{
@@ -297,13 +353,17 @@ const ModalLanguage = ({
                 flexDirection: "row",
                 justifyContent: "center",
                 gap: dimensions.sm,
+                padding: dimensions.md,
+                backgroundColor: `${theme.primary}10`,
+                borderRadius: dimensions.borderRadiusLG,
               }}
             >
               <ActivityIndicator size="small" color={theme.primary} />
               <Text
                 style={{
                   fontSize: dimensions.fontSM,
-                  color: theme.textTertiary,
+                  fontWeight: "500",
+                  color: theme.primary,
                 }}
               >
                 {t("languageModal.loading")}

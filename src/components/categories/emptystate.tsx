@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
-import { useResponsive } from "../../hooks/useRespons";
+import { useResponsive } from "../../hooks/useResponsive";
 
 export const EmptyState = ({ onAdd }: { onAdd: () => void }) => {
 	const { t } = useTranslation();

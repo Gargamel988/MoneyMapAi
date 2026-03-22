@@ -1,9 +1,9 @@
 import i18next from "../../services/i18next";
-import { showErrorToast } from "../constanst/toast";
+import { showErrorToast } from "../constants/toast";
 import { supabase } from "./supabase";
 import { getUser } from "./transactions";
 
-export const getProfil = async () => {
+export const getProfile = async () => {
   const user = await getUser();
 
   if (!user?.id) {
@@ -21,7 +21,7 @@ export const getProfil = async () => {
   }
   return { data: insertedData };
 };
-export const updateProfil = async (data: any) => {
+export const updateProfile = async (data: any) => {
   const user = await getUser();
 
   if (!user?.id) {
@@ -54,7 +54,7 @@ export const getCurrency = async () => {
   }
   return currency;
 };
-export const updatecurrency = async (currency: string) => {
+export const updateCurrency = async (currency: string) => {
   const user = await getUser();
   if (!user?.id) {
     return null;
@@ -73,7 +73,7 @@ export const updatecurrency = async (currency: string) => {
   }
   return updatedData;
 };
-export const insertProfil = async (data: any) => {
+export const insertProfile = async (data: any) => {
   try {
 
     const fullName = data.user_metadata?.name || "";
@@ -97,14 +97,14 @@ export const insertProfil = async (data: any) => {
       .select();
 
     if (error) {
-      console.error("Supabase insert hatası:", error);
+      console.error("Supabase insert error:", error);
       showErrorToast(i18next.t('profile.save.error'), error.message);
       return null;
     }
 
     return insertedData;
   } catch (err: any) {
-    console.error("insertProfil hatası:", err);
+    console.error("insertProfile error:", err);
     showErrorToast(i18next.t('common.error'), err.message || i18next.t('profile.save.error.general'));
     return null;
   }
@@ -140,7 +140,7 @@ export const updateTheme = async (theme: string) => {
   }
   return updatedData;
 };
-export const updatename= async (name: string) => {
+export const updateName= async (name: string) => {
   const user = await getUser();
   if (!user?.id) {
     return null;
@@ -156,7 +156,7 @@ export const updatename= async (name: string) => {
   }
   return updatedData;
 };
-export const updateusername = async (username: string) => {
+export const updateUsername = async (username: string) => {
   const user = await getUser();
   if (!user?.id) {
     return null;

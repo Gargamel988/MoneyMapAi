@@ -2,8 +2,8 @@ import { Feather } from "@expo/vector-icons";
 import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useTranslation } from "react-i18next";
 import { useTheme } from "../../contexts/theme";
-import { hp, useResponsive, wp } from "../../hooks/useRespons";
-import { Category } from "../../types/transactıonstype";
+import { hp, useResponsive, wp } from "../../hooks/useResponsive";
+import { Category } from "../../types/transactionTypes";
 
 
 type CategoryCardProps = {

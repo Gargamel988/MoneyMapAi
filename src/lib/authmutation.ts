@@ -2,7 +2,7 @@ import { User } from '@supabase/supabase-js';
 import { useMutation } from '@tanstack/react-query';
 import { router } from 'expo-router';
 import i18next from '../../services/i18next';
-import { showErrorToast, showSuccessToast, showWarningToast } from '../constanst/toast';
+import { showErrorToast, showSuccessToast, showWarningToast } from '../constants/toast';
 import { SignInWithEmailProps, SignUpWithEmailProps } from '../types/authtype';
 import { getsignInErrorMessage } from '../utils/authutils';
 import { signInWithEmail, signUpWithEmail } from './authapi';
