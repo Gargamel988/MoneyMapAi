@@ -1,5 +1,5 @@
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { BannerAd, BannerAdSize, TestIds, InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+import { BannerAd, BannerAdSize, TestIds, InterstitialAd, AdEventType } from "@/src/lib/adComponents";
 import Feather from "@expo/vector-icons/Feather";
 import { useQueries } from "@tanstack/react-query";
 import { router } from "expo-router";
@@ -120,22 +120,37 @@ export default function HomeScreen() {
 
   const sections = [
     { id: 'weekly', component: WeeklySummary },
+    { id: 'banner', component: 'Banner' },
     { id: 'goals', component: 'Goals' },
     { id: 'ai-advisor', component: 'AIAdvisor' },
     { id: 'pie', component: Piechart },
     { id: 'income', component: IncomeAnalytics },
+    { id: 'banner_bottom', component: 'Banner' },
     { id: 'lastprocess', component: Lastprocess },
   ];
 
   const renderItem = ({ item, index }: { item: typeof sections[0], index: number }) => {
     const content = (() => {
       switch (item.id) {
+        case 'banner':
+        case 'banner_bottom':
+          return (
+            <View style={{ alignItems: "center", marginVertical: hp(1) }}>
+              <BannerAd
+                unitId={adUnitId}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                requestOptions={{
+                  requestNonPersonalizedAdsOnly: true,
+                }}
+              />
+            </View>
+          );
         case 'goals':
           return goals && goals.length > 0 ? (
             <View style={{ paddingHorizontal: wp(4), marginVertical: hp(1) }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
                 <Text style={{ fontSize: 16, fontWeight: '700', color: theme.text }}>
-                  {t('home.goals.title', { defaultValue: 'Budget Goals' })}
+                  {t('home.goals.title')}
                 </Text>
                 <TouchableOpacity onPress={() => router.push('/(screens)/(stack)/goals')}>
                   <Text style={{ color: theme.primary, fontWeight: '600', fontSize: 12 }}>{t('common.viewAll')}</Text>
@@ -266,15 +281,6 @@ export default function HomeScreen() {
         }
       />
       {addTransaction()}
-      <View style={{ alignItems: "center", backgroundColor: "transparent", paddingBottom: hp(1) }}>
-        <BannerAd
-          unitId={adUnitId}
-          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-          requestOptions={{
-            requestNonPersonalizedAdsOnly: true,
-          }}
-        />
-      </View>
     </SafeAreaView>
   );
 }

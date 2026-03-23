@@ -203,8 +203,8 @@ export default function SettingsScreen() {
           />
           <ItemRow
             iconName="target"
-            title={t("settings.general.goals.title", { defaultValue: 'Budget Goals' })}
-            subtitle={t("settings.general.goals.subtitle", { defaultValue: 'Set savings targets' })}
+            title={t("settings.general.goals.title")}
+            subtitle={t("settings.general.goals.subtitle")}
             showArrow
             onPress={() => router.push("/(screens)/(stack)/goals" as never)}
           />
@@ -332,7 +332,7 @@ export default function SettingsScreen() {
                     padding: 16,
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>csv</Text>
+                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.csv')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
@@ -344,7 +344,7 @@ export default function SettingsScreen() {
                     marginTop: 12,
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>EXCEL</Text>
+                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.excel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
@@ -356,7 +356,7 @@ export default function SettingsScreen() {
                     marginTop: 12,
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>PDF</Text>
+                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.pdf')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

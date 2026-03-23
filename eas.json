@@ -12,24 +12,12 @@
       "distribution": "internal",
       "android": {
         "buildType": "apk"
-      },
-      "env": {
-        "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
-        "EXPO_PUBLIC_SUPABASE_URL": "https://xwgcoiuxcvjvmkhahwrf.supabase.co",
-        "EXPO_PUBLIC_SUPABASE_ANON_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3Z2NvaXV4Y3Zqdm1raGFod3JmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2ODkyOTIsImV4cCI6MjA3MzI2NTI5Mn0.r6OPzE9_9FDWD8hlTTyg75SE09LU3G4rC5gXHaxJR-4",
-        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCMD7swuKatfsZVqe4P04a3bdA5g5Nul6A",
-        "EXPO_UNSTABLE_DEPLOY_SERVER": "1"
       }
     },
     "production": {
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
-      },
-      "env": {
-        "NPM_CONFIG_LEGACY_PEER_DEPS": "true",
-        "GOOGLE_GENERATIVE_AI_API_KEY": "AIzaSyCMD7swuKatfsZVqe4P04a3bdA5g5Nul6A",
-        "EXPO_UNSTABLE_DEPLOY_SERVER": "1"
       }
     }
   },
@@ -41,5 +29,4 @@
       }
     }
   }
-  
 }

@@ -35,45 +35,45 @@ const commonPasswords = [
 export const registerSchemas = z.object({
   firstName: z
     .string()
-    .min(2, { message: "Ad en az 2 karakter olmalıdır" })
-    .max(30, { message: "Ad en fazla 30 karakter olmalıdır" })
+    .min(2, { message: t("register.error.firstNameMin") })
+    .max(30, { message: t("register.error.firstNameMax") })
     .refine((val) => isValidTurkishName(val), {
-      message: "Ad sadece harf içermelidir (Türkçe karakterler desteklenir)",
+      message: t("register.error.firstNameLetters"),
     })
     .refine((val) => !/^\s|\s$/.test(val), {
-      message: "Ad başında veya sonunda boşluk olamaz",
+      message: t("register.error.firstNameSpaces"),
     })
     .refine((val) => !/\s{2,}/.test(val), {
-      message: "Ad içinde ardışık boşluklar olamaz",
+      message: t("register.error.firstNameConsecutiveSpaces"),
     }),
 
   lastName: z
     .string()
-    .min(2, { message: "Soyad en az 2 karakter olmalıdır" })
-    .max(30, { message: "Soyad en fazla 30 karakter olmalıdır" })
+    .min(2, { message: t("register.error.lastNameMin") })
+    .max(30, { message: t("register.error.lastNameMax") })
     .refine((val) => isValidTurkishName(val), {
-      message: "Soyad sadece harf içermelidir (Türkçe karakterler desteklenir)",
+      message: t("register.error.lastNameLetters"),
     })
     .refine((val) => !/^\s|\s$/.test(val), {
-      message: "Soyad başında veya sonunda boşluk olamaz",
+      message: t("register.error.lastNameSpaces"),
     })
     .refine((val) => !/\s{2,}/.test(val), {
-      message: "Soyad içinde ardışık boşluklar olamaz",
+      message: t("register.error.lastNameConsecutiveSpaces"),
     }),
 
   email: z
     .string()
     .toLowerCase()
-    .min(1, { message: "Email adresi zorunludur" })
-    .email({ message: "Geçersiz email formatı" })
-    .max(100, { message: "Email adresi en fazla 100 karakter olmalıdır" })
+    .min(1, { message: t("register.error.emailRequired") })
+    .email({ message: t("register.error.emailInvalid") })
+    .max(100, { message: t("register.error.emailMax") })
     .refine(
       (email) => {
         const domain = email.split("@")[1];
         return !blockedEmailDomains.includes(domain);
       },
       {
-        message: "Bu email sağlayıcısı kabul edilmemektedir",
+        message: t("register.error.emailBlocked"),
       }
     )
     .refine(
@@ -83,7 +83,7 @@ export const registerSchemas = z.object({
         return !/[<>()[\]\\,;:\s@"]/.test(localPart);
       },
       {
-        message: "Email adresi geçersiz karakterler içeriyor",
+        message: t("register.error.emailInvalidChars"),
       }
     )
     .refine(
@@ -92,34 +92,34 @@ export const registerSchemas = z.object({
         return !email.includes("..");
       },
       {
-        message: "Email adresinde ardışık noktalar olamaz",
+        message: t("register.error.emailConsecutiveDots"),
       }
     ),
 
   password: z
     .string()
-    .min(8, { message: "Şifre en az 8 karakter olmalıdır" })
-    .max(128, { message: "Şifre en fazla 128 karakter olmalıdır" })
+    .min(8, { message: t("register.error.passwordMin") })
+    .max(128, { message: t("register.error.passwordMax") })
     .refine((password) => containsLowercase(password), {
-      message: "Şifre en az 1 küçük harf içermelidir",
+      message: t("register.error.passwordLowercase"),
     })
     .refine((password) => containsUppercase(password), {
-      message: "Şifre en az 1 büyük harf içermelidir",
+      message: t("register.error.passwordUppercase"),
     })
     .refine((password) => containsNumber(password), {
-      message: "Şifre en az 1 rakam içermelidir",
+      message: t("register.error.passwordNumber"),
     })
     .refine((password) => containsSpecialChar(password), {
-      message: "Şifre en az 1 özel karakter içermelidir (!@#$%^&*)",
+      message: t("register.error.passwordSpecial"),
     })
     .refine((password) => !commonPasswords.includes(password.toLowerCase()), {
-      message: "Bu şifre çok yaygın kullanılıyor, daha güçlü bir şifre seçin",
+      message: t("register.error.passwordCommon"),
     })
     .refine((password) => !/(.)\1{2,}/.test(password), {
-      message: "Şifrede aynı karakter 3 kez tekrar edemez",
+      message: t("register.error.passwordRepeat"),
     })
     .refine((password) => !/\s/.test(password), {
-      message: "Şifre boşluk karakteri içeremez",
+      message: t("register.error.passwordSpaces"),
     }),
 });
 

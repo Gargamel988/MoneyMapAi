@@ -288,8 +288,7 @@ const AddTransaction: React.FC = () => {
                         marginTop: 2,
                       }}
                     >
-                      {t("addTransaction.aiPromo.subtitle") ||
-                        "AI ile hÄ±zlÄ± iÅŸlem ekle"}
+                      {t("addTransaction.aiPromo.subtitle")}
                     </Text>
                   </View>
                 </View>

@@ -74,7 +74,7 @@ export default function AIAdvisorScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
         <Stack.Screen options={{ headerShown: false }} />
-        <StackHeader title={t('advisor.title', { defaultValue: 'AI Financial Advisor' })} />
+        <StackHeader title={t('advisor.title')} />
         <View style={styles.centered}>
           <ActivityIndicator size="large" color={theme.primary} />
           <Text style={[styles.loadingText, { color: theme.textSecondary }]}>
@@ -90,7 +90,7 @@ export default function AIAdvisorScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
         <Stack.Screen options={{ headerShown: false }} />
-        <StackHeader title={t('advisor.title', { defaultValue: 'AI Financial Advisor' })} />
+        <StackHeader title={t('advisor.title')} />
         <View style={styles.centered}>
           <Ionicons name="cloud-offline-outline" size={64} color={theme.error} />
           <Text style={[styles.errorText, { color: theme.textSecondary }]}>{error.toString()}</Text>
@@ -105,7 +105,7 @@ export default function AIAdvisorScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
       <Stack.Screen options={{ headerShown: false }} />
-      <StackHeader title={t('advisor.title', { defaultValue: 'AI Financial Advisor' })} />
+      <StackHeader title={t('advisor.title')} />
       
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
         {advice && (

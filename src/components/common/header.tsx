@@ -17,22 +17,22 @@ const Header = () => {
     queryFn: () => getProfile(),
   });
   const avatarUrl = user?.data?.avatar_url;
-  const name =  user?.data?.name;
+  const name = user?.data?.name;
   const username = user?.data?.username;
   const firstName = name?.charAt(0);
   const lastName = username?.charAt(0);
   const getAvatarSource = () => {
     if (!avatarUrl) return null;
-    
+
     // Eğer avatar_url bir sayı ise (1-10 arası)
     const avatarId = Number(avatarUrl);
     if (!isNaN(avatarId) && avatarId >= 1 && avatarId <= 10) {
       const avatarItem = avatar.find(item => item.id === avatarId);
       return avatarItem ? avatarItem.image : null;
     }
-    
+
     // Değilse URL olarak kullan
-    return { uri: avatarUrl }; 
+    return { uri: avatarUrl };
   };
   return (
     <View
@@ -52,8 +52,10 @@ const Header = () => {
           style={{
             width: wp(15),
             height: hp(5),
+            borderRadius: wp(15),
+
           }}
-          source={require("../../../assets/logo.png")}
+          source={require("../../../assets/logo-new.png")}
           resizeMode="cover"
         />
         <Text
@@ -97,7 +99,7 @@ const Header = () => {
             >
               <Image
                 source={getAvatarSource()}
-                style={{ width: "100%", height: "100%",  objectFit: "cover", backgroundColor: theme.white}}
+                style={{ width: "100%", height: "100%", objectFit: "cover", backgroundColor: theme.white }}
               />
             </View>
           ) : (

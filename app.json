@@ -13,7 +13,7 @@
       "supportsTablet": true
     },
     "android": {
-      "versionCode": 28,
+      "versionCode": 29,
       "adaptiveIcon": {
         "backgroundColor": "#1A3D63",
         "foregroundImage": "./assets/logo-new.png"
@@ -24,7 +24,7 @@
     },
     "web": {
       "output": "server",
-      "favicon": "./assets/logo.png"
+      "favicon": "./assets/logo-new.png"
     },
     "plugins": [
       [
@@ -63,7 +63,6 @@
         }
       ]
     ],
-
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true

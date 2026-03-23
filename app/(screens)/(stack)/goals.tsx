@@ -88,7 +88,7 @@ export default function GoalsScreen() {
     Alert.alert(t('common.warning'), t('goals.confirmDelete'), [
       { text: t('common.cancel'), style: 'cancel' },
       {
-        text: t('common.delete', { defaultValue: 'Sil' }),
+        text: t('common.delete'),
         style: 'destructive',
         onPress: () => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
@@ -102,7 +102,7 @@ export default function GoalsScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
         <Stack.Screen options={{ headerShown: false }} />
-        <StackHeader title={t('goals.title', { defaultValue: 'Savings Goals' })} />
+        <StackHeader title={t('goals.title')} />
         <Loading />
       </View>
     );
@@ -124,7 +124,7 @@ export default function GoalsScreen() {
     <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
       <Stack.Screen options={{ headerShown: false }} />
       <StackHeader
-        title={t('goals.title', { defaultValue: 'Savings Goals' })}
+        title={t('goals.title')}
         rightElement={
           <TouchableOpacity
             onPress={() => setIsModalVisible(true)}
@@ -196,7 +196,7 @@ export default function GoalsScreen() {
               >
                 <Feather name="trash-2" size={12} color={theme.error + '80'} />
                 <Text style={{ fontSize: 11, fontWeight: '500', color: theme.error + '80' }}>
-                  {t('common.delete', { defaultValue: 'Sil' })}
+                  {t('common.delete')}
                 </Text>
               </TouchableOpacity>
             </Animated.View>

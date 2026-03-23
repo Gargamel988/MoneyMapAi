@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
-import { useState } from "react";
+import { BannerAd, BannerAdSize, TestIds, RewardedAd, RewardedAdEventType } from "@/src/lib/adComponents";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -27,6 +27,11 @@ import {
 } from "../../../src/types/transactionTypes";
 
 const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7817807734");
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+
+const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
+  keywords: ["finance", "savings", "money"],
+});
 
 type TabType = "daily" | "weekly" | "monthly" | "yearly";
 
@@ -40,6 +45,38 @@ export default function AnalyticsScreen() {
   );
   const { theme } = useTheme();
   const { hp, dimensions } = useResponsive();
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      console.log("Analytics Rewarded ad loaded");
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward: any) => {
+        console.log("User earned reward for export: ", reward);
+      },
+    );
+
+    rewarded.load();
+
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
+
+  const showRewardedAd = (callback: () => void) => {
+    if (rewarded.loaded) {
+      rewarded.show().then(() => {
+        callback();
+        rewarded.load(); // Reload for next time
+      });
+    } else {
+      // If ad not loaded yet, allow anyway but try to load
+      callback();
+      rewarded.load();
+    }
+  };
 
   const { data: currencyQuery } = useQuery({
     queryKey: QUERY_KEYS.user.currency(),
@@ -170,34 +207,36 @@ export default function AnalyticsScreen() {
                     const periodLabel = t(`analytics.periods.${tab}`);
                     Alert.alert(
                       t("analytics.alert.title", { format: formatLabel }),
-                      t("analytics.alert.message", {
+                      t("analytics.alert.rewardedMessage", {
                         period: periodLabel,
                         format: formatLabel,
                       }),
                       [
-                        { text: t("analytics.alert.cancel"), style: "cancel" },
+                        { text: t("common.cancel"), style: "cancel" },
                         {
-                          text: t("analytics.alert.create"),
+                          text: t("analytics.alert.rewardedButton"),
                           onPress: () => {
-                            if (value === "excel") {
-                              exportToExcel(
-                                dataTransactions as TransactionList,
-                                setLoading,
-                                tab
-                              );
-                            } else if (value === "csv") {
-                              exportToCSV(
-                                dataTransactions as TransactionList,
-                                setLoading,
-                                tab
-                              );
-                            } else if (value === "pdf") {
-                              exportToPDF(
-                                dataTransactions as TransactionList,
-                                setLoading,
-                                tab
-                              );
-                            }
+                            showRewardedAd(() => {
+                              if (value === "excel") {
+                                exportToExcel(
+                                  dataTransactions as TransactionList,
+                                  setLoading,
+                                  tab
+                                );
+                              } else if (value === "csv") {
+                                exportToCSV(
+                                  dataTransactions as TransactionList,
+                                  setLoading,
+                                  tab
+                                );
+                              } else if (value === "pdf") {
+                                exportToPDF(
+                                  dataTransactions as TransactionList,
+                                  setLoading,
+                                  tab
+                                );
+                              }
+                            });
                           },
                         },
                       ]

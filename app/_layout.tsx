@@ -6,19 +6,20 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import { QUERY_KEYS } from "../src/constants/queryKeys";
 import { LinearGradient } from "expo-linear-gradient";
 import { Stack, useRouter, useSegments } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import i18n from "i18next";
 import { useEffect } from "react";
+
 import Toast from "react-native-toast-message";
-import mobileAds from "react-native-google-mobile-ads";
 import "../polyfills";
 import "../services/i18next"; // Initialize i18next
+import { QUERY_KEYS } from "../src/constants/queryKeys";
+import { initAds } from "@/src/lib/adsInit";
 import { toastConfig } from "../src/constants/toast";
 import { SessionProvider, useSession } from "../src/contexts/session";
-import * as SplashScreen from "expo-splash-screen";
 import { ThemeProvider, useTheme } from "../src/contexts/theme";
 
 // Keep the splash screen visible while we fetch resources
@@ -106,11 +107,7 @@ function AppContent() {
 
 export default function RootLayout() {
   useEffect(() => {
-    mobileAds()
-      .initialize()
-      .then(adapterStatuses => {
-        console.log("AdMob SDK Initialized");
-      });
+    initAds();
   }, []);
 
   return (

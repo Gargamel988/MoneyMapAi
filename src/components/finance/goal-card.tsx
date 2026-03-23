@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Alert, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import Animated, {
   useAnimatedProps, useAnimatedStyle, useSharedValue, withSpring, withTiming
@@ -19,6 +20,7 @@ interface GoalCardProps {
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
+  const { t } = useTranslation();
   const { theme } = useTheme();
   const { wp, hp, dimensions } = useResponsive();
   const { updateGoalAmount, isUpdating } = useGoals();
@@ -65,7 +67,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
   const handleContribute = async (isWithdraw = false) => {
     const amount = parseFloat(contribution);
     if (!contribution || isNaN(amount) || amount <= 0) {
-      Alert.alert('Hata', 'Geçerli bir tutar girin.');
+      Alert.alert(t('goalCard.alert.error'), t('goalCard.alert.invalidAmount'));
       return;
     }
     try {
@@ -74,7 +76,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
       setContribution('');
       setInputVisible(false);
     } catch {
-      Alert.alert('Hata', 'Tutar güncellenemedi.');
+      Alert.alert(t('goalCard.alert.error'), t('goalCard.alert.updateError'));
     }
   };
 
@@ -132,7 +134,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Feather name="calendar" size={11} color={theme.textSecondary} />
                 <Text style={{ fontSize: 11, color: theme.textSecondary, fontWeight: '500' }}>
-                  {new Date(goal.deadline).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(goal.deadline).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
                 </Text>
               </View>
             )}
@@ -140,10 +142,10 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
             {/* Amount row */}
             <View style={{ flexDirection: 'row', alignItems: 'baseline', gap: 4, marginTop: 2 }}>
               <Text style={{ fontSize: 20, fontWeight: '800', color: progressColor }}>
-                {(goal.current_amount ?? 0).toLocaleString('tr-TR')}
+                {(goal.current_amount ?? 0).toLocaleString()}
               </Text>
               <Text style={{ fontSize: 13, color: theme.textSecondary, fontWeight: '500' }}>
-                / {goal.target_amount.toLocaleString('tr-TR')} ₺
+                / {goal.target_amount.toLocaleString()} {t('common.currencySymbol')}
               </Text>
             </View>
 
@@ -152,7 +154,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <View style={{ backgroundColor: progressColor + '18', borderRadius: 6, paddingHorizontal: 6, paddingVertical: 2 }}>
                   <Text style={{ fontSize: 10, color: progressColor, fontWeight: '700' }}>
-                    {remaining.toLocaleString('tr-TR')} ₺ kaldı
+                    {t('goalCard.remaining', { amount: remaining.toLocaleString() })}
                   </Text>
                 </View>
               </View>
@@ -171,7 +173,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
             <Feather name="trending-up" size={14} color={theme.textSecondary} />
             <TextInput
               style={{ flex: 1, fontSize: 14, color: theme.text, padding: 0 }}
-              placeholder="Tutar..."
+              placeholder={t('goalCard.placeholder.amount')}
               placeholderTextColor={theme.textSecondary}
               value={contribution}
               onChangeText={setContribution}
@@ -182,13 +184,13 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
               style={{ backgroundColor: theme.success + '20', paddingHorizontal: wp(3), paddingVertical: hp(0.6), borderRadius: 10 }}
               onPress={() => handleContribute(false)} disabled={isUpdating}
             >
-              <Text style={{ color: theme.success, fontWeight: '700', fontSize: 12 }}>+ Ekle</Text>
+              <Text style={{ color: theme.success, fontWeight: '700', fontSize: 12 }}>{t('goalCard.button.add')}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={{ backgroundColor: theme.error + '20', paddingHorizontal: wp(3), paddingVertical: hp(0.6), borderRadius: 10 }}
               onPress={() => handleContribute(true)} disabled={isUpdating}
             >
-              <Text style={{ color: theme.error, fontWeight: '700', fontSize: 12 }}>− Çıkar</Text>
+              <Text style={{ color: theme.error, fontWeight: '700', fontSize: 12 }}>{t('goalCard.button.subtract')}</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => { setInputVisible(false); setContribution(''); }}>
               <Feather name="x" size={16} color={theme.textSecondary} />
@@ -212,7 +214,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
               color={isCompleted ? theme.success : progressColor}
             />
             <Text style={{ fontSize: 13, fontWeight: '700', color: isCompleted ? theme.success : progressColor }}>
-              {isCompleted ? '🎉 Tamamlandı! Harika iş!' : 'Biriktirilen tutarı güncelle'}
+              {isCompleted ? t('goalCard.status.completed') : t('goalCard.button.update')}
             </Text>
           </TouchableOpacity>
         )}

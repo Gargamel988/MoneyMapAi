@@ -1,3 +1,5 @@
+import i18next from "i18next";
+
 export const formatDate = (date: Date | string | undefined): string => {
 	try {
 	  // date undefined veya null ise bugünün tarihini kullan
@@ -9,7 +11,9 @@ export const formatDate = (date: Date | string | undefined): string => {
 		return new Date().toDateString();
 	  }
 	  
-	  return new Intl.DateTimeFormat('tr-TR', {
+	  const locale = i18next.language === 'tr' ? 'tr-TR' : 'en-US';
+
+	  return new Intl.DateTimeFormat(locale, {
 		year: 'numeric', 
 		month: 'long', 
 		day: '2-digit',
@@ -33,9 +37,11 @@ export const formatDate = (date: Date | string | undefined): string => {
   
 	const startDate = new Date(start);
 	const endDate = new Date(end);
+	
+	const locale = i18next.language === 'tr' ? 'tr-TR' : 'en-US';
   
-	const startFormatted = startDate.toLocaleDateString("tr-TR", options);
-	const endFormatted = endDate.toLocaleDateString("tr-TR", options);
+	const startFormatted = startDate.toLocaleDateString(locale, options);
+	const endFormatted = endDate.toLocaleDateString(locale, options);
   
 	return `${startFormatted} - ${endFormatted}`;
   }

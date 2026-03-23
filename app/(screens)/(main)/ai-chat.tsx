@@ -17,7 +17,7 @@ import {
   RewardedAd,
   RewardedAdEventType,
   TestIds,
-} from "react-native-google-mobile-ads";
+} from "@/src/lib/adComponents";
 import { supabase } from "../../../src/lib/supabase";
 
 import { formatTotal } from "@/src/utils/total";
@@ -107,7 +107,7 @@ export default function AiChatScreen() {
     });
     const unsubscribeEarned = rewarded.addAdEventListener(
       RewardedAdEventType.EARNED_REWARD,
-      reward => {
+      (reward: any) => {
         console.log("User earned reward: ", reward);
       },
     );
@@ -282,7 +282,7 @@ export default function AiChatScreen() {
       }
 
       if (!selectedCategory) {
-        selectedCategory = categories.find((c: any) => c?.name === "DiÄŸer") || categories[0];
+        selectedCategory = categories.find((c: any) => c?.name === t("categories.other")) || categories[0];
       }
 
       if (!selectedCategory) {
@@ -447,7 +447,7 @@ export default function AiChatScreen() {
         <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginTop: dimensions.xs }}>
           <Ionicons name="cash-outline" size={dimensions.iconMD} color={theme.textSenary} />
           <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.textSenary }}>
-            {t("aiChat.label.total")}: {object.total.toFixed(2)} TL
+            {t("aiChat.label.total")}: {object.total.toFixed(2)} {t("common.currencySymbol")}
           </Text>
         </View>
       )}
