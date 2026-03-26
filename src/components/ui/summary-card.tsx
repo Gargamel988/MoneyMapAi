@@ -21,23 +21,26 @@ export function SummaryCard({
   return (
     <View
       style={{
-        backgroundColor: theme.summarycard,
+        backgroundColor: theme.cardGlass,
         borderRadius: wp(3),
         maxWidth: wp(28),
         paddingHorizontal: wp(3),
         paddingTop: hp(2),
-        paddingBottom: hp(1),
-        borderLeftWidth: wp(0.8),
+        paddingBottom: hp(1.5),
+        borderLeftWidth: wp(1),
         borderLeftColor: color,
+        flex: 1, // Let cards flex evenly
       }}
     >
       <Text
         style={{
           fontSize: dimensions.fontXS,
-          color: theme.text,
+          color: theme.textSecondary,
           marginBottom: dimensions.xs,
           fontWeight: "600",
         }}
+        numberOfLines={1}
+        adjustsFontSizeToFit
       >
         {title}
       </Text>
@@ -46,7 +49,10 @@ export function SummaryCard({
           fontSize: dimensions.fontSM,
           color: theme.text,
           fontWeight: "700",
+          marginVertical: 4,
         }}
+        numberOfLines={1}
+        adjustsFontSizeToFit
       >
         {formatTotal(value)}
       </Text>
@@ -54,6 +60,7 @@ export function SummaryCard({
         style={{
           fontSize: dimensions.fontXS,
           color: theme.textSecondary,
+          fontWeight: "500"
         }}
       >
         {subtitle}

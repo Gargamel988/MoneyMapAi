@@ -24,6 +24,12 @@ export default function TransactionDetail({
   const handleClose = () => {
     if (onClose) onClose();
   };
+
+
+  const rawName = transaction.categories?.name || "";
+  const categoryName = rawName.includes("categories.default")
+    ? t(rawName as any)
+    : rawName || t("topFiveExpenses.unknownCategory");
   return (
     <Modal
       animationType="slide"
@@ -90,12 +96,12 @@ export default function TransactionDetail({
                     backgroundColor: "#f0f0f0",
                     borderRadius: 99,
                     marginRight: dimensions.sm,
-                    padding: dimensions.md-6,
+                    padding: dimensions.md - 6,
                   }}
                 >
                   <Feather
                     name={transaction.categories?.icon as any}
-                    size={dimensions.fontXL+6}
+                    size={dimensions.fontXL + 6}
                     color={transaction.categories?.color as string}
                   />
                 </View>
@@ -103,7 +109,7 @@ export default function TransactionDetail({
                   <Text
                     style={{ fontSize: dimensions.fontLG, fontWeight: "600", color: theme.textSenary }}
                   >
-                    {transaction.categories.name}
+                    {categoryName}
                   </Text>
                   <Text style={{ fontSize: dimensions.fontSM, color: theme.textQuinary, marginTop: dimensions.xs }}>
                     {transaction.description || t("transactionDetail.noDescription")}
@@ -133,8 +139,8 @@ export default function TransactionDetail({
                     style={{
                       backgroundColor:
                         transaction.type === "gelir" ? "#4CAF50" : "#f44336",
-                      paddingHorizontal: dimensions.md-5,
-                      paddingVertical: dimensions.xs+2,
+                      paddingHorizontal: dimensions.md - 5,
+                      paddingVertical: dimensions.xs + 2,
                       borderRadius: dimensions.md,
                     }}
                   >

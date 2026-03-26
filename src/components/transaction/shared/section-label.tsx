@@ -1,6 +1,6 @@
+import Feather from "@expo/vector-icons/Feather";
 import React from "react";
 import { Text, View } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 import { Theme } from "../../../contexts/theme";
 
 type FeatherIconName = keyof typeof Feather.glyphMap;

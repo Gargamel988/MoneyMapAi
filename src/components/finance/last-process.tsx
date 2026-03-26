@@ -89,6 +89,10 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
             const typeLabel = isIncome
               ? t("lastProcess.badge.income")
               : t("lastProcess.badge.expense");
+            const rawName = item.categories?.name || "";
+            const categoryName = rawName.includes("categories.default")
+              ? t(rawName as any)
+              : rawName || t("topFiveExpenses.unknownCategory");
 
             return (
               <TouchableOpacity
@@ -96,9 +100,9 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                 onPress={() => router.push(`/(screens)/(stack)/history`)}
                 style={{
                   borderRadius: 16,
-                  backgroundColor: theme.lastprocessbackground,
+                  backgroundColor: theme.cardGlass,
                   borderWidth: 1,
-                  borderColor: theme.lastprocesborder,
+                  borderColor: theme.cardBorder,
                   marginBottom: 10,
                   paddingVertical: dimensions.sm,
                   paddingHorizontal: dimensions.md,
@@ -146,7 +150,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                       <Text
                         style={{
                           fontSize: dimensions.fontLG,
-                          fontWeight: "500",
+                          fontWeight: "600",
                           color: theme.text,
                           flexShrink: 1,
                           minWidth: 0,
@@ -154,7 +158,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                         numberOfLines={1}
                         ellipsizeMode="tail"
                       >
-                        {item.categories.name}
+                        {categoryName}
                       </Text>
 
                       <View
@@ -162,7 +166,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                           paddingHorizontal: 8,
                           paddingVertical: 2,
                           borderRadius: 99,
-                          backgroundColor: theme.lastprocessbackground,
+                          backgroundColor: `${theme.textSecondary}20`,
                           flexShrink: 0,
                         }}
                       >
@@ -170,6 +174,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                           style={{
                             color: theme.textSecondary,
                             fontSize: dimensions.fontSM,
+                            fontWeight: "500"
                           }}
                           numberOfLines={1}
                         >
@@ -201,7 +206,7 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                       style={{
                         color: isIncome ? theme.success : theme.error,
                         fontSize: dimensions.fontLG,
-                        fontWeight: "500",
+                        fontWeight: "700",
                       }}
                       numberOfLines={1}
                       adjustsFontSizeToFit
@@ -213,10 +218,10 @@ export default function LastProcess({ data, currency, isLoading, error }: LastPr
                   </View>
                 </View>
               </TouchableOpacity>
-          );
-        }}
-      />
-    )}
+            );
+          }}
+        />
+      )}
     </View>
   );
 }

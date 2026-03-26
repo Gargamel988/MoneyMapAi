@@ -12,11 +12,9 @@ import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useResponsive";
 
 import {
-  AdEventType,
   InterstitialAd,
   RewardedAd,
-  RewardedAdEventType,
-  TestIds,
+  TestIds
 } from "@/src/lib/adComponents";
 import { supabase } from "../../../src/lib/supabase";
 
@@ -72,9 +70,15 @@ export default function AiChatScreen() {
 
   useEffect(() => {
     if (wasLoadingRef.current && !isLoading) {
-      if (!object && selectedImage) {
-        setAnalysisMessage(t("aiChat.notReceipt"));
-      } else {
+      if (object) {
+        if (object.isReceipt === false) {
+          setAnalysisMessage(object.error || t("aiChat.notReceipt"));
+        } else {
+          setAnalysisMessage(null);
+        }
+      } else if (selectedImage && !isLoading) {
+        // Only if absolutely no object and not loading
+        // but we'll be more lenient now
         setAnalysisMessage(null);
       }
     }
@@ -91,46 +95,46 @@ export default function AiChatScreen() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
 
-  useEffect(() => {
-    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      console.log("Interstitial ad loaded");
-    });
+  // useEffect(() => {
+  //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+  //     console.log("Interstitial ad loaded");
+  //   });
 
-    interstitial.load();
+  //   interstitial.load();
 
-    return unsubscribe;
-  }, []);
+  //   return unsubscribe;
+  // }, []);
 
-  useEffect(() => {
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      console.log("Rewarded ad loaded");
-    });
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      (reward: any) => {
-        console.log("User earned reward: ", reward);
-      },
-    );
+  // useEffect(() => {
+  //   const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+  //     console.log("Rewarded ad loaded");
+  //   });
+  //   const unsubscribeEarned = rewarded.addAdEventListener(
+  //     RewardedAdEventType.EARNED_REWARD,
+  //     (reward: any) => {
+  //       console.log("User earned reward: ", reward);
+  //     },
+  //   );
 
-    rewarded.load();
+  //   rewarded.load();
 
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
-  }, []);
+  //   return () => {
+  //     unsubscribeLoaded();
+  //     unsubscribeEarned();
+  //   };
+  // }, []);
 
   const startAnalysis = (payload: any) => {
-    if (rewarded.loaded) {
-      rewarded.show().then(() => {
-        submit(payload);
-        rewarded.load(); // Reload for next time
-      });
-    } else {
-      // If ad not loaded, allow analysis anyway but try to load for next time
-      submit(payload);
-      rewarded.load();
-    }
+    // if (rewarded.loaded) {
+    //   rewarded.show().then(() => {
+    //     submit(payload);
+    //     rewarded.load(); // Reload for next time
+    //   });
+    // } else {
+    // If ad not loaded, allow analysis anyway but try to load for next time
+    submit(payload);
+    //   rewarded.load();
+    // }
   };
 
   const handleStop = () => {
@@ -335,9 +339,9 @@ export default function AiChatScreen() {
       showSuccessToast(t("aiChat.toast.saveSuccessTitle"), t("aiChat.toast.saveSuccessMessage"));
 
       // Show interstitial ad if loaded
-      if (interstitial.loaded) {
-        interstitial.show();
-      }
+      // if (interstitial.loaded) {
+      //   interstitial.show();
+      // }
 
       // Invalidate all transaction queries
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.transactions.all });
@@ -372,7 +376,7 @@ export default function AiChatScreen() {
   const displayObject = object && (
     <View
       style={{
-        backgroundColor: "rgba(255, 255, 255, 0.98)",
+        backgroundColor: theme.cardGlass,
         borderRadius: dimensions.borderRadiusXL,
         padding: dimensions.lg,
         marginVertical: dimensions.sm,
@@ -380,7 +384,6 @@ export default function AiChatScreen() {
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: dimensions.sm,
-        elevation: 4,
         borderWidth: 1,
         borderColor: "rgba(0,0,0,0.04)",
       }}
@@ -391,7 +394,7 @@ export default function AiChatScreen() {
           style={{
             fontWeight: "700",
             fontSize: dimensions.fontSM,
-            color: theme.textSecondary,
+            color: theme.text,
             textTransform: "uppercase",
             letterSpacing: 0.5,
           }}
@@ -402,8 +405,8 @@ export default function AiChatScreen() {
 
       {object.title && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
-          <Ionicons name="storefront-outline" size={dimensions.iconMD} color={theme.textSenary} />
-          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.textSenary }}>
+          <Ionicons name="storefront-outline" size={dimensions.iconMD} color={theme.text} />
+          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.text }}>
             {object.title}
           </Text>
         </View>
@@ -411,8 +414,8 @@ export default function AiChatScreen() {
 
       {object.category && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
-          <Ionicons name="pricetag-outline" size={dimensions.iconSM} color={theme.textSenary} />
-          <Text style={{ fontSize: dimensions.fontMD, color: theme.textSenary }}>
+          <Ionicons name="pricetag-outline" size={dimensions.iconSM} color={theme.text} />
+          <Text style={{ fontSize: dimensions.fontMD, color: theme.text, fontWeight: "500" }}>
             {t("aiChat.label.category")}: {object.category}
           </Text>
         </View>
@@ -420,8 +423,8 @@ export default function AiChatScreen() {
 
       {object.date && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
-          <Ionicons name="calendar-outline" size={dimensions.iconSM} color={theme.textSenary} />
-          <Text style={{ fontSize: dimensions.fontMD, color: theme.textSenary }}>
+          <Ionicons name="calendar-outline" size={dimensions.iconSM} color={theme.text} />
+          <Text style={{ fontSize: dimensions.fontMD, color: theme.text, fontWeight: "500" }}>
             {t("aiChat.label.date")}: {object.date} {object.time && `• ${object.time}`}
           </Text>
         </View>
@@ -430,24 +433,32 @@ export default function AiChatScreen() {
       {object.products && object.products.length > 0 && (
         <View style={{ marginTop: dimensions.xs }}>
           <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginBottom: dimensions.xs }}>
-            <Ionicons name="list-outline" size={dimensions.iconSM} color={theme.textSenary} />
-            <Text style={{ fontSize: dimensions.fontMD, fontWeight: "600", color: theme.textSenary }}>
+            <Ionicons name="list-outline" size={dimensions.iconSM} color={theme.text} />
+            <Text style={{ fontSize: dimensions.fontMD, fontWeight: "600", color: theme.text }}>
               {t("aiChat.label.items")}:
             </Text>
           </View>
           {object.products.map((item, idx) => (
-            <Text key={idx} style={{ fontSize: dimensions.fontSM, color: theme.textSenary, marginLeft: wp(2) }}>
+            <Text key={idx} style={{ fontSize: dimensions.fontSM, color: theme.text, marginLeft: wp(2), fontWeight: "500" }}>
               • {item?.itemName} - {item?.quantity}x {formatTotal(item?.price || 0)}
             </Text>
           ))}
         </View>
       )}
 
-      {object.total !== undefined && (
+      {object.total !== undefined && object.total > 0 && (
         <View style={{ flexDirection: "row", alignItems: "center", gap: dimensions.xs, marginTop: dimensions.xs }}>
-          <Ionicons name="cash-outline" size={dimensions.iconMD} color={theme.textSenary} />
-          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.textSenary }}>
+          <Ionicons name="cash-outline" size={dimensions.iconMD} color={theme.text} />
+          <Text style={{ fontSize: dimensions.fontLG, fontWeight: "700", color: theme.text }}>
             {t("aiChat.label.total")}: {object.total.toFixed(2)} {t("common.currencySymbol")}
+          </Text>
+        </View>
+      )}
+
+      {object.isReceipt === false && object.error && (
+        <View style={{ marginTop: dimensions.md, padding: dimensions.sm, backgroundColor: 'rgba(255,0,0,0.05)', borderRadius: dimensions.borderRadius }}>
+          <Text style={{ color: theme.error, fontSize: dimensions.fontSM }}>
+            {object.error}
           </Text>
         </View>
       )}
@@ -460,7 +471,7 @@ export default function AiChatScreen() {
             paddingVertical: dimensions.md,
             paddingHorizontal: dimensions.md,
             borderRadius: dimensions.borderRadiusLG,
-            opacity: isSaving ? 0.6 : 1,
+            opacity: isSaving || object.isReceipt === false ? 0.6 : 1,
             flexDirection: "row",
             alignItems: "center",
             gap: dimensions.xs,
@@ -470,7 +481,7 @@ export default function AiChatScreen() {
             shadowRadius: dimensions.xs,
             elevation: 3,
           }}
-          disabled={isSaving}
+          disabled={isSaving || object.isReceipt === false}
         >
           <Ionicons name="checkmark-circle" size={dimensions.iconMD} color={theme.white} />
           <Text
@@ -526,7 +537,7 @@ export default function AiChatScreen() {
         {/* Messages */}
         <ScrollView
           ref={scrollViewRef}
-          style={{ flex: 1, backgroundColor: theme.headerbackground }}
+          style={{ flex: 1, backgroundColor: theme.background }}
           contentContainerStyle={{
             paddingHorizontal: dimensions.md,
             paddingVertical: dimensions.md,
@@ -593,12 +604,12 @@ export default function AiChatScreen() {
             >
               <View
                 style={{
-                  backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  backgroundColor: theme.cardGlass,
                   padding: dimensions.md,
                   borderRadius: dimensions.borderRadiusXL,
                   alignItems: "center",
-                  borderWidth: 2,
-                  borderColor: "rgba(255, 255, 255, 0.1)",
+                  borderWidth: 1.5,
+                  borderColor: theme.cardBorder,
                 }}
               >
                 <Ionicons name="camera-outline" size={72} color={theme.defaultIconColor} />

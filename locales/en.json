@@ -631,7 +631,7 @@
   "ai.systemPrompt.intro": "You are a receipt detector.",
   "ai.systemPrompt.imageCheck": "If there is an image, indicate whether it is a receipt, invoice, bank account transaction, payment, or bill.",
   "ai.systemPrompt.language": "If it is a receipt, respond in a user-friendly and readable way according to the user's language.",
-  "ai.systemPrompt.format": "DO NOT use JSON or code blocks. DO NOT use asterisks (*).",
+  "ai.systemPrompt.format": "Always generate your response according to the specified JSON schema. DO NOT use asterisks (*).",
   "ai.systemPrompt.important": "IMPORTANT: Respond in the {{language}} language used on the receipt and use emojis according to the user's language. Most importantly, respond according to the user's language.",
   "ai.systemPrompt.items.multiple": "If there are multiple products in the items, list each product on a separate line.",
   "ai.systemPrompt.items.quantity": "If there is no quantity listed for an item, write it as 1 piece.",
@@ -642,7 +642,7 @@
   "ai.systemPrompt.items.format": "List items one by one, each on its own line, starting with an emoji marker (e.g. ✅):\n- Product Name x Quantity – Price TL",
   "ai.systemPrompt.categories": "For category suggestion, choose one of these categories: Market, Transportation, Bills, Rent, Entertainment, Health, Clothing, Food, Education, Other",
   "ai.systemPrompt.boundingBox": "For each detected item, provide the normalized bounding box coordinates [x, y, width, height] on a 0-1000 scale. x and y are the top-left corner.",
-  "ai.systemPrompt.notReceipt": "If it is not a receipt or invoice, provide a brief explanation and ask the user to send the correct image. If there is no image, ask the user to send one.",
+  "ai.systemPrompt.notReceipt": "If the image is not a receipt or invoice, set the 'isReceipt' field to false and write the reason in the 'error' field in a short sentence. If there is no image, ask the user to send one.",
   "ai.languageNames.tr": "Turkish",
   "ai.languageNames.en": "English",
   "categories.default.income.salary": "Salary",
@@ -759,5 +759,12 @@
   "goalCard.button.subtract": "− Subtract",
   "goalCard.status.completed": "🎉 Completed! Great job!",
   "goalCard.button.update": "Update saved amount",
-  "goalCard.remaining": "{{amount}} left"
+  "goalCard.remaining": "{{amount}} left",
+  "settings.general.goals.title": "Savings Goals",
+  "settings.general.goals.subtitle": "Manage your savings goals and track your progress.",
+  "settings.general.subscriptions.title": "Subscriptions",
+  "settings.general.subscriptions.subtitle": "Manage your subscriptions and track your recurring payments.",
+  "common.add": "Add",
+  "expense.subtitle": "Expenses",
+  "income.subtitle": "Incomes"
 }

@@ -50,9 +50,11 @@ const Header = () => {
       <View style={{ flexDirection: "row", alignItems: "center", gap: 12 }}>
         <Image
           style={{
-            width: wp(15),
-            height: hp(5),
-            borderRadius: wp(15),
+            width: wp(12),
+            height: hp(6),
+            borderRadius: wp(4),
+            borderWidth: 2,
+            borderColor: theme.white,
 
           }}
           source={require("../../../assets/logo-new.png")}

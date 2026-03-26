@@ -52,7 +52,9 @@ export const CategoryCard = ({
 	  </View>
   
 	  <View style={{ flex: 1 }}>
-		<Text style={{ fontSize: dimensions.fontLG, fontWeight: '700', color: theme.textTertiary }}>{category.name}</Text>
+		<Text style={{ fontSize: dimensions.fontLG, fontWeight: '700', color: theme.textTertiary }}>
+			{category.name.startsWith('categories.default') ? t(category.name) : category.name}
+		</Text>
 		<Text style={{ fontSize: dimensions.fontSM, textTransform: 'capitalize', opacity: 0.6, color: theme.textTertiary }}>
 		  {category.type === 'gelir' ? t("searchFilterBar.income") : t("searchFilterBar.expense")}
 		</Text>

@@ -33,14 +33,11 @@ export const CardSection = ({
             </Text>
             <View
                 style={{
-                    backgroundColor: theme.white,
-                    borderRadius: dimensions.borderRadiusLG,
+                    backgroundColor: theme.cardGlass,
+                    borderRadius: dimensions.borderRadiusXL,
+                    borderWidth: 1.5,
+                    borderColor: theme.cardBorder,
                     overflow: 'hidden',
-                    shadowColor: theme.shadow,
-                    shadowOffset: { width: 0, height: 2 },
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 3
                 }}
             >
                 {children}

@@ -33,31 +33,30 @@ export const WeeklyCard = ({
   return (
     <View
       style={{
-        backgroundColor: theme.weeklycard,
+        backgroundColor: theme.cardGlass,
         width: wp(90),
-        borderRadius: 16,
-        paddingHorizontal: wp(4),
-        paddingVertical: hp(1.8),
+        borderRadius: 20,
+        paddingHorizontal: wp(5),
+        paddingVertical: hp(2),
         gap: hp(1.2),
-        shadowColor: theme.shadow, // Arka planın koyu tonuyla gölge
-        shadowOpacity: 0.12,
-        shadowRadius: 8,
+        shadowColor: "#000",
+        shadowOpacity: 0.08,
+        shadowRadius: 10,
         shadowOffset: { width: 0, height: 4 },
-        elevation: 4,
-        borderWidth: 1,
-        borderColor: theme.border,
+        borderWidth: 1.5,
+        borderColor: theme.cardBorder,
       }}
     >
       {isLoading ? (
         <GreenLoadingComponent />
       ) : error ? (
-        <Text>{error.message}</Text>
+        <Text style={{ color: theme.error }}>{error.message}</Text>
       ) : value === 0 || value === null || value === undefined ? (
         <Text
           style={{
             fontSize: dimensions.fontLG,
             fontWeight: "700",
-            color: theme.textTertiary,
+            color: theme.textSecondary,
           }}
         >
           {t("weeklyCard.noData")}
@@ -69,41 +68,49 @@ export const WeeklyCard = ({
               flexDirection: "row",
               justifyContent: "space-between",
               alignItems: "center",
+              marginBottom: 4,
             }}
           >
             <Text
               style={{
                 fontSize: dimensions.fontLG,
-                fontWeight: "700",
-                color: theme.textTertiary, // Arka planın koyu tonu
+                fontWeight: "600",
+                color: theme.textSecondary,
               }}
             >
               {name}
             </Text>
             {change && (
-              <Text
-                style={{
-                  fontSize: hp(1.6),
-                  fontWeight: "600",
-                  color: change?.isIncrease ? "#2E9B6B" : "#D14444",
-                }}
-              >
-                {change?.isIncrease ? "↗" : "↘"} {change?.percentage.toFixed(1)}
-                % {change?.isIncrease ? t("weeklyCard.increase") : t("weeklyCard.decrease")}
-              </Text>
+              <View style={{
+                backgroundColor: change.isIncrease ? `${theme.success}15` : `${theme.error}15`,
+                paddingHorizontal: 8,
+                paddingVertical: 4,
+                borderRadius: 8,
+              }}>
+                <Text
+                  style={{
+                    fontSize: hp(1.4),
+                    fontWeight: "700",
+                    color: change.isIncrease ? theme.success : theme.error,
+                  }}
+                >
+                  {change.isIncrease ? "↑" : "↓"} {change.percentage.toFixed(1)}% {change.isIncrease ? t("weeklyCard.increase") : t("weeklyCard.decrease")}
+                </Text>
+              </View>
             )}
           </View>
 
           <Text
             style={{
-              fontSize: dimensions.fontXXL + 2,
-              fontWeight: "bold",
+              fontSize: dimensions.fontXXL + 4,
+              fontWeight: "800",
               color:
                 id === "expense"
-                  ? "#D14444"
+                  ? theme.error
                   : value > 0
-                  ? "#2E9B6B"
-                  : "#D14444",
+                    ? theme.success
+                    : theme.error,
+              marginTop: 4,
             }}
           >
             {formatTotal(value, currency)}

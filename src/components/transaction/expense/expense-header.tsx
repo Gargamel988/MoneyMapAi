@@ -1,6 +1,6 @@
+import Feather from "@expo/vector-icons/Feather";
 import React from "react";
 import { Text, TouchableOpacity, View } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 import { Theme } from "../../../contexts/theme";
 
 interface ExpenseHeaderProps {

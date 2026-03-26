@@ -4,7 +4,6 @@ import { useTranslation } from "react-i18next";
 import { SummaryCard } from "../../components/ui/summary-card";
 import { hp, isTablet, moderateScale, wp } from "../../hooks/useResponsive";
 import { Transaction, TransactionList } from "../../types/transactionTypes";
-import { hexToRgba } from "../../utils/hextorgba";
 
 import { Text, View } from "react-native";
 import { BarChart } from "react-native-chart-kit";
@@ -127,22 +126,22 @@ export default function IncomeAnalytics({
   );
 
   const chartConfig = {
-    backgroundGradientFrom: theme.incomebackgroundFrom,
-    backgroundGradientTo: theme.incomebackgroundTo,
-    backgroundGradientFromOpacity: 0.8,
-    backgroundGradientToOpacity: 0.9,
-    color: () => hexToRgba(theme.incomecolor, 0.9),
-    labelColor: () => hexToRgba(theme.incomelabelcolor, 0.9),
-    strokeWidth: moderateScale(2),
-    barPercentage: 0.55,
+    backgroundGradientFrom: "transparent",
+    backgroundGradientTo: "transparent",
+    backgroundGradientFromOpacity: 0,
+    backgroundGradientToOpacity: 0,
+    color: () => theme.textPrimary,
+    labelColor: () => theme.text,
+    strokeWidth: moderateScale(3),
+    barPercentage: 0.65,
     decimalPlaces: 0,
     formatYLabel: formatYAxisLabel,
     fillShadowGradientOpacity: 1,
-    fillShadowGradient: theme.incomecolor,
-    
+    fillShadowGradient: theme.textPrimary,
+
     propsForLabels: {
       fontSize: moderateScale(12),
-      fontWeight: "600",
+      fontWeight: "400",
     },
   } as const;
 
@@ -225,18 +224,18 @@ export default function IncomeAnalytics({
         <SummaryCard
           title={t("incomeAnalytics.cards.total") as string}
           value={totalIncome}
-          color={theme.summarycardborder}
+          color={theme.primary}
         />
         <SummaryCard
           title={t("incomeAnalytics.cards.highest") as string}
           value={highestIncome}
-          color={theme.summarycardborderprimary}
+          color={theme.success || "#6EE7B7"}
           subtitle={highestMonth}
         />
         <SummaryCard
           title={t("incomeAnalytics.cards.lowest") as string}
           value={lowestIncome}
-          color={theme.summarycardbordersecondary}
+          color={theme.error || "#EF4444"}
           subtitle={lowestMonth}
         />
       </View>

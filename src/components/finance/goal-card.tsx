@@ -134,7 +134,7 @@ export const GoalCard: React.FC<GoalCardProps> = ({ goal }) => {
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Feather name="calendar" size={11} color={theme.textSecondary} />
                 <Text style={{ fontSize: 11, color: theme.textSecondary, fontWeight: '500' }}>
-                  {new Date(goal.deadline).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                  {new Date(goal.deadline).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short', year: 'numeric' })}
                 </Text>
               </View>
             )}

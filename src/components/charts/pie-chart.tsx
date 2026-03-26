@@ -84,7 +84,10 @@ export default function PieChartComponent({
         return;
       }
 
-      const categoryName = transaction.categories?.name || t("pieChart.unknownCategory");
+      const rawName = transaction.categories?.name;
+      const categoryName = rawName 
+        ? (rawName.startsWith('categories.default') ? t(rawName) : rawName) 
+        : t("pieChart.unknownCategory");
       const amount = Number(transaction?.total_amount) || 0;
       const color = transaction.categories?.color || "#9E9E9E";
 
@@ -212,6 +215,7 @@ export default function PieChartComponent({
           style={{
             transform: [{ translateY }],
             maxHeight: hp(30),
+            marginTop: hp(1)
           }}
           showsVerticalScrollIndicator={false}
           nestedScrollEnabled={true}
@@ -220,13 +224,15 @@ export default function PieChartComponent({
             <View
               key={item.name}
               style={{
-                backgroundColor: theme.white,
-                padding: wp(3),
+                backgroundColor: theme.cardGlass,
+                padding: wp(4),
                 borderRadius: wp(3),
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                borderLeftWidth: wp(1),
+                borderWidth: 1.5,
+                borderColor: `${item.color}30`, // Soft tint matching category
+                borderLeftWidth: wp(1.5),
                 borderLeftColor: item.color,
                 marginBottom: hp(1),
               }}
@@ -235,32 +241,32 @@ export default function PieChartComponent({
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  gap: wp(2),
+                  gap: wp(3),
                 }}
               >
                 <View
                   style={{
-                    width: wp(4),
-                    height: wp(4),
-                    borderRadius: wp(2),
+                    width: wp(3.5),
+                    height: wp(3.5),
+                    borderRadius: wp(1.75),
                     backgroundColor: item.color,
                   }}
                 />
                 <Text
                   style={{
-                    color: theme.textTertiary,
-                    fontSize: wp(4),
+                    color: theme.text,
+                    fontSize: wp(3.8),
                     fontWeight: "600",
                   }}
                 >
-                  {item.name} ({percentage(item.amount)}%)
+                  {item.name} <Text style={{ color: theme.textSecondary, fontWeight: "500", fontSize: wp(3.5) }}>({percentage(item.amount)}%)</Text>
                 </Text>
               </View>
               <Text
                 style={{
-                  color: theme.textTertiary,
+                  color: theme.text,
                   fontSize: wp(4),
-                  fontWeight: "bold",
+                  fontWeight: "700",
                 }}
               >
                 {formatTotal(item.amount, currency)}

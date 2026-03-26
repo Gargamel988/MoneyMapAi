@@ -1,12 +1,12 @@
-import React from "react";
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
+import React from "react";
 import { Control, Controller } from "react-hook-form";
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from "react-native";
 import { Theme } from "../../../contexts/theme";
+import { ExpenseData } from "../../../schemas/transactionSchemas";
 import { Category } from "../../../types/transactionTypes";
 import { SectionCard } from "../shared/section-card";
 import { SectionLabel } from "../shared/section-label";
-import { ExpenseData } from "../../../schemas/transactionSchemas";
 
 interface CategorySelectorProps {
   control: Control<ExpenseData>;
@@ -88,7 +88,7 @@ export const CategorySelector = ({
                       color: isSelected ? "#fff" : theme.textSenary,
                     }}
                   >
-                    {category.name}
+                    {category.name.startsWith('categories.default') ? t(category.name) : category.name}
                   </Text>
                 </Pressable>
               );

@@ -1,10 +1,11 @@
+import { RewardedAd, TestIds } from "@/src/lib/adComponents";
 import { useQuery } from "@tanstack/react-query";
-import { BannerAd, BannerAdSize, TestIds, RewardedAd, RewardedAdEventType } from "@/src/lib/adComponents";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { QUERY_KEYS } from "../../../src/constants/queryKeys";
+import { useTheme } from "../../../src/contexts/theme";
 
 // lib
 import { exportToCSV } from "../../../src/lib/export/exportCSV";
@@ -15,10 +16,10 @@ import { transactionsApi } from "../../../src/lib/transactions";
 import Pascalcase from "../../../src/components/charts/pascal-case";
 import PieChart from "../../../src/components/charts/pie-chart";
 import FinanceSummary from "../../../src/components/finance/finance-summary";
-import TopFiveExpenses from "../../../src/components/finance/top-five-expenses";
 import { MonthlyComparison } from "../../../src/components/finance/monthly-comparison";
+import TopFiveExpenses from "../../../src/components/finance/top-five-expenses";
+
 import { Select } from "../../../src/components/ui/select";
-import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useResponsive";
 import { getCurrency } from "../../../src/lib/profile";
 import {
@@ -46,36 +47,34 @@ export default function AnalyticsScreen() {
   const { theme } = useTheme();
   const { hp, dimensions } = useResponsive();
 
-  useEffect(() => {
-    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      console.log("Analytics Rewarded ad loaded");
-    });
-    const unsubscribeEarned = rewarded.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      (reward: any) => {
-        console.log("User earned reward for export: ", reward);
-      },
-    );
-
-    rewarded.load();
-
-    return () => {
-      unsubscribeLoaded();
-      unsubscribeEarned();
-    };
-  }, []);
+  // useEffect(() => {
+  //   const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+  //     console.log("Analytics Rewarded ad loaded");
+  //   });
+  //   const unsubscribeEarned = rewarded.addAdEventListener(
+  //     RewardedAdEventType.EARNED_REWARD,
+  //     (reward: any) => {
+  //       console.log("User earned reward for export: ", reward);
+  //     },
+  //   );
+  //   rewarded.load();
+  //   return () => {
+  //     unsubscribeLoaded();
+  //     unsubscribeEarned();
+  //   };
+  // }, []);
 
   const showRewardedAd = (callback: () => void) => {
-    if (rewarded.loaded) {
-      rewarded.show().then(() => {
-        callback();
-        rewarded.load(); // Reload for next time
-      });
-    } else {
-      // If ad not loaded yet, allow anyway but try to load
-      callback();
-      rewarded.load();
-    }
+    // if (rewarded.loaded) {
+    //   rewarded.show().then(() => {
+    //     callback();
+    //     rewarded.load(); // Reload for next time
+    //   });
+    // } else {
+    // If ad not loaded yet, allow anyway but try to load
+    callback();
+    //   rewarded.load();
+    // }
   };
 
   const { data: currencyQuery } = useQuery({
@@ -302,7 +301,7 @@ export default function AnalyticsScreen() {
             error={error as Error}
             currency={currency || "TRY"}
           />
-          <View style={{ alignItems: "center", marginVertical: hp(2) }}>
+          {/* <View style={{ alignItems: "center", marginVertical: hp(2) }}>
             <BannerAd
               unitId={adUnitId}
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -310,7 +309,7 @@ export default function AnalyticsScreen() {
                 requestNonPersonalizedAdsOnly: true,
               }}
             />
-          </View>
+          </View> */}
         </SafeAreaView>
       </ScrollView>
     </View>

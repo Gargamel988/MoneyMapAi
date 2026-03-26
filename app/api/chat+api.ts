@@ -77,7 +77,6 @@ ${t("ai.systemPrompt.items.format")} ${t("ai.systemPrompt.items.multiple")} ${t(
 ${t("ai.systemPrompt.total.format")}
 
 ${t("ai.systemPrompt.categories")}
-${t("ai.systemPrompt.boundingBox")}
 
 ${t("ai.systemPrompt.notReceipt")}`;
 
@@ -86,7 +85,6 @@ ${t("ai.systemPrompt.notReceipt")}`;
       system: systemPrompt,
       messages: normalizedMessages,
       schema: objectScheme,
-      temperature: 0.3,
     });
 
     try {

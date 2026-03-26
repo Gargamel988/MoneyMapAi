@@ -1,13 +1,13 @@
-import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
+import React from "react";
 import { Control, Controller } from "react-hook-form";
+import { Text, TouchableOpacity, View } from "react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Theme } from "../../../contexts/theme";
+import { IncomeFormData } from "../../../schemas/transactionSchemas";
 import { formatDate, formatTime } from "../../../utils/date";
 import { SectionCard } from "../shared/section-card";
 import { SectionLabel } from "../shared/section-label";
-import { IncomeFormData } from "../../../schemas/transactionSchemas";
 
 interface DateTimeInputProps {
   control: Control<IncomeFormData>;

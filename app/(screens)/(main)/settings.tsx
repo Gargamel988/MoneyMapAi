@@ -22,6 +22,7 @@ import { exportToExcel } from "../../../src/lib/export/exportExcel";
 import { exportToPDF } from "../../../src/lib/export/exportPDF";
 import { getCurrency, getLanguage, updateCurrency } from "../../../src/lib/profile";
 import { transactionsApi } from "../../../src/lib/transactions";
+import { hexToRgba } from "../../../src/utils/hextorgba";
 // @ts-ignore
 import { Feather } from "@expo/vector-icons";
 import { router } from "expo-router";
@@ -30,6 +31,7 @@ import appConfig from "../../../app.json";
 import ModalLanguage from "../../../src/components/setting/modal-language";
 import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
+
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const [showCurrencyModal, setShowCurrencyModal] = useState<boolean>(false);
@@ -288,36 +290,38 @@ export default function SettingsScreen() {
           visible={showExportModal}
           onRequestClose={() => setShowExportModal(false)}
           transparent={true}
-          animationType="fade"
+          animationType="slide"
         >
           <View
             style={{
               flex: 1,
-              alignItems: "center",
+              backgroundColor: "rgba(0,0,0,0.6)",
               justifyContent: "flex-end",
-              backgroundColor: "rgba(0, 0, 0, 0.6)",
             }}
           >
             <TouchableOpacity
-              style={{ flex: 1, width: "100%" }}
+              style={{ flex: 1 }}
               activeOpacity={1}
               onPress={() => setShowExportModal(false)}
             />
             <View
               style={{
-                width: "100%",
-                borderTopLeftRadius: 24,
-                borderTopRightRadius: 24,
+                backgroundColor: theme.background,
+                borderTopLeftRadius: 32,
+                borderTopRightRadius: 32,
                 padding: 24,
+                paddingBottom: 40,
+                borderWidth: 1.5,
+                borderColor: theme.cardBorder,
               }}
             >
               <Text
                 style={{
                   marginBottom: 16,
                   textAlign: "center",
-                  fontSize: 18,
-                  fontWeight: "700",
-                  color: theme.textPrimary,
+                  fontSize: 20,
+                  fontWeight: "800",
+                  color: theme.text,
                 }}
               >
                 {t("settings.export.modal.title")}
@@ -327,36 +331,45 @@ export default function SettingsScreen() {
                   disabled={exportLoading}
                   onPress={() => exportToCSV([], setExportLoading, "tum")}
                   style={{
-                    backgroundColor: theme.white,
-                    borderRadius: 12,
+                    backgroundColor: hexToRgba(theme.primary, 0.1),
+                    borderRadius: 16,
                     padding: 16,
+                    borderWidth: 1,
+                    borderColor: hexToRgba(theme.primary, 0.2),
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.csv')}</Text>
+                  <Text style={{ color: theme.primary, fontWeight: '700', fontSize: 16 }}>{t('settings.export.csv')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
                   onPress={() => exportToExcel([], setExportLoading, "tum")}
                   style={{
-                    backgroundColor: theme.white,
-                    borderRadius: 12,
+                    backgroundColor: hexToRgba(theme.primary, 0.1),
+                    borderRadius: 16,
                     padding: 16,
                     marginTop: 12,
+                    borderWidth: 1,
+                    borderColor: hexToRgba(theme.primary, 0.2),
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.excel')}</Text>
+                  <Text style={{ color: theme.primary, fontWeight: '700', fontSize: 16 }}>{t('settings.export.excel')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
                   onPress={() => exportToPDF([], setExportLoading, "tum")}
                   style={{
-                    backgroundColor: theme.white,
-                    borderRadius: 12,
+                    backgroundColor: hexToRgba(theme.primary, 0.1),
+                    borderRadius: 16,
                     padding: 16,
                     marginTop: 12,
+                    borderWidth: 1,
+                    borderColor: hexToRgba(theme.primary, 0.2),
+                    alignItems: "center",
                   }}
                 >
-                  <Text style={{ color: theme.textPrimary }}>{t('settings.export.pdf')}</Text>
+                  <Text style={{ color: theme.primary, fontWeight: '700', fontSize: 16 }}>{t('settings.export.pdf')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

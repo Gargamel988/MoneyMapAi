@@ -102,7 +102,7 @@ const TransactionHistory = () => {
 
       const matchesCategory =
         transaction.categories?.name &&
-        transaction.categories.name
+        t(transaction.categories.name)
           .toLowerCase()
           .trim()
           .includes(searchLower);
@@ -246,153 +246,159 @@ const TransactionHistory = () => {
             </Text>
           </View>
         )}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onLongPress={() => handleLongPress(item)}
-            key={item.id || index}
-            onPress={() => setSelectedTransaction(item)}
-            style={{
-              backgroundColor: theme.white,
-              marginBottom: 8,
-              borderRadius: 12,
-              padding: 12,
-              shadowColor: "#000",
-              shadowOffset: { width: 0, height: 1 },
-              shadowOpacity: 0.03,
-              shadowRadius: 2,
-              elevation: 1,
-              borderWidth: 1,
-              borderColor: theme.border + "20",
-            }}
-          >
-            <View
+        renderItem={({ item, index }) => {
+          const rawName = item.categories?.name || "";
+          const categoryName = rawName.includes("categories.default")
+            ? t(rawName as any)
+            : rawName || t("topFiveExpenses.unknownCategory");
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onLongPress={() => handleLongPress(item)}
+              key={item.id || index}
+              onPress={() => setSelectedTransaction(item)}
               style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 10,
+                backgroundColor: theme.white,
+                marginBottom: 8,
+                borderRadius: 12,
+                padding: 12,
+                shadowColor: "#000",
+                shadowOffset: { width: 0, height: 1 },
+                shadowOpacity: 0.03,
+                shadowRadius: 2,
+                elevation: 1,
+                borderWidth: 1,
+                borderColor: theme.border + "20",
               }}
             >
-              {/* Icon */}
               <View
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: 10,
-                  backgroundColor: item.categories?.color + "12",
+                  flexDirection: "row",
                   alignItems: "center",
-                  justifyContent: "center",
+                  gap: 10,
                 }}
               >
-                <Feather
-                  name={item.categories.icon as any}
-                  size={18}
-                  color={item.categories.color}
-                />
-              </View>
-
-              {/* Content */}
-              <View style={{ flex: 1 }}>
-                <Text
-                  style={{
-                    color: theme.inputtitle,
-                    fontSize: 14,
-                    fontWeight: "600",
-                    marginBottom: 2,
-                  }}
-                >
-                  {item.description || t("transactionDetail.noDescription")}
-                </Text>
-
-                <View style={{ flexDirection: "row" }}>
-                  <Text
-                    style={{
-                      fontSize: 12,
-                      fontWeight: "500",
-                      color: item.categories?.color,
-                      backgroundColor: item.categories?.color + "15",
-                      paddingHorizontal: dimensions.sm,
-                      paddingVertical: dimensions.xs - 1,
-                      borderRadius: moderateScale(7),
-                    }}
-                  >
-                    {item.categories.name}
-                  </Text>
-                </View>
+                {/* Icon */}
                 <View
                   style={{
-                    flexDirection: "row",
-                    gap: moderateScale(6),
+                    width: 40,
+                    height: 40,
+                    borderRadius: 10,
+                    backgroundColor: item.categories?.color + "12",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <Feather
+                    name={item.categories.icon as any}
+                    size={18}
+                    color={item.categories.color}
+                  />
+                </View>
+
+                {/* Content */}
+                <View style={{ flex: 1 }}>
+                  <Text
+                    style={{
+                      color: theme.inputtitle,
+                      fontSize: 14,
+                      fontWeight: "600",
+                      marginBottom: 2,
+                    }}
+                  >
+                    {item.description || t("transactionDetail.noDescription")}
+                  </Text>
+
+                  <View style={{ flexDirection: "row" }}>
+                    <Text
+                      style={{
+                        fontSize: 12,
+                        fontWeight: "500",
+                        color: item.categories?.color,
+                        backgroundColor: item.categories?.color + "15",
+                        paddingHorizontal: dimensions.sm,
+                        paddingVertical: dimensions.xs - 1,
+                        borderRadius: moderateScale(7),
+                      }}
+                    >
+                      {categoryName}
+                    </Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: moderateScale(6),
+                    }}
+                  >
+                    <Text
+                      style={{
+                        fontSize: dimensions.fontSM,
+                        color: theme.textSecondary,
+                      }}
+                    >
+                      {formatDate(item.date)}
+                    </Text>
+
+                    {item.expense_items && item.expense_items.length > 0 && (
+                      <View
+                        style={{
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: 2,
+                          backgroundColor: theme.textSecondary + "15",
+                        }}
+                      >
+                        <Feather
+                          name="shopping-cart"
+                          size={9}
+                          color={theme.textSecondary}
+                        />
+                        <Text
+                          style={{
+                            fontSize: 10,
+                            color: theme.textSecondary,
+                            fontWeight: "500",
+                          }}
+                        >
+                          {item.expense_items.length}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                </View>
+
+                {/* Amount */}
+                <View
+                  style={{
+                    alignItems: "flex-end",
                   }}
                 >
                   <Text
                     style={{
-                      fontSize: dimensions.fontSM,
-                      color: theme.textSecondary,
+                      fontSize: dimensions.fontMD,
+                      fontWeight: "700",
+                      color: item.type === "gelir" ? theme.success : theme.error,
+                      marginBottom: dimensions.xs,
                     }}
                   >
-                    {formatDate(item.date)}
+                    {item.type === "gelir" ? "+" : "-"}
+                    {formatTotal(item.total_amount, currency)}
                   </Text>
 
-                  {item.expense_items && item.expense_items.length > 0 && (
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 2,
-                        backgroundColor: theme.textSecondary + "15",
-                      }}
-                    >
-                      <Feather
-                        name="shopping-cart"
-                        size={9}
-                        color={theme.textSecondary}
-                      />
-                      <Text
-                        style={{
-                          fontSize: 10,
-                          color: theme.textSecondary,
-                          fontWeight: "500",
-                        }}
-                      >
-                        {item.expense_items.length}
-                      </Text>
-                    </View>
-                  )}
+                  <Text
+                    style={{
+                      fontSize: dimensions.fontSM - 2,
+                      color: theme.textSecondary,
+                      fontWeight: "500",
+                    }}
+                  >
+                    {formatTime(item.time)}
+                  </Text>
                 </View>
               </View>
-
-              {/* Amount */}
-              <View
-                style={{
-                  alignItems: "flex-end",
-                }}
-              >
-                <Text
-                  style={{
-                    fontSize: dimensions.fontMD,
-                    fontWeight: "700",
-                    color: item.type === "gelir" ? theme.success : theme.error,
-                    marginBottom: dimensions.xs,
-                  }}
-                >
-                  {item.type === "gelir" ? "+" : "-"}
-                  {formatTotal(item.total_amount, currency)}
-                </Text>
-
-                <Text
-                  style={{
-                    fontSize: dimensions.fontSM - 2,
-                    color: theme.textSecondary,
-                    fontWeight: "500",
-                  }}
-                >
-                  {formatTime(item.time)}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        )}
+            </TouchableOpacity>
+          );
+        }}
       />
 
       {/* Ä°ÅŸlem Detay Modal */}

@@ -1,8 +1,9 @@
+import Feather from "@expo/vector-icons/Feather";
 import React from "react";
 import { Pressable, Text, TextInput, TouchableOpacity, View } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
 import { APP_CONFIG } from "../../../constants/config";
 import { Theme } from "../../../contexts/theme";
+import { hexToRgba } from "../../../utils/hextorgba";
 import { SectionCard } from "../shared/section-card";
 import { SectionLabel } from "../shared/section-label";
 
@@ -41,12 +42,14 @@ export const ItemForm = ({
       placeholderTextColor={theme.textTertiary}
       style={{
         backgroundColor: theme.inputbackground,
-        borderRadius: 12,
-        paddingHorizontal: 16,
-        paddingVertical: 12,
+        borderRadius: 14,
+        paddingHorizontal: 18,
+        paddingVertical: 14,
         fontSize: dimensions.fontMD,
-        color: theme.textSenary,
-        marginBottom: dimensions.sm,
+        color: theme.text,
+        marginBottom: dimensions.md,
+        borderWidth: 1.5,
+        borderColor: theme.cardBorder,
       }}
       value={currentItem.itemName}
       onChangeText={(text) =>
@@ -74,16 +77,18 @@ export const ItemForm = ({
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: theme.inputbackground,
-            borderRadius: 12,
-            paddingHorizontal: 12,
+            borderRadius: 14,
+            paddingHorizontal: 14,
+            borderWidth: 1.5,
+            borderColor: theme.cardBorder,
           }}
         >
           <Text
             style={{
               fontSize: dimensions.fontLG,
-              fontWeight: "600",
+              fontWeight: "700",
               color: theme.error,
-              marginRight: 4,
+              marginRight: 6,
             }}
           >
             {APP_CONFIG.currencies[currency as keyof typeof APP_CONFIG.currencies]?.symbol || currency}
@@ -103,8 +108,9 @@ export const ItemForm = ({
             style={{
               flex: 1,
               fontSize: dimensions.fontMD,
-              color: theme.textSenary,
-              paddingVertical: 12,
+              color: theme.text,
+              paddingVertical: 14,
+              fontWeight: "600",
             }}
             editable={!isPending}
           />
@@ -128,8 +134,10 @@ export const ItemForm = ({
             flexDirection: "row",
             alignItems: "center",
             backgroundColor: theme.inputbackground,
-            borderRadius: 12,
+            borderRadius: 14,
             overflow: "hidden",
+            borderWidth: 1.5,
+            borderColor: theme.cardBorder,
           }}
         >
           <TouchableOpacity
@@ -142,14 +150,14 @@ export const ItemForm = ({
             disabled={isPending}
             activeOpacity={0.7}
             style={{
-              width: 44,
-              height: 44,
+              width: 50,
+              height: 50,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: theme.bordersecondary,
+              backgroundColor: hexToRgba(theme.primary, 0.1),
             }}
           >
-            <Feather name="minus" size={18} color={theme.textSenary} />
+            <Feather name="minus" size={20} color={theme.primary} />
           </TouchableOpacity>
 
           <TextInput
@@ -166,9 +174,9 @@ export const ItemForm = ({
               flex: 1,
               textAlign: "center",
               fontSize: dimensions.fontLG,
-              fontWeight: "600",
-              color: theme.textSenary,
-              paddingVertical: 10,
+              fontWeight: "700",
+              color: theme.text,
+              paddingVertical: 12,
             }}
             editable={!isPending}
           />
@@ -183,14 +191,14 @@ export const ItemForm = ({
             disabled={isPending}
             activeOpacity={0.7}
             style={{
-              width: 44,
-              height: 44,
+              width: 50,
+              height: 50,
               alignItems: "center",
               justifyContent: "center",
-              backgroundColor: theme.bordersecondary,
+              backgroundColor: hexToRgba(theme.primary, 0.1),
             }}
           >
-            <Feather name="plus" size={18} color={theme.textSenary} />
+            <Feather name="plus" size={20} color={theme.primary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -207,11 +215,12 @@ export const ItemForm = ({
         gap: 8,
         backgroundColor:
           !currentItem.itemName || currentItem.price <= 0
-            ? theme.bordersecondary
+            ? hexToRgba(theme.primary, 0.2)
             : theme.primary,
-        borderRadius: 12,
-        paddingVertical: 12,
+        borderRadius: 16,
+        paddingVertical: 16,
         marginTop: dimensions.md,
+        opacity: !currentItem.itemName || currentItem.price <= 0 ? 0.5 : 1,
         transform: [{ scale: pressed ? 0.98 : 1 }],
       })}
     >

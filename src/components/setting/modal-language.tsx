@@ -12,9 +12,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { QUERY_KEYS } from "../../constants/queryKeys";
 import { showErrorToast, showSuccessToast } from "../../constants/toast";
 import { useTheme } from "../../contexts/theme";
-import { updateDefaultCategoriesByLanguage } from "../../lib/category";
 import { updateLanguage } from "../../lib/profile";
 
 type LanguageCode = "tr" | "en";
@@ -47,7 +47,8 @@ const ModalLanguage = ({
   const queryClient = useQueryClient();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const activeLanguage = (language || i18n.language || "tr").split("-")[0] as LanguageCode;
+  // Use i18n.language as source of truth so UI updates immediately
+  const activeLanguage = (i18n.language || language || "tr").split("-")[0] as LanguageCode;
 
   const handleSelectLanguage = async (code: LanguageCode) => {
     if (isUpdating || code === activeLanguage) {
@@ -65,16 +66,11 @@ const ModalLanguage = ({
         throw new Error("language-update-failed");
       }
 
-      // Kategorileri yeni dile göre güncelle
-      const categoryUpdateResult = await updateDefaultCategoriesByLanguage(code);
-      if (categoryUpdateResult.success) {
-        await queryClient.invalidateQueries({ queryKey: ["categories"] });
-        await queryClient.invalidateQueries({ queryKey: ["income_categories"] });
-        await queryClient.invalidateQueries({ queryKey: ["expense_categories"] });
-      }
-
+      // Update local state and invalidate specific user settings
       await i18n.changeLanguage(code);
-      await queryClient.invalidateQueries({ queryKey: ["language"] });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.language() });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.profile() });
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.user.settings() });
 
       showSuccessToast(
         t("languageModal.toastSuccessTitle"),

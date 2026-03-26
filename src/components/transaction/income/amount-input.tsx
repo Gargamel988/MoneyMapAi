@@ -1,11 +1,11 @@
 import React from "react";
-import { Text, TextInput, View } from "react-native";
 import { Control, Controller } from "react-hook-form";
+import { Text, TextInput, View } from "react-native";
 import { APP_CONFIG } from "../../../constants/config";
 import { Theme } from "../../../contexts/theme";
+import { IncomeFormData } from "../../../schemas/transactionSchemas";
 import { SectionCard } from "../shared/section-card";
 import { SectionLabel } from "../shared/section-label";
-import { IncomeFormData } from "../../../schemas/transactionSchemas";
 
 interface AmountInputProps {
   control: Control<IncomeFormData>;

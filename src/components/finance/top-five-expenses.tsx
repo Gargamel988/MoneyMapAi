@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 import { Text, View } from "react-native";
 import { useTheme } from "../../contexts/theme";
 import { useResponsive } from "../../hooks/useResponsive";
+import { Feather } from "@expo/vector-icons";
+import { hexToRgba } from "../../utils/hextorgba";
 import { formatTotal } from "../../utils/total";
 import { ErrorFallback, NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";
@@ -38,7 +40,10 @@ export default function TopFiveExpenses({
 
   const mergedByCategory = dataArrayFilter.reduce(
     (acc: { [key: string]: Transaction }, item: Transaction) => {
-      const categoryName = item.categories?.name || t("topFiveExpenses.unknownCategory");
+      const rawName = item.categories?.name || "";
+      const categoryName = rawName.includes("categories.default") 
+        ? t(rawName as any) 
+        : rawName || t("topFiveExpenses.unknownCategory");
 
       if (!acc[categoryName]) {
         acc[categoryName] = { ...item, total_amount: item.total_amount || 0 };
@@ -68,7 +73,10 @@ export default function TopFiveExpenses({
   let insightMessage = "";
   if (max5.length > 0) {
     const top = max5[0];
-    const topCategory = top.categories.name;
+    const rawTopCategory = top.categories.name || "";
+    const topCategory = rawTopCategory.includes("categories.default")
+      ? t(rawTopCategory as any)
+      : rawTopCategory || t("topFiveExpenses.category");
     const topPercentage = percentages[0] || 0;
 
     if (topPercentage > 50) {
@@ -119,7 +127,10 @@ export default function TopFiveExpenses({
           {/* Liste */}
           <View style={{ gap: 8 }}>
             {max5.map((item: Transaction, index: number) => {
-              const categoryName = item.categories.name || t("topFiveExpenses.category");
+              const rawName = item.categories?.name || "";
+              const categoryName = rawName.includes("categories.default") 
+                ? t(rawName as any) 
+                : rawName || t("topFiveExpenses.category");
               const categoryColor = item.categories.color || theme.textTertiary;
               const percentage = percentages[index] || 0;
 
@@ -130,40 +141,66 @@ export default function TopFiveExpenses({
                     flexDirection: "row",
                     alignItems: "center",
                     justifyContent: "space-between",
-                    borderRadius: 12,
-                    paddingHorizontal: 12,
-                    paddingVertical: 10,
-                    shadowOpacity: 0.08,
-                    shadowRadius: 4,
-                    shadowOffset: { width: 0, height: 2 },
-                    backgroundColor: theme.white,
-                    shadowColor: theme.border,
+                    borderRadius: 16,
+                    paddingHorizontal: 16,
+                    paddingVertical: 14,
+                    borderWidth: 1.5,
+                    borderColor: theme.cardBorder,
+                    backgroundColor: theme.cardGlass,
                   }}
                 >
                   <View
                     style={{
                       flexDirection: "row",
                       alignItems: "center",
-                      gap: 8,
+                      gap: 12,
                     }}
                   >
                     <View
                       style={{
-                        height: 8,
-                        width: 8,
-                        borderRadius: 4,
-                        backgroundColor: categoryColor,
-                      }}
-                    />
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: "500",
-                        color: theme.textQuaternary,
+                        height: 48,
+                        width: 48,
+                        borderRadius: 14,
+                        backgroundColor: hexToRgba(categoryColor, 0.15),
+                        alignItems: "center",
+                        justifyContent: "center",
                       }}
                     >
-                      {categoryName}
-                    </Text>
+                      <Feather
+                        name={(item.categories?.icon as any) || "shopping-bag"}
+                        size={22}
+                        color={categoryColor}
+                      />
+                    </View>
+                    <View>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: "600",
+                          color: theme.text,
+                          marginBottom: 4,
+                        }}
+                      >
+                        {categoryName}
+                      </Text>
+                      <View
+                        style={{
+                          height: 6,
+                          width: 80,
+                          backgroundColor: hexToRgba(categoryColor, 0.15),
+                          borderRadius: 3,
+                        }}
+                      >
+                        <View
+                          style={{
+                            height: "100%",
+                            width: `${percentage}%`,
+                            backgroundColor: categoryColor,
+                            borderRadius: 3,
+                          }}
+                        />
+                      </View>
+                    </View>
                   </View>
 
                   <View
@@ -175,14 +212,20 @@ export default function TopFiveExpenses({
                   >
                     <Text
                       style={{
-                        fontWeight: "bold",
-                        fontSize: 14,
-                        color: theme.inputtitle,
+                        fontWeight: "700",
+                        fontSize: 15,
+                        color: theme.text,
                       }}
                     >
                       {formatTotal(item.total_amount, currency)}
                     </Text>
-                    <Text style={{ fontSize: 13, color: theme.textQuaternary }}>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: "600",
+                        color: categoryColor,
+                      }}
+                    >
                       {percentage.toFixed(2)}%
                     </Text>
                   </View>

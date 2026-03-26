@@ -13,11 +13,11 @@ import { StatusBar } from "expo-status-bar";
 import i18n from "i18next";
 import { useEffect } from "react";
 
+import { initAds } from "@/src/lib/adsInit";
 import Toast from "react-native-toast-message";
 import "../polyfills";
 import "../services/i18next"; // Initialize i18next
 import { QUERY_KEYS } from "../src/constants/queryKeys";
-import { initAds } from "@/src/lib/adsInit";
 import { toastConfig } from "../src/constants/toast";
 import { SessionProvider, useSession } from "../src/contexts/session";
 import { ThemeProvider, useTheme } from "../src/contexts/theme";
@@ -39,18 +39,15 @@ function RootNavigator() {
     const inMainGroup = segments[0] === "(screens)" && segments[1] === "(main)";
 
     if (session?.user) {
-      // Kullanıcı giriş yapmış ama auth sayfasındaysa → home'a yönlendir
       if (inAuthGroup) {
         router.replace("/(screens)/(main)/home");
       }
     } else {
-      // Kullanıcı giriş yapmamış ve korumalı sayfadaysa → welcome'a yönlendir
-      if (inMainGroup) {
+      if (inMainGroup || segments.length <= 1) {
         router.replace("/");
       }
     }
 
-    // Hide splash screen when navigation is ready and loading is complete
     if (!isLoading) {
       SplashScreen.hideAsync();
     }
@@ -106,9 +103,9 @@ function AppContent() {
 }
 
 export default function RootLayout() {
-  useEffect(() => {
-    initAds();
-  }, []);
+  // useEffect(() => {
+  //   initAds();
+  // }, []);
 
   return (
     <QueryClientProvider client={queryClient}>

@@ -9,17 +9,13 @@ import { useResponsive } from "../../hooks/useResponsive";
 import { formatTotal } from "../../utils/total";
 import { ErrorFallback, NoDataErrorComponent } from "../common/error";
 import { GreenLoadingComponent } from "../common/loading";
+import { hexToRgba } from "../../utils/hextorgba";
 
 type PascalcaseProps = {
   data: TransactionList;
   isLoading: boolean;
   error: Error;
   currency: string;
-};
-
-const COLORS = {
-  success: "#6EE7B7",
-  error: "#EF4444",
 };
 
 export default function Pascalcase({
@@ -74,8 +70,8 @@ export default function Pascalcase({
     backgroundGradientFromOpacity: 0,
     backgroundGradientTo: "transparent",
     backgroundGradientToOpacity: 0,
-    color: (opacity = 1) => `rgba(74, 127, 167, ${opacity})`,
-    labelColor: (opacity = 1) => `rgba(7, 23, 57, ${opacity})`,
+    color: (opacity = 1) => hexToRgba(theme.primary, Math.max(opacity, 0.2)),
+    labelColor: () => theme.textSecondary,
     strokeWidth: moderateScale(3),
     barPercentage: 0.5,
     useShadowColorFromDataset: true,
@@ -164,7 +160,7 @@ export default function Pascalcase({
           return value;
         },
 
-        color: (opacity = 1) => `rgba(110, 231, 183, ${opacity})`,
+        color: (opacity = 1) => hexToRgba(theme.success, opacity),
         strokeWidth: moderateScale(3),
       },
       {
@@ -173,7 +169,7 @@ export default function Pascalcase({
         formatYLabel: (value: number) => {
           return formatTotal(value, currency);
         },
-        color: (opacity = 1) => `rgba(108, 144, 195, ${opacity})`,
+        color: (opacity = 1) => hexToRgba(theme.success, Math.min(opacity, 0.4)),
         strokeWidth: moderateScale(2),
       },
       {
@@ -182,7 +178,7 @@ export default function Pascalcase({
         formatYLabel: (value: number) => {
           return formatTotal(value, currency);
         },
-        color: (opacity = 1) => `rgba(239, 68, 68, ${opacity})`,
+        color: (opacity = 1) => hexToRgba(theme.error, opacity),
         strokeWidth: moderateScale(3),
       },
       {
@@ -191,7 +187,7 @@ export default function Pascalcase({
         formatYLabel: (value: number) => {
           return formatTotal(value, currency);
         },
-        color: (opacity = 1) => `rgba(249, 220, 92, ${opacity})`,
+        color: (opacity = 1) => hexToRgba(theme.error, Math.min(opacity, 0.4)),
         strokeWidth: moderateScale(2),
       },
     ],
@@ -289,9 +285,15 @@ export default function Pascalcase({
                   flex: 1,
                   padding: dimensions.md,
                   borderRadius: dimensions.borderRadiusLG,
-                  backgroundColor: theme.white,
-                  borderWidth: 1,
-                  borderColor: theme.border,
+                  backgroundColor:
+                    incomeGrowth >= 0
+                      ? hexToRgba(theme.success, 0.05)
+                      : hexToRgba(theme.error, 0.05),
+                  borderWidth: 1.5,
+                  borderColor:
+                    incomeGrowth >= 0
+                      ? hexToRgba(theme.success, 0.3)
+                      : hexToRgba(theme.error, 0.3),
                 }}
               >
                 <Text
@@ -320,9 +322,15 @@ export default function Pascalcase({
                   flex: 1,
                   padding: dimensions.md,
                   borderRadius: dimensions.borderRadiusLG,
-                  backgroundColor: theme.white,
-                  borderWidth: 1,
-                  borderColor: theme.border,
+                  backgroundColor:
+                    expenseGrowth >= 0
+                      ? hexToRgba(theme.error, 0.05)
+                      : hexToRgba(theme.success, 0.05),
+                  borderWidth: 1.5,
+                  borderColor:
+                    expenseGrowth >= 0
+                      ? hexToRgba(theme.error, 0.3)
+                      : hexToRgba(theme.success, 0.3),
                 }}
               >
                 <Text
@@ -352,16 +360,9 @@ export default function Pascalcase({
                 marginBottom: hp(1.5),
                 borderRadius: dimensions.borderRadiusXL,
                 padding: isTablet ? dimensions.lg : dimensions.md,
-                backgroundColor: theme.white,
-                borderWidth: 1,
-                borderColor: theme.border,
-                shadowColor: theme.shadow,
-                shadowOpacity: 0.15,
-                shadowRadius: moderateScale(6),
-                shadowOffset: {
-                  width: 0,
-                  height: moderateScale(3),
-                },
+                backgroundColor: theme.cardGlass,
+                borderWidth: 1.5,
+                borderColor: theme.cardBorder,
               }}
             >
               <Text
@@ -443,14 +444,14 @@ export default function Pascalcase({
                         height: moderateScale(8),
                         width: moderateScale(16),
                         borderRadius: dimensions.xs,
-                        backgroundColor: "#6EE7B7",
+                        backgroundColor: theme.success,
                       }}
                     />
                     <Text
                       style={{
                         fontSize: dimensions.fontSM,
                         fontWeight: "600",
-                        color: "#6EE7B7",
+                        color: theme.success,
                       }}
                     >
                       {t("pascalCase.currentYearIncome", { year: currentYear })}
@@ -469,14 +470,14 @@ export default function Pascalcase({
                         height: moderateScale(8),
                         width: moderateScale(16),
                         borderRadius: dimensions.xs,
-                        backgroundColor: "#EF4444",
+                        backgroundColor: theme.error,
                       }}
                     />
                     <Text
                       style={{
                         fontSize: dimensions.fontSM,
                         fontWeight: "600",
-                        color: "#EF4444",
+                        color: theme.error,
                       }}
                     >
                       {t("pascalCase.currentYearExpense", { year: currentYear })}
@@ -503,14 +504,15 @@ export default function Pascalcase({
                         height: moderateScale(8),
                         width: moderateScale(16),
                         borderRadius: dimensions.xs,
-                        backgroundColor: "#6C90C3",
+                        backgroundColor: hexToRgba(theme.success, 0.4),
                       }}
                     />
                     <Text
                       style={{
                         fontSize: dimensions.fontSM,
                         fontWeight: "600",
-                        color: "#6C90C3",
+                        color: theme.success,
+                        opacity: 0.7,
                       }}
                     >
                       {t("pascalCase.lastYearIncome", { year: lastYear })}
@@ -529,14 +531,15 @@ export default function Pascalcase({
                         height: moderateScale(8),
                         width: moderateScale(16),
                         borderRadius: dimensions.xs,
-                        backgroundColor: "#F9DC5C",
+                        backgroundColor: hexToRgba(theme.error, 0.4),
                       }}
                     />
                     <Text
                       style={{
                         fontSize: dimensions.fontSM,
                         fontWeight: "600",
-                        color: "#F9DC5C",
+                        color: theme.error,
+                        opacity: 0.7,
                       }}
                     >
                       {t("pascalCase.lastYearExpense", { year: lastYear })}
@@ -552,8 +555,8 @@ export default function Pascalcase({
                 marginBottom: hp(1),
                 padding: dimensions.sm,
                 borderLeftWidth: moderateScale(4),
-                borderLeftColor: theme.summarycardborderprimary,
-                backgroundColor: theme.cluebackground,
+                borderLeftColor: theme.primary,
+                backgroundColor: hexToRgba(theme.primary, 0.1),
                 borderRadius: dimensions.borderRadius,
               }}
             >
@@ -583,13 +586,9 @@ export default function Pascalcase({
                 marginBottom: hp(1.5),
                 borderRadius: dimensions.borderRadiusXL,
                 padding: isTablet ? dimensions.lg : dimensions.md,
-                backgroundColor: theme.white,
-                borderWidth: 1,
-                borderColor: theme.border,
-                shadowColor: theme.shadow,
-                shadowOpacity: 0.12,
-                shadowRadius: moderateScale(6),
-                shadowOffset: { width: 0, height: moderateScale(3) },
+                backgroundColor: theme.cardGlass,
+                borderWidth: 1.5,
+                borderColor: theme.cardBorder,
               }}
             >
               <View
@@ -701,8 +700,8 @@ export default function Pascalcase({
                 marginBottom: hp(1),
                 padding: dimensions.sm,
                 borderLeftWidth: moderateScale(4),
-                borderLeftColor: theme.summarycardborderprimary,
-                backgroundColor: theme.cluebackground,
+                borderLeftColor: theme.primary,
+                backgroundColor: hexToRgba(theme.primary, 0.1),
                 borderRadius: dimensions.borderRadius,
               }}
             >
@@ -755,16 +754,10 @@ export default function Pascalcase({
                         marginBottom: dimensions.sm,
                         borderRadius: dimensions.borderRadius,
                         padding: isTablet ? dimensions.sm : wp(3),
-                        shadowColor: theme.shadow,
-                        shadowOpacity: 0.1,
-                        shadowRadius: moderateScale(6),
-                        shadowOffset: {
-                          width: 0,
-                          height: moderateScale(2),
-                        },
-                        borderWidth: 1,
-                        borderColor: theme.border,
-                        backgroundColor: theme.white,
+                        shadowColor: "transparent",
+                        borderWidth: 1.5,
+                        borderColor: theme.cardBorder,
+                        backgroundColor: theme.cardGlass,
                       }}
                     >
                       <View
@@ -789,7 +782,7 @@ export default function Pascalcase({
                             paddingHorizontal: dimensions.sm,
                             paddingVertical: dimensions.xs / 2,
                             borderRadius: dimensions.xs,
-                            backgroundColor: theme.cluebackground,
+                            backgroundColor: hexToRgba(theme.primary, 0.1),
                           }}
                         >
                           <Text
@@ -922,7 +915,7 @@ export default function Pascalcase({
                                 fontSize: dimensions.fontSM,
                                 fontWeight: "700",
                                 color:
-                                  currentNet >= 0 ? COLORS.success : COLORS.error,
+                                  currentNet >= 0 ? theme.success : theme.error,
                               }}
                             >
                               {formatTotal(currentNet, currency)}

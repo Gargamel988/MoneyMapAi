@@ -631,7 +631,7 @@
   "ai.systemPrompt.intro": "Sen bir fiş dedektörüsün.",
   "ai.systemPrompt.imageCheck": "Eğer varsa görselin; fiş mi, fatura mı, banka hesap hareketi mi, ödeme mi, yoksa dekont mu olduğunu belirt.",
   "ai.systemPrompt.language": "Fiş ise kullanıcının diline uygun, sıcakkanlı ve okunaklı bir şekilde yanıt ver.",
-  "ai.systemPrompt.format": "ASLA JSON veya kod bloğu kullanma. Yıldız işareti (*) KULLANMA.",
+  "ai.systemPrompt.format": "Yanıtını her zaman belirtilen JSON şemasına uygun olarak oluştur. Yıldız işareti (*) KULLANMA.",
   "ai.systemPrompt.important": "ÖNEMLİ: Fişte kullanılan dille {{language}} yanıt ver ve emojileri kullanıcının diline göre kullan. En önemlisi kullanıcının diline göre cevap ver.",
   "ai.systemPrompt.items.multiple": "Eğer items içinde birden fazla ürün varsa her ürünü ayrı satıra listele.",
   "ai.systemPrompt.items.quantity": "Eğer bir ürünün adeti yazmıyorsa 1 adet olarak yaz.",
@@ -642,7 +642,7 @@
   "ai.systemPrompt.items.format": "Ürünleri teker teker, her biri ayrı satırda olacak ve başında bir emoji işareti (örn. ✅) olacak şekilde listele:\n- Ürün İsmi x Adet – Fiyat TL",
   "ai.systemPrompt.categories": "Kategori önerisi için şu kategorilerden birini seç: Market, Ulaşım, Faturalar, Kira, Eğlence, Sağlık, Giyim, Yemek, Eğitim, Diğer",
   "ai.systemPrompt.boundingBox": "Tespit edilen her bir ürün için 0-1000 ölçeğinde normalize edilmiş sınırlayıcı kutu koordinatlarını [x, y, genişlik, yükseklik] olarak ver. x ve y sol üst köşedir.",
-  "ai.systemPrompt.notReceipt": "Eğer fiş veya fatura değilse, kısa bir açıklama yap ve kullanıcıdan doğru görseli göndermesini iste. Eğer görsel yoksa kullanıcıdan görsel göndermesini iste.",
+  "ai.systemPrompt.notReceipt": "Eğer görsel bir fiş veya fatura değilse, 'isReceipt' alanını false yap ve 'error' alanına nedenini kısa bir cümleyle yaz. Eğer görsel yoksa kullanıcıdan bir görsel göndermesini iste.",
   "ai.languageNames.tr": "Türkçe",
   "ai.languageNames.en": "İngilizce",
   "categories.default.income.salary": "Maaş",
@@ -759,5 +759,12 @@
   "goalCard.button.subtract": "− Çıkar",
   "goalCard.status.completed": "🎉 Tamamlandı! Harika iş!",
   "goalCard.button.update": "Birikimi güncelle",
-  "goalCard.remaining": "{{amount}} kaldı"
+  "goalCard.remaining": "{{amount}} kaldı",
+  "settings.general.goals.title": "Birikim Hedefleri",
+  "settings.general.goals.subtitle": "Birikim hedeflerinizi yönetin ve ilerlemenizi takip edin.",
+  "settings.general.subscriptions.title": "Abonelikler",
+  "settings.general.subscriptions.subtitle": "Aboneliklerinizi yönetin ve düzenli ödemelerinizi takip edin.",
+  "common.add": "Ekle",
+  "expense.subtitle": "Harcamalar",
+  "income.subtitle": "Gelirler"
 }

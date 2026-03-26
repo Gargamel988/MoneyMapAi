@@ -6,6 +6,7 @@ import Animated, { FadeInDown } from 'react-native-reanimated';
 import { useTheme } from '@/src/contexts/theme';
 import { useResponsive } from '@/src/hooks/useResponsive';
 import { Transaction, TransactionList } from '@/src/types/transactionTypes';
+import { hexToRgba } from '@/src/utils/hextorgba';
 
 interface MonthlyComparisonProps {
   data: TransactionList;
@@ -48,7 +49,7 @@ export const MonthlyComparison: React.FC<MonthlyComparisonProps> = ({ data, curr
 
   const isIncrease = diff > 0;
   const trendColor = isIncrease ? theme.error : theme.success;
-  const trendBg = isIncrease ? 'rgba(255, 59, 48, 0.12)' : 'rgba(52, 199, 89, 0.12)';
+  const trendBg = isIncrease ? hexToRgba(theme.error, 0.12) : hexToRgba(theme.success, 0.12);
 
   const insightText = isIncrease
     ? t('analytics.comparison.insightIncrease', { percent: percentChange })
@@ -62,10 +63,10 @@ export const MonthlyComparison: React.FC<MonthlyComparisonProps> = ({ data, curr
 
       {/* Main comparison card */}
       <View style={{
-        backgroundColor: theme.cardGlass,
+        backgroundColor: isIncrease ? hexToRgba(theme.error, 0.05) : hexToRgba(theme.success, 0.05),
         borderRadius: 20,
-        borderWidth: 1,
-        borderColor: theme.cardBorder,
+        borderWidth: 1.5,
+        borderColor: isIncrease ? hexToRgba(theme.error, 0.3) : hexToRgba(theme.success, 0.3),
         padding: wp(4),
         flexDirection: 'row',
         alignItems: 'center',
@@ -104,10 +105,10 @@ export const MonthlyComparison: React.FC<MonthlyComparisonProps> = ({ data, curr
       {/* Insight row */}
       <View style={{
         marginTop: hp(1),
-        backgroundColor: isIncrease ? 'rgba(255, 59, 48, 0.08)' : 'rgba(52, 199, 89, 0.08)',
+        backgroundColor: isIncrease ? hexToRgba(theme.error, 0.08) : hexToRgba(theme.success, 0.08),
         borderRadius: 14,
         borderWidth: 1,
-        borderColor: isIncrease ? 'rgba(255, 59, 48, 0.2)' : 'rgba(52, 199, 89, 0.2)',
+        borderColor: isIncrease ? hexToRgba(theme.error, 0.2) : hexToRgba(theme.success, 0.2),
         padding: wp(3),
         flexDirection: 'row',
         alignItems: 'flex-start',
