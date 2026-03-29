@@ -1,20 +1,118 @@
 import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Theme } from "../../../src/constants/themes";
 import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useResponsive";
+import { AdEventType, RewardedAd, RewardedAdEventType, TestIds } from "../../../src/lib/adComponents";
+import { getUnlockedThemes, PREMIUM_THEMES, unlockTheme } from "../../../src/lib/themeUnlock";
+
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+
+const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
+  keywords: ["finance", "savings", "money", "design", "themes"],
+});
+
 
 export default function ThemeSelector() {
   const { theme, themeMode, setThemeMode, availableThemes } = useTheme();
   const { wp, hp, dimensions } = useResponsive();
   const { t } = useTranslation();
   const [selectedTheme, setSelectedTheme] = useState(themeMode);
+  const [unlockedThemes, setUnlockedThemes] = useState<Set<string>>(new Set());
+  const [pendingUnlock, setPendingUnlock] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Load unlocked themes
+    const loadUnlocked = async () => {
+      const unlocked = await getUnlockedThemes();
+      setUnlockedThemes(new Set(unlocked));
+    };
+    loadUnlocked();
+
+    // Ad listeners
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    });
+
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      () => {
+        if (pendingUnlock) {
+          handleUnlockSuccess(pendingUnlock);
+        }
+      },
+    );
+
+    const unsubscribeClosed = rewarded.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        setPendingUnlock(null);
+        // Load the next ad immediately
+        setTimeout(() => rewarded.load(), 500);
+      }
+    );
+
+    const unsubscribeError = rewarded.addAdEventListener(
+      AdEventType.ERROR,
+      (error) => {
+        console.error("Ad error:", error);
+      }
+    );
+
+    // Initial load
+    if (!rewarded.loaded) {
+      rewarded.load();
+    }
+
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+      unsubscribeError();
+    };
+  }, [pendingUnlock]);
+
+  const handleUnlockSuccess = async (themeKey: string) => {
+    await unlockTheme(themeKey);
+    setUnlockedThemes(prev => new Set([...prev, themeKey]));
+    setSelectedTheme(themeKey);
+    setThemeMode(themeKey);
+    setPendingUnlock(null);
+  };
 
   const handleThemeSelect = (themeKey: string) => {
+    const isPremium = PREMIUM_THEMES.includes(themeKey);
+    const isUnlocked = unlockedThemes.has(themeKey);
+
+    if (isPremium && !isUnlocked) {
+      Alert.alert(
+        t("themeSelector.premium.unlockTitle"),
+        t("themeSelector.premium.unlockMessage"),
+        [
+          { text: t("common.cancel"), style: "cancel" },
+          {
+            text: t("themeSelector.premium.unlockButton"),
+            onPress: () => {
+              if (rewarded.loaded) {
+                setPendingUnlock(themeKey);
+                rewarded.show();
+              } else {
+                rewarded.load();
+                Alert.alert(
+                  t("common.loading"),
+                  t("common.retry") + " (Ad is still loading...)"
+                );
+              }
+            }
+          }
+        ]
+      );
+      return;
+    }
+
     setSelectedTheme(themeKey);
     setThemeMode(themeKey);
   };
@@ -162,9 +260,59 @@ export default function ThemeSelector() {
               backgroundColor: "#22C55E",
               justifyContent: "center",
               alignItems: "center",
+              zIndex: 10,
             }}
           >
             <Feather name="check" size={16} color="white" />
+          </View>
+        )}
+
+        {/* Premium Kilit İkonu ve Karartma */}
+        {PREMIUM_THEMES.includes(themeKey) && !unlockedThemes.has(themeKey) && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: "rgba(0, 0, 0, 0.4)",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 10,
+            }}
+          >
+            <View
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.7)",
+                padding: dimensions.sm,
+                borderRadius: dimensions.borderRadiusXL,
+                borderWidth: 1,
+                borderColor: "rgba(255, 255, 255, 0.3)",
+              }}
+            >
+              <Feather name="lock" size={24} color="white" />
+            </View>
+          </View>
+        )}
+
+        {/* Premium Etiketi */}
+        {PREMIUM_THEMES.includes(themeKey) && (
+          <View
+            style={{
+              position: "absolute",
+              top: dimensions.xs,
+              left: dimensions.xs,
+              backgroundColor: unlockedThemes.has(themeKey) ? "#22C55E" : "#EAB308",
+              paddingHorizontal: 6,
+              paddingVertical: 2,
+              borderRadius: 4,
+              zIndex: 11,
+            }}
+          >
+            <Text style={{ color: "white", fontSize: 8, fontWeight: "900" }}>
+              PREMIUM
+            </Text>
           </View>
         )}
       </TouchableOpacity>
@@ -246,52 +394,7 @@ export default function ThemeSelector() {
         </View>
       </ScrollView>
 
-      {/* Footer */}
-      <View
-        style={{
-          paddingHorizontal: dimensions.lg,
-          paddingBottom: hp(4),
-          paddingTop: dimensions.lg,
-          backgroundColor: "rgba(0, 0, 0, 0.1)",
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            height: hp(8),
-            borderRadius: dimensions.borderRadiusLG * 2,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: theme.primary,
-            flexDirection: "row",
-            gap: dimensions.sm,
-          }}
-          onPress={handleGoBack}
-          activeOpacity={0.8}
-        >
-          <Feather name="check-circle" size={wp(8)} color={theme.text} />
-          <Text
-            style={{
-              fontSize: dimensions.fontLG,
-              fontWeight: "700",
-              color: theme.text,
-            }}
-          >
-            {t("themeSelector.applyButton")}
-          </Text>
-        </TouchableOpacity>
 
-        <Text
-          style={{
-            fontSize: dimensions.fontXS,
-            color: theme.textSecondary,
-            textAlign: "center",
-            marginTop: dimensions.sm,
-            opacity: 0.7,
-          }}
-        >
-          {t("themeSelector.applyDescription")}
-        </Text>
-      </View>
     </LinearGradient>
   );
 }

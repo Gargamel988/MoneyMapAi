@@ -12,8 +12,10 @@ import { useTheme } from "../../../src/contexts/theme";
 import { useResponsive } from "../../../src/hooks/useResponsive";
 
 import {
+  AdEventType,
   InterstitialAd,
   RewardedAd,
+  RewardedAdEventType,
   TestIds
 } from "@/src/lib/adComponents";
 import { supabase } from "../../../src/lib/supabase";
@@ -93,48 +95,45 @@ export default function AiChatScreen() {
       setAnalysisMessage(null);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFocused]);
+  }, [isFocused])
 
-  // useEffect(() => {
-  //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-  //     console.log("Interstitial ad loaded");
-  //   });
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+    });
 
-  //   interstitial.load();
+    interstitial.load();
 
-  //   return unsubscribe;
-  // }, []);
+    return unsubscribe;
+  }, []);
 
-  // useEffect(() => {
-  //   const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-  //     console.log("Rewarded ad loaded");
-  //   });
-  //   const unsubscribeEarned = rewarded.addAdEventListener(
-  //     RewardedAdEventType.EARNED_REWARD,
-  //     (reward: any) => {
-  //       console.log("User earned reward: ", reward);
-  //     },
-  //   );
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      (reward: any) => {
+      },
+    );
 
-  //   rewarded.load();
+    rewarded.load();
 
-  //   return () => {
-  //     unsubscribeLoaded();
-  //     unsubscribeEarned();
-  //   };
-  // }, []);
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+    };
+  }, []);
 
   const startAnalysis = (payload: any) => {
-    // if (rewarded.loaded) {
-    //   rewarded.show().then(() => {
-    //     submit(payload);
-    //     rewarded.load(); // Reload for next time
-    //   });
-    // } else {
-    // If ad not loaded, allow analysis anyway but try to load for next time
-    submit(payload);
-    //   rewarded.load();
-    // }
+    if (rewarded.loaded) {
+      rewarded.show().then(() => {
+        submit(payload);
+        rewarded.load(); // Reload for next time
+      });
+    } else {
+      // If ad not loaded, allow analysis anyway but try to load for next time
+      submit(payload);
+      rewarded.load();
+    }
   };
 
   const handleStop = () => {
@@ -339,9 +338,9 @@ export default function AiChatScreen() {
       showSuccessToast(t("aiChat.toast.saveSuccessTitle"), t("aiChat.toast.saveSuccessMessage"));
 
       // Show interstitial ad if loaded
-      // if (interstitial.loaded) {
-      //   interstitial.show();
-      // }
+      if (interstitial.loaded) {
+        interstitial.show();
+      }
 
       // Invalidate all transaction queries
       queryClient.invalidateQueries({ queryKey: QUERY_KEYS.transactions.all });

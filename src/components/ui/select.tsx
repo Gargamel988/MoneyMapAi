@@ -19,6 +19,7 @@ export const Select = ({
   onValueChange,
   value,
   onAlertMessage,
+  disabled
 }: SelectProps) => {
   const { theme } = useTheme();
   const { hp, dimensions, moderateScale, wp } = useResponsive();
@@ -153,7 +154,8 @@ export const Select = ({
                 paddingBottom: dimensions.md
               }}
               renderItem={({ item }) => {
-                const isSelected = selectedValue === item.value;
+                const isSelected = selectedValue && disabled ? false : selectedValue === item.value;
+
                 return (
                   <TouchableOpacity
                     style={[

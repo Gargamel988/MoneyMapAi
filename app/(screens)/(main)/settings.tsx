@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { AdEventType, RewardedAd, RewardedAdEventType, TestIds } from "../../../src/lib/adComponents";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -32,12 +33,56 @@ import ModalLanguage from "../../../src/components/setting/modal-language";
 import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
 
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+
+const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
+  keywords: ["finance", "savings", "money"],
+});
+
 export default function SettingsScreen() {
   const { t } = useTranslation();
   const [showCurrencyModal, setShowCurrencyModal] = useState<boolean>(false);
   const [showExportModal, setShowExportModal] = useState<boolean>(false);
   const [exportLoading, setExportLoading] = useState<boolean>(false);
   const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
+  const [pendingExport, setPendingExport] = useState<(() => void) | null>(null);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      () => {
+        // User earned reward
+      },
+    );
+    const unsubscribeClosed = rewarded.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        if (pendingExport) {
+          pendingExport();
+          setPendingExport(null);
+        }
+        rewarded.load();
+      }
+    );
+    rewarded.load();
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+    };
+  }, [pendingExport]);
+
+  const showRewardedAd = (callback: () => void) => {
+    if (rewarded.loaded) {
+      setPendingExport(() => callback);
+      rewarded.show();
+    } else {
+      rewarded.load();
+      callback();
+    }
+  };
 
   const { theme } = useTheme();
   const { dimensions } = useResponsive();
@@ -58,6 +103,11 @@ export default function SettingsScreen() {
   } = useQuery({
     queryKey: QUERY_KEYS.user.language(),
     queryFn: getLanguage,
+  });
+
+  const { data: transactions } = useQuery({
+    queryKey: QUERY_KEYS.transactions.all,
+    queryFn: () => transactionsApi.getAllTransactions(),
   });
   const mutation = useMutation({
     mutationFn: async (currency: string) => {
@@ -329,7 +379,7 @@ export default function SettingsScreen() {
               <View>
                 <TouchableOpacity
                   disabled={exportLoading}
-                  onPress={() => exportToCSV([], setExportLoading, "tum")}
+                  onPress={() => exportToCSV(transactions || [], setExportLoading, "tum", t)}
                   style={{
                     backgroundColor: hexToRgba(theme.primary, 0.1),
                     borderRadius: 16,
@@ -343,7 +393,10 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
-                  onPress={() => exportToExcel([], setExportLoading, "tum")}
+                  onPress={() => {
+                    const exportFn = () => exportToExcel(transactions || [], setExportLoading, "tum", t);
+                    showRewardedAd(exportFn);
+                  }}
                   style={{
                     backgroundColor: hexToRgba(theme.primary, 0.1),
                     borderRadius: 16,
@@ -358,7 +411,10 @@ export default function SettingsScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   disabled={exportLoading}
-                  onPress={() => exportToPDF([], setExportLoading, "tum")}
+                  onPress={() => {
+                    const exportFn = () => exportToPDF(transactions || [], setExportLoading, "tum", t);
+                    showRewardedAd(exportFn);
+                  }}
                   style={{
                     backgroundColor: hexToRgba(theme.primary, 0.1),
                     borderRadius: 16,

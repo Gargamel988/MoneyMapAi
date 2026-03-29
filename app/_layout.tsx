@@ -1,5 +1,4 @@
 
-import { LoadingScreen } from "@/src/components/common/loading";
 import { getLanguage } from "@/src/lib/profile";
 import {
   QueryClient,
@@ -7,13 +6,13 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 import { LinearGradient } from "expo-linear-gradient";
-import { Stack, useRouter, useSegments } from "expo-router";
+import { Stack, usePathname, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import i18n from "i18next";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
-import { initAds } from "@/src/lib/adsInit";
+import { AnimatedSplashScreen } from "@/src/components/common/AnimatedSplashScreen";
 import Toast from "react-native-toast-message";
 import "../polyfills";
 import "../services/i18next"; // Initialize i18next
@@ -27,23 +26,27 @@ SplashScreen.preventAutoHideAsync();
 
 const queryClient = new QueryClient();
 
+
 function RootNavigator() {
   const { session, isLoading } = useSession();
+  const [isAppReady, setIsAppReady] = useState(false);
   const segments = useSegments();
+  const pathname = usePathname();
   const router = useRouter();
+
+  const inAuthGroup = segments[0] === "(screens)" && segments[1] === "(auth)";
+  const inMainGroup = segments[0] === "(screens)" && segments[1] === "(main)";
+  const isWelcomeScreen = pathname === "/" || segments[0] !== "(screens)";
 
   useEffect(() => {
     if (isLoading) return;
 
-    const inAuthGroup = segments[0] === "(screens)" && segments[1] === "(auth)";
-    const inMainGroup = segments[0] === "(screens)" && segments[1] === "(main)";
-
     if (session?.user) {
-      if (inAuthGroup) {
+      if (inAuthGroup || isWelcomeScreen) {
         router.replace("/(screens)/(main)/home");
       }
     } else {
-      if (inMainGroup || segments.length <= 1) {
+      if (inMainGroup) {
         router.replace("/");
       }
     }
@@ -51,10 +54,10 @@ function RootNavigator() {
     if (!isLoading) {
       SplashScreen.hideAsync();
     }
-  }, [session, isLoading, segments]);
+  }, [session, isLoading, segments, pathname, inAuthGroup, inMainGroup, isWelcomeScreen]);
 
-  if (isLoading) {
-    return <LoadingScreen />;
+  if (isLoading || !isAppReady || (session?.user && (inAuthGroup || isWelcomeScreen)) || (!session?.user && inMainGroup)) {
+    return <AnimatedSplashScreen onAnimationComplete={() => setIsAppReady(true)} />;
   }
 
   return (

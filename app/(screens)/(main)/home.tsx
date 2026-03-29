@@ -1,9 +1,9 @@
-import { InterstitialAd, TestIds } from "@/src/lib/adComponents";
+import { AdEventType, BannerAd, BannerAdSize, InterstitialAd, TestIds } from "@/src/lib/adComponents";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import Feather from "@expo/vector-icons/Feather";
 import { useQueries } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import {
   FlatList,
@@ -46,13 +46,12 @@ export default function HomeScreen() {
   const { data: advisorAdvice, isLoading: isAdvisorLoading } = useAdvisor();
   const { goals, isLoading: isGoalsLoading } = useGoals();
 
-  // useEffect(() => {
-  //   const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-  //     console.log("Home Interstitial loaded");
-  //   });
-  //   interstitial.load();
-  //   return unsubscribe;
-  // }, []);
+  useEffect(() => {
+    const unsubscribe = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+    });
+    interstitial.load();
+    return unsubscribe;
+  }, []);
 
   const [
     transactionsByLastprocess,
@@ -120,31 +119,31 @@ export default function HomeScreen() {
 
   const sections = [
     { id: 'weekly', component: WeeklySummary },
-    // { id: 'banner', component: 'Banner' },
+    { id: 'banner', component: 'Banner' },
     { id: 'goals', component: 'Goals' },
     { id: 'ai-advisor', component: 'AIAdvisor' },
     { id: 'pie', component: Piechart },
     { id: 'income', component: IncomeAnalytics },
-    // { id: 'banner_bottom', component: 'Banner' },
+    { id: 'banner_bottom', component: 'Banner' },
     { id: 'lastprocess', component: Lastprocess },
   ];
 
   const renderItem = ({ item, index }: { item: typeof sections[0], index: number }) => {
     const content = (() => {
       switch (item.id) {
-        // case 'banner':
-        // case 'banner_bottom':
-        //   return (
-        //     <View style={{ alignItems: "center", marginVertical: hp(1) }}>
-        //       <BannerAd
-        //         unitId={adUnitId}
-        //         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        //         requestOptions={{
-        //           requestNonPersonalizedAdsOnly: true,
-        //         }}
-        //       />
-        //     </View>
-        //   );
+        case 'banner':
+        case 'banner_bottom':
+          return (
+            <View style={{ alignItems: "center", marginVertical: hp(1) }}>
+              <BannerAd
+                unitId={adUnitId}
+                size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+                requestOptions={{
+                  requestNonPersonalizedAdsOnly: true,
+                }}
+              />
+            </View>
+          );
         case 'goals':
           return goals && goals.length > 0 ? (
             <View style={{ paddingHorizontal: wp(4), marginVertical: hp(1) }}>
@@ -199,11 +198,15 @@ export default function HomeScreen() {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    // if (interstitial.loaded) {
-                    //   interstitial.show().then(() => router.push("/(screens)/(stack)/ai-advisor"));
-                    // } else {
-                    router.push("/(screens)/(stack)/ai-advisor");
-                    // }
+                    if (interstitial.loaded) {
+                      interstitial.show().then(() => {
+                        interstitial.load();
+                        router.push("/(screens)/(stack)/ai-advisor");
+                      });
+                    } else {
+                      interstitial.load();
+                      router.push("/(screens)/(stack)/ai-advisor");
+                    }
                   }}
                   style={{
                     backgroundColor: theme.primary,

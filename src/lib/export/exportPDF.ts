@@ -7,7 +7,8 @@ import { Transaction, TransactionList } from '../../types/transactionTypes';
 export const exportToPDF = async (
 	data: TransactionList,
 	setLoading: (loading: boolean) => void,
-	tab: string
+	tab: string,
+	t: any
   ) => {
 	setLoading(true);
 	try {
@@ -53,20 +54,20 @@ export const exportToPDF = async (
 			<body>
 			  <div class="header">
 				<div class="app-name">MoneyMapAi</div>
-				<div class="report-title">${i18next.t('export.pdf.title')} - ${new Date().toLocaleDateString()}</div>
+				<div class="report-title">${t('export.pdf.title')} - ${new Date().toLocaleDateString()}</div>
 			  </div>
 
 			  <div class="summary-grid">
 				<div class="summary-card">
-				  <div class="card-label">${i18next.t('finance.summary.totalIncome')}</div>
+				  <div class="card-label">${t('financeSummary.cards.totalIncome')}</div>
 				  <div class="card-value income">+${totalIncome.toLocaleString()}</div>
 				</div>
 				<div class="summary-card">
-				  <div class="card-label">${i18next.t('finance.summary.totalExpense')}</div>
+				  <div class="card-label">${t('financeSummary.cards.totalExpense')}</div>
 				  <div class="card-value expense">-${totalExpense.toLocaleString()}</div>
 				</div>
 				<div class="summary-card">
-				  <div class="card-label">${i18next.t('finance.summary.balance')}</div>
+				  <div class="card-label">${t('financeSummary.cards.netBalance')}</div>
 				  <div class="card-value balance">${balance.toLocaleString()}</div>
 				</div>
 			  </div>
@@ -74,10 +75,10 @@ export const exportToPDF = async (
 			  <table>
 				<thead>
 				  <tr>
-					<th>${i18next.t('export.headers.date')}</th>
-					<th>${i18next.t('export.headers.category')}</th>
-					<th>${i18next.t('export.headers.description')}</th>
-					<th style="text-align: right;">${i18next.t('export.headers.amount')}</th>
+					<th>${t('export.headers.date')}</th>
+					<th>${t('export.headers.category')}</th>
+					<th>${t('export.headers.description')}</th>
+					<th style="text-align: right;">${t('export.headers.amount')}</th>
 				  </tr>
 				</thead>
 				<tbody>
@@ -88,7 +89,7 @@ export const exportToPDF = async (
 					  <td>${u.date} <span style="color: #9ca3af; font-size: 9px;">${u.time}</span></td>
 					  <td>
 						<span class="badge ${u.type === 'gelir' ? 'badge-income' : 'badge-expense'}">
-						  ${u.categories.name}
+						  ${t(u.categories.name)}
 						</span>
 					  </td>
 					  <td>${u.description ? u.description : '-'}</td>
@@ -102,7 +103,7 @@ export const exportToPDF = async (
 			  </table>
 
 			  <div class="footer">
-				${i18next.t('export.pdf.footerGeneratedBy')} MoneyMapAi • ${new Date().toLocaleString()}
+				${t('export.pdf.footerGeneratedBy')} MoneyMapAi • ${new Date().toLocaleString()}
 			  </div>
 			</body>
 		  </html>`;
@@ -118,10 +119,10 @@ export const exportToPDF = async (
 		await Sharing.shareAsync(target, { UTI: "com.adobe.pdf", mimeType: "application/pdf" });
 	  }
   
-	  showSuccessToast(i18next.t('export.pdf.success'), i18next.t('export.pdf.successMessage'));
+	  showSuccessToast(t('export.pdf.success'), t('export.pdf.successMessage'));
 	} catch (error) {
 	  console.error("PDF Export Error:", error);
-	  showErrorToast(i18next.t('common.error'), i18next.t('export.pdf.error'));
+	  showErrorToast(t('common.error'), t('export.pdf.error'));
 	} finally {
 	  setLoading(false);
 	}

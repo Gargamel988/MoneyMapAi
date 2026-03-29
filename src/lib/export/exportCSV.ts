@@ -8,7 +8,8 @@ import { Transaction, TransactionList } from '../../types/transactionTypes';
 export const exportToCSV = async (
 	data: TransactionList,
 	setLoading: (loading: boolean) => void,
-	tab: string
+	tab: string,
+	t: any
   ) => {
 	setLoading(true);
   
@@ -16,11 +17,11 @@ export const exportToCSV = async (
 	  const fs: any = FileSystem;
 	  // CSV formatında veri oluştur (UTF-8 BOM ile Türkçe karakter desteği)
 	  const BOM = '\uFEFF'; // UTF-8 BOM
-	  const headers = `${i18next.t('export.headers.category')},${i18next.t('export.headers.type')},${i18next.t('export.headers.amount')},${i18next.t('export.headers.date')},${i18next.t('export.headers.time')},${i18next.t('export.headers.description')}\n`;
+	  const headers = `${t('export.headers.category')},${t('export.headers.type')},${t('export.headers.amount')},${t('export.headers.date')},${t('export.headers.time')},${t('export.headers.description')}\n`;
 	  const csvContent = data
 		.map(
 		  (user: Transaction) =>
-			`${user.categories.name},"${user.type}","${user.total_amount}","${user.date}","${user.time}","${user.description ? user.description : ''}"`
+			`"${t(user.categories.name)}","${t(user.type === 'gelir' ? 'lastProcess.badge.income' : 'lastProcess.badge.expense')}","${user.total_amount}","${user.date}","${user.time}","${user.description ? user.description : ''}"`
 		)
 		.join('\n');
   
@@ -39,9 +40,9 @@ export const exportToCSV = async (
 		});
 	  }
   
-	  showSuccessToast(i18next.t('export.csv.success'), i18next.t('export.csv.successMessage', { fileName }));
+	  showSuccessToast(t('export.csv.success'), t('export.csv.successMessage', { fileName }));
 	} catch  {
-	  showErrorToast(i18next.t('common.error'), i18next.t('export.csv.error'));
+	  showErrorToast(t('common.error'), t('export.csv.error'));
 	} finally {
 	  setLoading(false);
 	}

@@ -9,14 +9,14 @@ type GreenLoadingComponentProps = {
   size?: 'small' | 'large';
 }
 
-export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({ 
+export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({
   text,
   size = 'small'
 }) => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, isTablet } = useResponsive();
-  
+
   const defaultText = text || t("loading.default");
 
   return (
@@ -45,10 +45,10 @@ export const GreenLoadingComponent: React.FC<GreenLoadingComponentProps> = ({
 export const LoadingScreen = () => {
   const { t } = useTranslation();
   return (
-    <View style={{ 
-      flex: 1, 
-      alignItems: 'center', 
-      justifyContent: 'center', 
+    <View style={{
+      flex: 1,
+      alignItems: 'center',
+      justifyContent: 'center',
       backgroundColor: 'transparent'
     }}>
       <GreenLoadingComponent size='large' text={t("common.loading")} />

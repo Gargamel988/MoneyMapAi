@@ -1,6 +1,6 @@
-import { RewardedAd, TestIds } from "@/src/lib/adComponents";
+import { AdEventType, BannerAd, BannerAdSize, RewardedAd, RewardedAdEventType, TestIds } from "@/src/lib/adComponents";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Alert, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -47,34 +47,43 @@ export default function AnalyticsScreen() {
   const { theme } = useTheme();
   const { hp, dimensions } = useResponsive();
 
-  // useEffect(() => {
-  //   const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
-  //     console.log("Analytics Rewarded ad loaded");
-  //   });
-  //   const unsubscribeEarned = rewarded.addAdEventListener(
-  //     RewardedAdEventType.EARNED_REWARD,
-  //     (reward: any) => {
-  //       console.log("User earned reward for export: ", reward);
-  //     },
-  //   );
-  //   rewarded.load();
-  //   return () => {
-  //     unsubscribeLoaded();
-  //     unsubscribeEarned();
-  //   };
-  // }, []);
+  const [pendingExport, setPendingExport] = useState<(() => void) | null>(null);
+
+  useEffect(() => {
+    const unsubscribeLoaded = rewarded.addAdEventListener(RewardedAdEventType.LOADED, () => {
+    });
+    const unsubscribeEarned = rewarded.addAdEventListener(
+      RewardedAdEventType.EARNED_REWARD,
+      () => {
+        // User earned reward, we'll wait for CLOSED to trigger the action
+      },
+    );
+    const unsubscribeClosed = rewarded.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        if (pendingExport) {
+          pendingExport();
+          setPendingExport(null);
+        }
+        rewarded.load();
+      }
+    );
+    rewarded.load();
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeEarned();
+      unsubscribeClosed();
+    };
+  }, [pendingExport]);
 
   const showRewardedAd = (callback: () => void) => {
-    // if (rewarded.loaded) {
-    //   rewarded.show().then(() => {
-    //     callback();
-    //     rewarded.load(); // Reload for next time
-    //   });
-    // } else {
-    // If ad not loaded yet, allow anyway but try to load
-    callback();
-    //   rewarded.load();
-    // }
+    if (rewarded.loaded) {
+      setPendingExport(() => callback);
+      rewarded.show();
+    } else {
+      rewarded.load();
+      callback();
+    }
   };
 
   const { data: currencyQuery } = useQuery({
@@ -195,6 +204,7 @@ export default function AnalyticsScreen() {
                   {t("analytics.selectFormat")}
                 </Text>
                 <Select
+                  disabled={true}
                   options={[
                     { label: t("analytics.formats.excel"), value: "excel" },
                     { label: t("analytics.formats.csv"), value: "csv" },
@@ -213,29 +223,38 @@ export default function AnalyticsScreen() {
                       [
                         { text: t("common.cancel"), style: "cancel" },
                         {
-                          text: t("analytics.alert.rewardedButton"),
+                          text: value === "csv" ? t("common.add") : t("analytics.alert.rewardedButton"),
                           onPress: () => {
-                            showRewardedAd(() => {
+                            const exportFn = () => {
                               if (value === "excel") {
                                 exportToExcel(
                                   dataTransactions as TransactionList,
                                   setLoading,
-                                  tab
+                                  tab,
+                                  t
                                 );
                               } else if (value === "csv") {
                                 exportToCSV(
                                   dataTransactions as TransactionList,
                                   setLoading,
-                                  tab
+                                  tab,
+                                  t
                                 );
                               } else if (value === "pdf") {
                                 exportToPDF(
                                   dataTransactions as TransactionList,
                                   setLoading,
-                                  tab
+                                  tab,
+                                  t
                                 );
                               }
-                            });
+                            };
+
+                            if (value === "csv") {
+                              exportFn();
+                            } else {
+                              showRewardedAd(exportFn);
+                            }
                           },
                         },
                       ]
@@ -301,7 +320,7 @@ export default function AnalyticsScreen() {
             error={error as Error}
             currency={currency || "TRY"}
           />
-          {/* <View style={{ alignItems: "center", marginVertical: hp(2) }}>
+          <View style={{ alignItems: "center", marginVertical: hp(2) }}>
             <BannerAd
               unitId={adUnitId}
               size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
@@ -309,7 +328,7 @@ export default function AnalyticsScreen() {
                 requestNonPersonalizedAdsOnly: true,
               }}
             />
-          </View> */}
+          </View>
         </SafeAreaView>
       </ScrollView>
     </View>
