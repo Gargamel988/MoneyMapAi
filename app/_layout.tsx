@@ -13,6 +13,8 @@ import i18n from "i18next";
 import { useEffect, useState } from "react";
 
 import { AnimatedSplashScreen } from "@/src/components/common/AnimatedSplashScreen";
+import { initAds } from "@/src/lib/adsInit";
+import Constants from "expo-constants";
 import Toast from "react-native-toast-message";
 import "../polyfills";
 import "../services/i18next"; // Initialize i18next
@@ -106,9 +108,14 @@ function AppContent() {
 }
 
 export default function RootLayout() {
-  // useEffect(() => {
-  //   initAds();
-  // }, []);
+  useEffect(() => {
+    // Sadece gerçek cihazda/build'de (Expo Go dışında) reklamları başlat
+    if (Constants.appOwnership !== 'expo') {
+      initAds()
+        .then(() => console.log('Ads initialized successfully'))
+        .catch(err => console.log('Ads initialization error:', err));
+    }
+  }, []);
 
   return (
     <QueryClientProvider client={queryClient}>
