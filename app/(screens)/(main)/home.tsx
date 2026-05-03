@@ -31,8 +31,8 @@ import Headers from "../../../src/components/common/header";
 import Lastprocess from "../../../src/components/finance/last-process";
 import WeeklySummary from "../../../src/components/finance/weekly-summary";
 
-const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7817807734");
-const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : (process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID || "ca-app-pub-1444133443338193/4724740534");
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER);
+const interstitialAdUnitId = __DEV__ ? TestIds.INTERSTITIAL : (process.env.EXPO_PUBLIC_INTERSTITIAL_AD_UNIT_ID || TestIds.INTERSTITIAL);
 
 const interstitial = InterstitialAd.createForAdRequest(interstitialAdUnitId, {
   keywords: ["finance", "savings", "money"],

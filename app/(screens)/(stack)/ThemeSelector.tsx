@@ -10,7 +10,7 @@ import { useResponsive } from "../../../src/hooks/useResponsive";
 import { AdEventType, RewardedAd, RewardedAdEventType, TestIds } from "../../../src/lib/adComponents";
 import { getUnlockedThemes, PREMIUM_THEMES, unlockTheme } from "../../../src/lib/themeUnlock";
 
-const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || TestIds.REWARDED);
 
 const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
   keywords: ["finance", "savings", "money", "design", "themes"],
@@ -57,7 +57,7 @@ export default function ThemeSelector() {
 
     const unsubscribeError = rewarded.addAdEventListener(
       AdEventType.ERROR,
-      (error) => {
+      (error: any) => {
         console.error("Ad error:", error);
       }
     );

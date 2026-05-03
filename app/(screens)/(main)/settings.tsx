@@ -33,7 +33,7 @@ import ModalLanguage from "../../../src/components/setting/modal-language";
 import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
 
-const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || "ca-app-pub-1444133443338193/7630672720");
+const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || TestIds.REWARDED);
 
 const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
   keywords: ["finance", "savings", "money"],
