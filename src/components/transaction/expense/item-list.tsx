@@ -74,6 +74,8 @@ export const ItemList = ({
               flexDirection: "row",
               alignItems: "center",
               justifyContent: "space-between",
+              borderWidth: 1,
+              borderColor: theme.border,
               backgroundColor: theme.inputbackground,
               borderRadius: 12,
               padding: 12,

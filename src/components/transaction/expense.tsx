@@ -6,6 +6,7 @@ import { getUserExpenseCategories } from "@/src/lib/category";
 import { getCurrency } from "@/src/lib/profile";
 import { supabase } from "@/src/lib/supabase";
 import { transactionsApi } from "@/src/lib/transactions";
+import { goalsApi } from "@/src/lib/goals";
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +31,11 @@ import { ItemList } from "./expense/item-list";
 import { SectionCard } from "./shared/section-card";
 import { SectionLabel } from "./shared/section-label";
 
-export const ExpenseEntry: React.FC = () => {
+interface ExpenseEntryProps {
+  prefilledData?: any;
+}
+
+export const ExpenseEntry: React.FC<ExpenseEntryProps> = ({ prefilledData }) => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, hp } = useResponsive();
@@ -73,6 +78,29 @@ export const ExpenseEntry: React.FC = () => {
       },
     });
 
+  // Handle prefilled data from PDF/CSV
+  React.useEffect(() => {
+    if (prefilledData && prefilledData.type === 'gider') {
+      const amount = Math.abs(prefilledData.amount);
+      if (amount > 0) {
+        // Gider listesine "Para Transferi" ekle
+        setList([{
+          itemName: prefilledData.description || "Para Transferi",
+          price: amount,
+          quantity: 1
+        }]);
+        
+        // Detaylı açıklamayı (purpose) not kısmına yaz
+        setValue("description", prefilledData.note || prefilledData.description || "");
+        
+        // Tarih varsa güncelle
+        if (prefilledData.date) {
+          setValue("date", new Date(prefilledData.date));
+        }
+      }
+    }
+  }, [prefilledData, setValue]);
+
   const currency = currencyQuery?.data?.currency || "TRY";
   const expenseCategories = expense_categoriesQuery?.data;
   const categoriesLoading = expense_categoriesQuery?.isLoading;
@@ -99,6 +127,16 @@ export const ExpenseEntry: React.FC = () => {
         !transactionData.data.id
       ) {
         throw new Error(t("expense.error.transaction"));
+      }
+
+      // Bütçe hedefini güncelle
+      try {
+        const goal = await goalsApi.findGoalByCategory(formData.category_id);
+        if (goal && goal.id) {
+          await goalsApi.updateGoalAmount(goal.id, totalAmount);
+        }
+      } catch (err) {
+        console.warn("Budget update failed:", err);
       }
 
       const expenseItems = list.map((item) => ({
@@ -249,14 +287,15 @@ export const ExpenseEntry: React.FC = () => {
               placeholder={t("expense.descriptionPlaceholder")}
               placeholderTextColor={theme.textTertiary}
               style={{
+                borderWidth: 1,
+                borderColor: theme.border,
                 backgroundColor: theme.inputbackground,
                 borderRadius: 12,
                 paddingHorizontal: 16,
-                paddingVertical: 12,
                 fontSize: dimensions.fontMD,
                 color: theme.textSenary,
                 textAlignVertical: "top",
-                minHeight: hp(8),
+                minHeight: hp(13),
               }}
               value={value || ""}
               onChangeText={onChange}

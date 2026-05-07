@@ -13,6 +13,8 @@ import { useResponsive } from "../../../src/hooks/useResponsive";
 
 import {
   AdEventType,
+  BannerAd,
+  BannerAdSize,
   InterstitialAd,
   RewardedAd,
   RewardedAdEventType,
@@ -125,12 +127,19 @@ export default function AiChatScreen() {
 
   const startAnalysis = (payload: any) => {
     if (rewarded.loaded) {
-      rewarded.show().then(() => {
-        submit(payload);
-        rewarded.load(); // Reload for next time
+      const unsubscribeEarned = rewarded.addAdEventListener(RewardedAdEventType.EARNED_REWARD, () => {
+        // User earned the reward, proceed with analysis
       });
+
+      const unsubscribeClosed = rewarded.addAdEventListener(AdEventType.CLOSED, () => {
+        unsubscribeEarned();
+        unsubscribeClosed();
+        rewarded.load();
+        submit(payload);
+      });
+
+      rewarded.show();
     } else {
-      // If ad not loaded, allow analysis anyway but try to load for next time
       submit(payload);
       rewarded.load();
     }
@@ -785,6 +794,12 @@ export default function AiChatScreen() {
               </Text>
             </TouchableOpacity>
           )}
+        </View>
+        <View style={{ alignItems: 'center', marginTop: dimensions.xs }}>
+          <BannerAd
+            unitId={__DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7822997870")}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          />
         </View>
       </View>
     </View>

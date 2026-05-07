@@ -14,6 +14,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { useTranslation } from 'react-i18next';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { BannerAd, BannerAdSize, TestIds } from '@/src/lib/adComponents';
 
 import { useTheme } from '@/src/contexts/theme';
 import { useResponsive } from '@/src/hooks/useResponsive';
@@ -363,6 +364,12 @@ export default function SubscriptionsScreen() {
           </View>
         </View>
       </Modal>
+      <View style={{ alignItems: 'center', paddingBottom: hp(1) }}>
+        <BannerAd
+          unitId={__DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7822997870")}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        />
+      </View>
     </View>
   );
 }

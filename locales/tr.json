@@ -142,6 +142,7 @@
   "advisor.recommendations": "Öneriler",
   "advisor.warnings": "Dikkat Gerekenler",
   "advisor.noData": "Tavsiye verebilmek için yeterli işlem verisi bulunmuyor.",
+  "advisor.noDataSubtitle": "YZ destekli finansal tavsiyeler almak için birkaç işlem ekleyin.",
   "analytics.title": "Finansal Analiz ve Raporlar",
   "analytics.description": "Gelir ve giderlerinizi detaylıca inceleyin",
   "analytics.selectPeriod": "Dönem Seçin",

@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { router } from "expo-router";
 import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -19,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { ModalCurrency } from "../../../src/components/setting/modal-currency";
 import ModalLanguage from "../../../src/components/setting/modal-language";
 import { ProfileCard } from "../../../src/components/ui/profile-card";
+import { QUERY_KEYS } from "../../../src/constants/queryKeys";
 import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
 import { hp, useResponsive, wp } from "../../../src/hooks/useResponsive";
@@ -156,7 +156,7 @@ export default function ProfilePage() {
         >
           <View
             style={{
-              backgroundColor: theme.white,
+              backgroundColor: theme.modalbackground,
               borderRadius: dimensions.borderRadiusLG,
               padding: dimensions.lg,
             }}
@@ -189,7 +189,6 @@ export default function ProfilePage() {
                     padding: dimensions.md,
                     fontSize: dimensions.fontMD,
                     color: theme.textSenary,
-                    backgroundColor: theme.white,
                     marginBottom: hp(2),
                   }}
                 />
@@ -257,7 +256,7 @@ export default function ProfilePage() {
         >
           <View
             style={{
-              backgroundColor: theme.white,
+              backgroundColor: theme.modalbackground,
               borderRadius: dimensions.borderRadiusLG,
               padding: dimensions.lg,
             }}
@@ -356,14 +355,14 @@ export default function ProfilePage() {
   };
   const getAvatarSource = () => {
     if (!profileData?.data?.avatar_url) return null;
-    
+
     // EÄŸer avatar_url bir sayÄ± ise (1-10 arasÄ±)
     const avatarId = Number(profileData.data.avatar_url);
     if (!isNaN(avatarId) && avatarId >= 1 && avatarId <= 10) {
       const avatarItem = avatar.find(item => item.id === avatarId);
       return avatarItem ? avatarItem.image : null;
     }
-    
+
     // DeÄŸilse URL olarak kullan
     return { uri: profileData.data.avatar_url };
   };
@@ -576,7 +575,7 @@ export default function ProfilePage() {
               textAlign: "center",
             }}
           >
-            {profileData?.data?.name } {profileData?.data?.username }
+            {profileData?.data?.name} {profileData?.data?.username}
           </Text>
           <Text
             style={{
@@ -593,7 +592,7 @@ export default function ProfilePage() {
           <ProfileCard
             icon="person"
             label={t("profile.labels.name")}
-            value={profileData?.data?.name }
+            value={profileData?.data?.name}
             onPress={() => {
               nameForm.setValue("name", profileData?.data?.name || "");
               setShowModal("name");
@@ -602,7 +601,7 @@ export default function ProfilePage() {
           <ProfileCard
             icon="person-outline"
             label={t("profile.labels.lastName")}
-            value={profileData?.data?.username }
+            value={profileData?.data?.username}
             onPress={() => {
               usernameForm.setValue(
                 "username",
@@ -614,8 +613,8 @@ export default function ProfilePage() {
           <ProfileCard
             icon="mail"
             label={t("profile.labels.email")}
-            value={profileData?.data?.email }
-            onPress={() => {}}
+            value={profileData?.data?.email}
+            onPress={() => { }}
           />
           <ProfileCard
             icon="color-palette"
@@ -630,13 +629,13 @@ export default function ProfilePage() {
             label={t("profile.labels.currency")}
             value={profileData?.data?.currency ? profileData?.data?.currency : "TRY"}
             onPress={() => setShowModal("currency")}
-          /> 
-           <ProfileCard
-          icon="globe"
-          label={t("profile.labels.language")}
-          value={profileData?.data?.language ? profileData?.data?.language?.toUpperCase() : "TR"}
-          onPress={() => setShowLanguageModal(true)}
-        />
+          />
+          <ProfileCard
+            icon="globe"
+            label={t("profile.labels.language")}
+            value={profileData?.data?.language ? profileData?.data?.language?.toUpperCase() : "TR"}
+            onPress={() => setShowLanguageModal(true)}
+          />
           {modalname("currency")}
           {modalname("name")}
           {modalname("username")}
@@ -645,7 +644,7 @@ export default function ProfilePage() {
             icon="calendar"
             label={t("profile.labels.createdAt")}
             value={createdAt}
-            onPress={() => {}}
+            onPress={() => { }}
           />
         </View>
       </ScrollView>

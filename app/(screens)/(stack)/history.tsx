@@ -20,10 +20,13 @@ import {
   useResponsive,
   wp,
 } from "../../../src/hooks/useResponsive";
+import { BannerAd, BannerAdSize, TestIds } from "../../../src/lib/adComponents";
 import { getCurrency } from "../../../src/lib/profile";
 import { transactionsApi } from "../../../src/lib/transactions";
 import { formatDate, formatTime } from "../../../src/utils/date";
 import { formatTotal } from "../../../src/utils/total";
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER);
 
 type sortBy = "date-newest" | "date-oldest" | "name-asc" | "name-desc";
 
@@ -400,6 +403,16 @@ const TransactionHistory = () => {
           );
         }}
       />
+
+      <View style={{ alignItems: "center", marginVertical: 10 }}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
 
       {/* Ä°ÅŸlem Detay Modal */}
       <TransactionDetail

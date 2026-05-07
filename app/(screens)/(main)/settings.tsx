@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import React, { useEffect, useState } from "react";
-import { AdEventType, RewardedAd, RewardedAdEventType, TestIds } from "../../../src/lib/adComponents";
+import { AdEventType, BannerAd, BannerAdSize, RewardedAd, RewardedAdEventType, TestIds } from "../../../src/lib/adComponents";
 import { useTranslation } from "react-i18next";
 import {
   Alert,
@@ -33,6 +33,7 @@ import ModalLanguage from "../../../src/components/setting/modal-language";
 import { showErrorToast, showSuccessToast } from "../../../src/constants/toast";
 import { useTheme } from "../../../src/contexts/theme";
 
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER);
 const rewardedAdUnitId = __DEV__ ? TestIds.REWARDED : (process.env.EXPO_PUBLIC_REWARDED_AD_UNIT_ID || TestIds.REWARDED);
 
 const rewarded = RewardedAd.createForAdRequest(rewardedAdUnitId, {
@@ -333,6 +334,15 @@ export default function SettingsScreen() {
           />
         </CardSection>
 
+        <View style={{ alignItems: "center", marginVertical: 20 }}>
+          <BannerAd
+            unitId={adUnitId}
+            size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+            requestOptions={{
+              requestNonPersonalizedAdsOnly: true,
+            }}
+          />
+        </View>
         <View style={{ height: 24 }} />
       </ScrollView>
       {showExportModal && (

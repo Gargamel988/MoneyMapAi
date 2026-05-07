@@ -8,7 +8,7 @@ import { getUser, transactionsApi } from "@/src/lib/transactions";
 import Feather from "@expo/vector-icons/Feather";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import {
@@ -50,7 +50,11 @@ const incomeApi = (t: (key: string) => string) => ({
   },
 });
 
-export const IncomeEntry = () => {
+interface IncomeEntryProps {
+  prefilledData?: any;
+}
+
+export const IncomeEntry: React.FC<IncomeEntryProps> = ({ prefilledData }) => {
   const { t } = useTranslation();
   const { theme } = useTheme();
   const { dimensions, hp } = useResponsive();
@@ -72,6 +76,25 @@ export const IncomeEntry = () => {
       description: "",
     },
   });
+
+  // Handle prefilled data from PDF/CSV
+  React.useEffect(() => {
+    if (prefilledData && prefilledData.type === 'gelir') {
+      const amount = Math.abs(prefilledData.amount);
+      if (amount > 0) {
+        setDisplayValue(amount.toString());
+      }
+      
+      reset({
+        ...formState.defaultValues,
+        total_amount: amount,
+        description: prefilledData.note 
+          ? `${prefilledData.description} - ${prefilledData.note}`
+          : prefilledData.description || "",
+        date: prefilledData.date ? new Date(prefilledData.date) : new Date(),
+      });
+    }
+  }, [prefilledData]);
 
   const [income_categoriesQuery, currencyQuery] = useQueries({
     queries: [
@@ -189,6 +212,8 @@ export const IncomeEntry = () => {
               style={{
                 backgroundColor: theme.inputbackground,
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: theme.border,
                 paddingHorizontal: 16,
                 paddingVertical: 12,
                 fontSize: dimensions.fontMD,

@@ -1,4 +1,3 @@
-import { User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { getUser } from "./transactions";
 
@@ -51,6 +50,6 @@ export const getUserAllCategories = async () => {
     .select(`*`)
     .or(`user_id.eq.${user.id},user_id.is.null`)
     .order("name");
-    
+
   return { data: categories || [], error };
 };

@@ -142,6 +142,7 @@
   "advisor.recommendations": "Recommendations",
   "advisor.warnings": "Attention Required",
   "advisor.noData": "Not enough transaction data to provide advice.",
+  "advisor.noDataSubtitle": "Add some transactions to get AI-powered financial advice.",
   "analytics.title": "Financial Analysis and Reports",
   "analytics.description": "Review your income and expenses in detail",
   "analytics.selectPeriod": "Select Period",

@@ -1,19 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Dimensions } from 'react-native';
-import { Stack } from 'expo-router';
-import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
+import { StackHeader } from '@/src/components/common/stack-header';
 import { useTheme } from '@/src/contexts/theme';
 import { useResponsive } from '@/src/hooks/useResponsive';
-import { useTranslation } from 'react-i18next';
 import { useTransactions } from '@/src/hooks/useTransactions';
-import { experimental_useObject as useObject } from '@ai-sdk/react';
-import { fetch as expoFetch } from 'expo/fetch';
 import { advisorScheme } from '@/src/schemas/advisorScheme';
 import { generateAPIUrl } from '@/src/utils/utils';
-import Animated, { FadeInUp, FadeInRight } from 'react-native-reanimated';
-import { StackHeader } from '@/src/components/common/stack-header';
+import { experimental_useObject as useObject } from '@ai-sdk/react';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { router, Stack } from 'expo-router';
+import { fetch as expoFetch } from 'expo/fetch';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInRight, FadeInUp } from 'react-native-reanimated';
 
 export default function AIAdvisorScreen() {
+  const { isConnected } = useNetInfo();
   const { theme } = useTheme();
   const { dimensions, wp, hp } = useResponsive();
   const { t, i18n } = useTranslation();
@@ -27,7 +29,7 @@ export default function AIAdvisorScreen() {
   });
 
   useEffect(() => {
-    if (transactions && transactions.length > 0 && !advice && !isAiGenerating) {
+    if (isConnected && transactions && transactions.length > 0 && !advice && !isAiGenerating) {
       const stats = {
         totalIncome: transactions.filter(t => t.type === 'gelir').reduce((sum, t) => sum + (t.amount || 0), 0),
         totalExpense: transactions.filter(t => t.type === 'gider').reduce((sum, t) => sum + (t.amount || 0), 0),
@@ -39,12 +41,12 @@ export default function AIAdvisorScreen() {
         stats
       });
     }
-  }, [transactions, i18n.language]);
+  }, [transactions, i18n.language, isConnected]);
 
   const handleRetry = () => {
     if (dataError) refetch();
     else if (transactions) {
-       const stats = {
+      const stats = {
         totalIncome: transactions.filter(t => t.type === 'gelir').reduce((sum, t) => sum + (t.amount || 0), 0),
         totalExpense: transactions.filter(t => t.type === 'gider').reduce((sum, t) => sum + (t.amount || 0), 0),
       };
@@ -106,7 +108,7 @@ export default function AIAdvisorScreen() {
     <View style={{ flex: 1, backgroundColor: theme.headerbackground }}>
       <Stack.Screen options={{ headerShown: false }} />
       <StackHeader title={t('advisor.title')} />
-      
+
       <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.container}>
         {advice && (
           <>
@@ -172,6 +174,22 @@ export default function AIAdvisorScreen() {
             )}
           </>
         )}
+
+        {!isDataLoading && !isAiGenerating && (!transactions || transactions.length === 0) && (
+          <View style={styles.emptyContainer}>
+            <MaterialCommunityIcons name="robot-confused-outline" size={64} color={theme.textSecondary} />
+            <Text style={[styles.emptyTitle, { color: theme.text }]}>{t('advisor.noData')}</Text>
+            <Text style={[styles.emptySubtitle, { color: theme.textSecondary }]}>
+              {t('advisor.noDataSubtitle') || "Add some transactions to get AI-powered financial advice."}
+            </Text>
+            <TouchableOpacity
+              style={[styles.addButton, { backgroundColor: theme.primary }]}
+              onPress={() => router.push('/add-transactionscreen')}
+            >
+              <Text style={styles.addButtonText}>{t('addTransaction.title')}</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -179,10 +197,46 @@ export default function AIAdvisorScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
-    gap: 16,
+    padding: 16,
+    paddingTop: 8,
   },
   centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 100,
+    paddingHorizontal: 32,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 16,
+    textAlign: 'center',
+  },
+  emptySubtitle: {
+    fontSize: 16,
+    marginTop: 8,
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  addButton: {
+    marginTop: 24,
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 12,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',

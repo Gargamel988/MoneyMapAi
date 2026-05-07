@@ -18,12 +18,12 @@ export function ProfileCard({
   const { dimensions } = useResponsive();
   return (
     <TouchableOpacity
-      onLongPress={ onPress }
+      onLongPress={onPress}
       activeOpacity={0.8}
       style={{
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: theme.white,
+        backgroundColor: theme.inputbackground,
         borderRadius: wp(3),
         padding: hp(2.5),
         shadowColor: "#000",

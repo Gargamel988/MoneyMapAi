@@ -17,6 +17,9 @@ import {
   TouchableOpacity, View
 } from 'react-native';
 import Animated, { FadeInDown, FadeInUp } from 'react-native-reanimated';
+import { BannerAd, BannerAdSize, TestIds } from '@/src/lib/adComponents';
+
+const adUnitId = __DEV__ ? TestIds.ADAPTIVE_BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || TestIds.ADAPTIVE_BANNER);
 
 interface Category {
   id: string;
@@ -221,6 +224,16 @@ export default function GoalsScreen() {
           </Animated.View>
         )}
       </ScrollView>
+
+      <View style={{ alignItems: "center", marginBottom: 10 }}>
+        <BannerAd
+          unitId={adUnitId}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+          requestOptions={{
+            requestNonPersonalizedAdsOnly: true,
+          }}
+        />
+      </View>
 
       {/* ══ Create Goal Bottom Sheet ══════════════════════ */}
       <Modal visible={isModalVisible} transparent animationType="slide" onRequestClose={() => { setIsModalVisible(false); resetForm(); }}>

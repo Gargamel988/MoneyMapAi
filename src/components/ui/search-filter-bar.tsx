@@ -38,7 +38,7 @@ export default function SearchFilterBar({
   const { t } = useTranslation();
   const router = useRouter();
   const { dimensions, isSmall, moderateScale } = useResponsive();
-	const { theme } = useTheme();
+  const { theme } = useTheme();
   return (
     <View style={{ marginBottom: dimensions.md }}>
       {/* Başlık ve Geri Butonu */}
@@ -56,7 +56,7 @@ export default function SearchFilterBar({
           activeOpacity={0.7}
           style={{
             borderRadius: 999,
-            padding: dimensions.sm+4,
+            padding: dimensions.sm + 4,
             backgroundColor: theme.buttonquaternary,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
@@ -93,9 +93,9 @@ export default function SearchFilterBar({
                 : moderateScale(dimensions.fontTitle + 2),
               fontWeight: "800",
               marginLeft: moderateScale(8),
-              color: "#FFFFFF",
+              color: theme.white,
             }}
-            >
+          >
             {bool ? t("searchFilterBar.title") : t("searchFilterBar.history")}
           </Text>
         </View>
@@ -132,7 +132,7 @@ export default function SearchFilterBar({
             alignItems: "center",
             borderRadius: isSmall ? moderateScale(20) : moderateScale(24),
             paddingHorizontal: isSmall ? moderateScale(12) : moderateScale(16),
-            paddingVertical:moderateScale(4),
+            paddingVertical: moderateScale(4),
             backgroundColor: theme.inputbackground,
             shadowColor: "#000",
             shadowOffset: { width: 0, height: 2 },
@@ -197,7 +197,7 @@ export default function SearchFilterBar({
                 borderRadius: 999,
                 paddingHorizontal: moderateScale(18),
                 paddingVertical: moderateScale(8),
-                backgroundColor: filterType === type ? theme.white : theme.buttonquaternary,
+                backgroundColor: filterType === type ? theme.button : theme.buttonquaternary,
                 shadowColor: "#000",
                 shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.15,
@@ -217,8 +217,8 @@ export default function SearchFilterBar({
                 {type === "hepsi"
                   ? `${t("searchFilterBar.all")} (${allCount})`
                   : type === "gelir"
-                  ? `${t("searchFilterBar.income")} (${incomeCount})`
-                  : `${t("searchFilterBar.expense")} (${expenseCount})`}
+                    ? `${t("searchFilterBar.income")} (${incomeCount})`
+                    : `${t("searchFilterBar.expense")} (${expenseCount})`}
               </Text>
             </TouchableOpacity>
           ))}
@@ -261,7 +261,7 @@ export default function SearchFilterBar({
                   borderRadius: 999,
                   paddingHorizontal: moderateScale(18),
                   paddingVertical: moderateScale(8),
-                  backgroundColor: sortBy === sort ? theme.white : theme.buttonquaternary,
+                  backgroundColor: sortBy === sort ? theme.button : theme.buttonquaternary,
                   shadowColor: "#000",
                   shadowOffset: { width: 0, height: 2 },
                   shadowOpacity: 0.15,
@@ -281,10 +281,10 @@ export default function SearchFilterBar({
                   {sort === "name-asc"
                     ? t("searchFilterBar.sortAZ")
                     : sort === "name-desc"
-                    ? t("searchFilterBar.sortZA")
-                    : sort === "date-newest"
-                    ? t("searchFilterBar.sortNewest")
-                    : t("searchFilterBar.sortOldest")}
+                      ? t("searchFilterBar.sortZA")
+                      : sort === "date-newest"
+                        ? t("searchFilterBar.sortNewest")
+                        : t("searchFilterBar.sortOldest")}
                 </Text>
               </TouchableOpacity>
             )

@@ -120,6 +120,7 @@ export default function HomeScreen() {
   const sections = [
     { id: 'weekly', component: WeeklySummary },
     { id: 'banner', component: 'Banner' },
+    { id: 'debts-promo', component: 'DebtsPromo' },
     { id: 'goals', component: 'Goals' },
     { id: 'ai-advisor', component: 'AIAdvisor' },
     { id: 'pie', component: Piechart },
@@ -158,6 +159,33 @@ export default function HomeScreen() {
               <GoalCard goal={goals[0]} />
             </View>
           ) : null;
+        case 'debts-promo':
+          return (
+            <TouchableOpacity
+              onPress={() => router.push("/(screens)/(stack)/debts")}
+              style={{
+                marginHorizontal: wp(4),
+                marginVertical: hp(1),
+                backgroundColor: theme.cardGlass,
+                borderRadius: 16,
+                padding: hp(1.5),
+                borderWidth: 1,
+                borderColor: theme.cardBorder,
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: wp(3)
+              }}
+            >
+              <View style={{ backgroundColor: theme.primary + '20', padding: 10, borderRadius: 12 }}>
+                <MaterialCommunityIcons name="handshake-outline" size={28} color={theme.primary} />
+              </View>
+              <View style={{ flex: 1 }}>
+                <Text style={{ color: theme.text, fontWeight: '700', fontSize: 14 }}>Borç Takibi</Text>
+                <Text style={{ color: theme.textSecondary, fontSize: 12 }}>Kime ne kadar borcun var, kimden alacağın var takip et.</Text>
+              </View>
+              <MaterialCommunityIcons name="chevron-right" size={24} color={theme.textTertiary} />
+            </TouchableOpacity>
+          );
         case 'ai-advisor':
           return (
             <View
@@ -198,14 +226,17 @@ export default function HomeScreen() {
                 </View>
                 <TouchableOpacity
                   onPress={() => {
+                    const navigate = () => router.push("/(screens)/(stack)/ai-advisor");
                     if (interstitial.loaded) {
-                      interstitial.show().then(() => {
+                      const unsubscribe = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+                        unsubscribe();
                         interstitial.load();
-                        router.push("/(screens)/(stack)/ai-advisor");
+                        navigate();
                       });
+                      interstitial.show();
                     } else {
                       interstitial.load();
-                      router.push("/(screens)/(stack)/ai-advisor");
+                      navigate();
                     }
                   }}
                   style={{

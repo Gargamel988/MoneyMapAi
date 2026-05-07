@@ -1,4 +1,6 @@
+import { useTheme } from "@/src/contexts/theme";
 import { useResponsive } from "@/src/hooks/useResponsive";
+import { BannerAd, BannerAdSize, TestIds } from "@/src/lib/adComponents";
 import Feather from "@expo/vector-icons/Feather";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
@@ -15,11 +17,12 @@ import {
 } from "react-native";
 import { ExpenseEntry } from "../../../src/components/transaction/expense";
 import { IncomeEntry } from "../../../src/components/transaction/income";
-import { useTheme } from "../../../src/contexts/theme";
+import { ImportCSVSection } from "../../../src/components/transaction/ImportCSVSection";
 
 const AddTransaction: React.FC = () => {
   const { t } = useTranslation();
   const [tab, setTab] = useState<"expense" | "income">("expense");
+  const [prefilledData, setPrefilledData] = useState<any>(null);
   const { dimensions, wp, hp } = useResponsive();
   const { theme } = useTheme();
 
@@ -34,6 +37,12 @@ const AddTransaction: React.FC = () => {
       friction: 10,
     }).start();
     setTab(newTab);
+  };
+
+  const handleImport = (data: any) => {
+    const isIncome = data.type === 'gelir';
+    setPrefilledData(data);
+    handleTabChange(isIncome ? 'income' : 'expense');
   };
 
   return (
@@ -310,6 +319,9 @@ const AddTransaction: React.FC = () => {
             </LinearGradient>
           </Pressable>
 
+          {/* Import Section */}
+          <ImportCSVSection onImport={handleImport} />
+
           {/* Form */}
           <View
             style={{
@@ -329,13 +341,24 @@ const AddTransaction: React.FC = () => {
               }),
             }}
           >
-            {tab === "expense" ? <ExpenseEntry /> : <IncomeEntry />}
+            {tab === "expense" ? (
+              <ExpenseEntry prefilledData={prefilledData} />
+            ) : (
+              <IncomeEntry prefilledData={prefilledData} />
+            )}
           </View>
         </View>
       </ScrollView>
+      <View style={{ alignItems: 'center', paddingBottom: hp(1) }}>
+        <BannerAd
+          unitId={__DEV__ ? TestIds.BANNER : (process.env.EXPO_PUBLIC_BANNER_AD_UNIT_ID || "ca-app-pub-1444133443338193/7822997870")}
+          size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
+        />
+      </View>
     </View>
   );
 };
 
 export default AddTransaction;
+
 

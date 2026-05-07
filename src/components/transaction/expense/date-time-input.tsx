@@ -54,6 +54,8 @@ export const DateTimeInput = ({
                 gap: 8,
                 backgroundColor: theme.inputbackground,
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: theme.border,
               }}
             >
               <Feather
@@ -96,6 +98,8 @@ export const DateTimeInput = ({
               disabled={isPending}
               activeOpacity={0.7}
               style={{
+                borderWidth: 1,
+                borderColor: theme.border,
                 flex: 1,
                 flexDirection: "row",
                 alignItems: "center",

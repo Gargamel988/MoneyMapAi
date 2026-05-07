@@ -22,6 +22,7 @@ import { QUERY_KEYS } from "../src/constants/queryKeys";
 import { toastConfig } from "../src/constants/toast";
 import { SessionProvider, useSession } from "../src/contexts/session";
 import { ThemeProvider, useTheme } from "../src/contexts/theme";
+import { NoInternetOverlay } from "@/src/components/common/NoInternetOverlay";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -103,18 +104,29 @@ function AppContent() {
         <RootNavigator />
       </SessionProvider>
       <Toast config={toastConfig} />
+      <NoInternetOverlay />
     </LinearGradient>
   );
 }
+
+import { NotificationService } from "@/src/services/notificationService";
 
 export default function RootLayout() {
   useEffect(() => {
     // Sadece gerçek cihazda/build'de (Expo Go dışında) reklamları başlat
     if (Constants.appOwnership !== 'expo') {
       initAds()
-        .then(() => console.log('Ads initialized successfully'))
-        .catch(err => console.log('Ads initialization error:', err));
+      .then(() => {})
+      .catch(err => console.error('Ads initialization error:', err));
     }
+
+    // Bildirimleri başlat
+    NotificationService.registerForPushNotificationsAsync().then((token) => {
+      if (token) {
+        NotificationService.scheduleDailyReminder();
+        NotificationService.scheduleWeeklySummary();
+      }
+    });
   }, []);
 
   return (

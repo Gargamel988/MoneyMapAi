@@ -54,6 +54,8 @@ export const DateTimeInput = ({
                 gap: 8,
                 backgroundColor: theme.inputbackground,
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: theme.border,
                 paddingVertical: 14,
               }}
             >
@@ -104,6 +106,8 @@ export const DateTimeInput = ({
                 gap: 8,
                 backgroundColor: theme.inputbackground,
                 borderRadius: 12,
+                borderWidth: 1,
+                borderColor: theme.border,
                 paddingVertical: 14,
               }}
             >

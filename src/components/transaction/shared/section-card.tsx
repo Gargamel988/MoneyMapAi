@@ -15,6 +15,8 @@ export const SectionCard = ({ children, style, theme, dimensions }: SectionCardP
       backgroundColor: theme.weeklycard,
       borderRadius: 16,
       padding: dimensions.md,
+      borderWidth: 1,
+      borderColor: theme.border,
       ...style,
     }}
   >

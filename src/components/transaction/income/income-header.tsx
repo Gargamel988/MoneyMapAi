@@ -25,7 +25,7 @@ export const IncomeHeader = ({ t, theme, dimensions, onAddCategory }: IncomeHead
           width: 44,
           height: 44,
           borderRadius: 14,
-          backgroundColor: `${theme.success}15`,
+          backgroundColor: `${theme.success}10`,
           alignItems: "center",
           justifyContent: "center",
         }}
@@ -64,7 +64,7 @@ export const IncomeHeader = ({ t, theme, dimensions, onAddCategory }: IncomeHead
         paddingVertical: 8,
         paddingHorizontal: 12,
         borderRadius: 20,
-        backgroundColor: `${theme.success}15`,
+        backgroundColor: `${theme.success}10`,
       }}
     >
       <Feather name="plus" size={16} color={theme.success} />

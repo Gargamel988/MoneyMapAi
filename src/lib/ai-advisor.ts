@@ -9,7 +9,19 @@ export const aiAdvisorApi = {
       const transactions = await transactionsApi.getTransactionsByMonth();
       
       if (!transactions || transactions.length === 0) {
-        throw new Error("No transactions found to analyze.");
+        return {
+          summary: language === 'tr' 
+            ? "Henüz analiz edilecek işlem bulunamadı. Lütfen harcamalarınızı veya gelirlerinizi ekleyerek bütçe analizinizi başlatın."
+            : "No transactions found to analyze. Please start your budget analysis by adding your income or expenses.",
+          insights: [],
+          recommendations: [
+            language === 'tr' 
+              ? "İlk harcamanızı veya gelirinizi ekleyerek başlayın!"
+              : "Start by adding your first income or expense!"
+          ],
+          financialHealthScore: 1,
+          warningCategories: []
+        };
       }
 
       // 2. Summarize data to save tokens and provide better context

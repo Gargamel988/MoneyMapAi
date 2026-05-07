@@ -44,6 +44,8 @@ export const AmountInput = ({
             alignItems: "center",
             backgroundColor: theme.inputbackground,
             borderRadius: 12,
+            borderWidth: 1,
+            borderColor: theme.border,
             paddingHorizontal: 16,
           }}
         >
@@ -77,6 +79,7 @@ export const AmountInput = ({
               fontSize: dimensions.fontXL + 4,
               fontWeight: "700",
               color: theme.textSenary,
+
               paddingVertical: hp(2),
             }}
           />
